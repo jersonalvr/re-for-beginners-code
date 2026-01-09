@@ -12,7 +12,7 @@ if it is not 0, to \gls{decrement} \ECX
 and pass control flow to the label in the \LOOP operand. 
 Probably this instruction is not very convenient, and there are no any modern compilers which emit it automatically.
 So, if you see this instruction somewhere in code, it is most likely that this is a manually written piece 
-of assembly code.}\PTBRph{}\ESph{}\PLph{}\\
+of assembly code.}\PTBRph{}\ES{Hay una instrucción especial \LOOP en el conjunto de instrucciones x86 para verificar el valor en el registro \ECX y si no es 0, \gls{decrement} \ECX y pasar el flujo de control a la etiqueta en el operando \LOOP. Probablemente esta instrucción no es muy conveniente, y no hay compiladores modernos que la emitan automáticamente. Así que, si ves esta instrucción en algún lugar del código, es muy probable que sea un fragmento de código ensamblador escrito manualmente.}\PLph{}\\
 \\
 \RU{Обычно, циклы на \CCpp создаются при помощи \TT{for()}, \TT{while()}, \TT{do/while()}.}
 \EN{In \CCpp loops are usually constructed using \TT{for()}, \TT{while()} or \TT{do/while()} statements.}

@@ -3,7 +3,7 @@
 \RU{Если программа использует инструкции сопроцессора, и их не очень много, 
 то можно попробовать вручную проверить отладчиком какую-то из них.}
 \EN{If the program is utilizing FPU instructions and there are very few of them in the code,
-one can try to check each one manually with a debugger.}\PTBRph{}\ESph{}\PLph{}\\
+one can try to check each one manually with a debugger.}\PTBRph{}\ES{se puede intentar verificar cada una manualmente con un depurador.}\PLph{}\\
 \\
 \RU{К примеру, нас может заинтересовать, при помощи чего Microsoft Excel считает 
 результаты формул, введенных пользователем. Например, операция деления.}
@@ -17,13 +17,13 @@ For example, the division operation.}
 очевидно, не подходят нам):}
 \EN{If we load excel.exe (from Office 2010) version 14.0.4756.1000 into \IDA, make a full listing
 and to find every \FDIV instruction (except the ones which use constants as a second 
-operand\EMDASH{}obviously, they do not suit us):}\PTBRph{}\ESph{}\PLph{}\\
+operand\EMDASH{}obviously, they do not suit us):}\PTBRph{}\ES{operando\EMDASH{}obviamente, no nos sirven):}\PLph{}\\
 
 \begin{lstlisting}
 cat EXCEL.lst | grep fdiv | grep -v dbl_ > EXCEL.fdiv
 \end{lstlisting}
 
-\RU{\dots то окажется, что их всего 144.}\EN{\dots then we see that there are 144 of them.}\PTBRph{}\ESph{}\PLph{}\\
+\RU{\dots то окажется, что их всего 144.}\EN{\dots then we see that there are 144 of them.}\PTBRph{}\ES{\dots entonces vemos que hay 144 de ellas.}\PLph{}\\
 \\
 \RU{Мы можем вводить в Excel строку вроде \TT{=(1/3)} и проверить все эти инструкции.}
 \EN{We can enter a string like \TT{=(1/3)} in Excel and check each instruction.}\PTBRph{}\ESph{}\PLph{}\\
@@ -77,7 +77,7 @@ FPU ST(0): 0.333333
 \end{lstlisting}
 
 \RU{А также, в рамках пранка\footnote{practical joke}, модифицировать его на лету:}
-\EN{Also as a practical joke, we can modify it on the fly:}\PTBRph{}\ESph{}\PLph{}\\
+\EN{Also as a practical joke, we can modify it on the fly:}\PTBRph{}\ES{También como broma práctica, podemos modificarlo sobre la marcha:}\PLph{}\\
 
 \begin{lstlisting}
 tracer -l:excel.exe bpx=excel.exe!BASE+0x11E91B,set(st0,666)
