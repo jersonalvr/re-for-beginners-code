@@ -1,7 +1,6 @@
 *.aux
 *.fls
 *.swp
-*.pdf
 *.out
 *.toc
 TODO*
