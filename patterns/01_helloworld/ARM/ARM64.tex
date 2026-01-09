@@ -2,73 +2,79 @@
 
 \subsubsection{GCC}
 
-\RU{Компилируем пример в}\EN{Let's compile the example using} GCC 4.8.1 \InENRU ARM64:
+\RU{Компилируем пример в}\EN{Let's compile the example using}\ES{Compilamos el ejemplo con} GCC 4.8.1 \InENRU ARM64:
 
 \lstinputlisting[numbers=left,label=hw_ARM64_GCC,caption=\NonOptimizing GCC 4.8.1 + objdump]
 {patterns/01_helloworld/ARM/hw.lst}
 
 \RU{В ARM64 нет режима Thumb и Thumb-2, только ARM, так что тут только 32-битные инструкции.}
 \EN{There are no Thumb and Thumb-2 modes in ARM64, only ARM, so there are 32-bit instructions only.}
-\RU{Регистров тут в 2 раза больше}\EN{Registers count is doubled}: \myref{ARM64_GPRs}.
-\RU{64-битные регистры теперь имеют префикс}\EN{64-bit registers has} 
-\TT{X-}\EN{ prefixes, while its 32-bit parts}\RU{, а их 32-битные части}\EMDASH{}\TT{W-}.
+\ES{En ARM64 no existen los modos Thumb ni Thumb-2, solo ARM, así que solo hay instrucciones de 32 bits.}
+\RU{Регистров тут в 2 раза больше}\EN{Registers count is doubled}\ES{La cantidad de registros se duplica}: \myref{ARM64_GPRs}.
+\RU{64-битные регистры теперь имеют префикс}\EN{64-bit registers has}\ES{Los registros de 64 bits tienen el prefijo} 
+\TT{X-}\EN{ prefixes, while its 32-bit parts}\RU{, а их 32-битные части}\EMDASH{}\TT{W-}\ES{, mientras que sus partes de 32 bits — W-}.
 
 \index{ARM!\Instructions!STP}
 \EN{The }\RU{Инструкция }\TT{STP}\EN{ instruction} (\IT{Store Pair}) 
-\RU{сохраняет в стеке сразу два регистра}\EN{saves two registers in the stack simultaneously}: \RegX{29} \InENRU \RegX{30}.
+\RU{сохраняет в стеке сразу два регистра}\EN{saves two registers in the stack simultaneously}\ES{guarda dos registros en la pila simultáneamente}: \RegX{29} \InENRU \RegX{30}.
 \RU{Конечно, эта инструкция может сохранять эту пару где угодно в памяти, но здесь указан регистр \ac{SP}, так что
 пара сохраняется именно в стеке.}
 \EN{Of course, this instruction is able to save this pair at a random place of memory, 
 but the \ac{SP} register is specified here, so the pair is saved in the stack.}
+\ES{Por supuesto, esta instrucción puede guardar ese par en cualquier lugar de la memoria, pero aquí se especifica el registro \ac{SP}, así que el par se guarda en la pila.}
 \RU{Регистры в ARM64 64-битные, каждый имеет длину в 8 байт, так что для хранения двух регистров нужно именно 16 байт.}
 \EN{ARM64 registers are 64-bit ones, each has a size of 8 bytes, so one needs 16 bytes for saving two registers.}
+\ES{Los registros en ARM64 son de 64 bits y cada uno ocupa 8 bytes, por lo que se necesitan 16 bytes para guardar dos registros.}
 
 \RU{Восклицательный знак после операнда означает, что сначала от \ac{SP} будет отнято 16 и только затем
 значения из пары регистров будут записаны в стек.}
 \EN{Exclamation mark after operand mean that 16 is to be subtracted from \ac{SP} first, and only then
 values from registers pair are to be written into the stack.}
-\RU{Это называется}\EN{This is also called} \IT{pre-index}.
-\RU{Больше о разнице между}\EN{About the difference between} \IT{post-index} \AndENRU \IT{pre-index} 
-\RU{описано здесь}\EN{read here}: \myref{ARM_postindex_vs_preindex}.
+\ES{El signo de exclamación tras el operando significa que primero se resta 16 de \ac{SP} y solo después los valores del par de registros se escriben en la pila.}
+\RU{Это называется}\EN{This is also called}\ES{A esto también se le llama} \IT{pre-index}.
+\RU{Больше о разнице между}\EN{About the difference between}\ES{Sobre la diferencia entre} \IT{post-index} \AndENRU \IT{pre-index} 
+\RU{описано здесь}\EN{read here}\ES{lee aquí}: \myref{ARM_postindex_vs_preindex}.
 
 \RU{Таким образом, в терминах более знакомого всем процессора x86, первая инструкция~--- это просто аналог 
 пары инструкций}
 \EN{Hence, in the terms of more familiar x86, the first instruction is just an analogue to pair of}
+\ES{Por lo tanto, en términos del más familiar x86, la primera instrucción es análoga a un par de}
 \TT{PUSH X29} \AndENRU \TT{PUSH X30}.
 \RegX{29} \EN{is used as \ac{FP} in ARM64}\RU{в ARM64 используется как \ac{FP}}, \EN{and}\RU{а} \RegX{30} 
 \EN{as}\RU{как} \ac{LR}, \RU{поэтому они сохраняются в прологе функции и
-восстанавливаются в эпилоге}\EN{so that's why they are saved in the function prologue and restored in the function epilogue}.
+восстанавливаются в эпилоге}\EN{so that's why they are saved in the function prologue and restored in the function epilogue}\ES{; por eso se guardan en el prólogo de la función y se restauran en el epílogo}.
 
-\EN{The second instruction copies}\RU{Вторая инструкция копирует} \ac{SP} \InENRU \RegX{29} (\OrENRU \ac{FP}).
-\RU{Это нужно для установки стекового фрейма функции}\EN{This is done to set up the function stack frame}.
+\EN{The second instruction copies}\RU{Вторая инструкция копирует}\ES{La segunda instrucción copia} \ac{SP} \InENRU \RegX{29} (\OrENRU \ac{FP}).
+\RU{Это нужно для установки стекового фрейма функции}\EN{This is done to set up the function stack frame}\ES{Esto se hace para establecer el marco de pila de la función}.
 
 \label{pointers_ADRP_and_ADD}
 \index{ARM!\Instructions!ADRP/ADD pair}
 \RU{Инструкции }\TT{ADRP} \AndENRU \ADD \EN{instructions are used to fill the 
-string}\RU{нужны для формирования адреса строки} \q{Hello!} \EN{address into the \RegX{0} register}\RU{в регистре \RegX{0}}, 
+string}\RU{нужны для формирования адреса строки}\ES{se usan para formar la dirección de la cadena} \q{Hello!} \EN{address into the \RegX{0} register}\RU{в регистре \RegX{0}}\ES{ en el registro \RegX{0}}, 
 \RU{ведь первый аргумент функции передается через этот регистр}\EN{because the first function argument is passed
-in this register}.
+in this register}\ES{porque el primer argumento de la función se pasa por ese registro}.
 \RU{Но в ARM нет инструкций, при помощи которых можно записать в регистр длинное число}\EN{There are
 no instructions, whatsoever, in ARM that can store a large number into a register} 
 (\RU{потому что сама длина инструкции ограничена 4-я байтами. Больше об этом здесь}\EN{because the instruction
-length is limited to 4 bytes, read more about it here}: \myref{ARM_big_constants_loading}).
-\RU{Так что нужно использовать несколько инструкций}\EN{So several instructions must be utilised}.
-\RU{Первая инструкция}\EN{The first instruction} (\TT{ADRP}) \EN{writes address of 4Kb page where the string is
-located into \RegX{0}}\RU{записывает в \RegX{0} адрес 4-килобайтной страницы где находится строка}, 
-\EN{and the the second one}\RU{а вторая} (\ADD) \RU{просто прибавляет к этому адресу остаток}\EN{just adds
-reminder to the address}.
-\EN{More about that in}\RU{Читайте больше об этом}: \myref{ARM64_relocs}.
+length is limited to 4 bytes, read more about it here}\ES{porque la longitud de la instrucción está limitada a 4 bytes; más sobre esto aquí}: \myref{ARM_big_constants_loading}).
+\RU{Так что нужно использовать несколько инструкций}\EN{So several instructions must be utilised}\ES{Así que deben usarse varias instrucciones}.
+\RU{Первая инструкция}\EN{The first instruction}\ES{La primera instrucción} (\TT{ADRP}) \EN{writes address of 4Kb page where the string is
+located into \RegX{0}}\RU{записывает в \RegX{0} адрес 4-килобайтной страницы где находится строка}\ES{escribe en \RegX{0} la dirección de la página de 4 KB donde está la cadena}, 
+\EN{and the the second one}\RU{а вторая}\ES{y la segunda} (\ADD) \RU{просто прибавляет к этому адресу остаток}\EN{just adds
+reminder to the address}\ES{simplemente suma el resto a esa dirección}.
+\EN{More about that in}\RU{Читайте больше об этом}\ES{Más sobre esto en}: \myref{ARM64_relocs}.
 
 \TT{0x400000 + 0x648 = 0x400648}, \EN{and we see our \q{Hello!} C-string in the \TT{.rodata} data segment at this
 address}\RU{и мы видим, что в секции данных \TT{.rodata} по этому адресу как раз находится наша
-Си-строка \q{Hello!}}.
+Си-строка \q{Hello!}}\ES{y vemos que en la sección de datos \TT{.rodata} en esa dirección está nuestra cadena en C «Hello!»}.
 
 \index{ARM!\Instructions!BL}
 \RU{Затем при помощи инструкции \TT{BL} вызывается \puts. Это уже рассматривалось ранее: \myref{puts}.}
 \EN{\puts is called afterwards using \TT{BL} instruction. This was already discussed: \myref{puts}.}
+\ES{Luego se llama a \puts usando la instrucción \TT{BL}. Esto ya se comentó: \myref{puts}.}
 
-\RU{Инструкция }\MOV \EN{instruction writes 0 into}\RU{записывает 0 в} \RegW{0}. 
-\RegW{0} \RU{это младшие 32 бита 64-битного регистра}\EN{is low 32 bits of 64-bit} \RegX{0}\EN{ register}:
+\RU{Инструкция }\MOV \EN{instruction writes 0 into}\RU{записывает 0 в}\ES{La instrucción }\MOV \ES{escribe 0 en} \RegW{0}. 
+\RegW{0} \RU{это младшие 32 бита 64-битного регистра}\EN{is low 32 bits of 64-bit}\ES{son los 32 bits bajos del registro de 64 bits} \RegX{0}\EN{ register}:
 
 \input{ARM_X0_register}
 
@@ -76,19 +82,24 @@ address}\RU{и мы видим, что в секции данных \TT{.rodata}
 так что вот так готовится возвращаемый результат.}
 \EN{The function result is returned via \RegX{0} and \main returns 0, so that's how the return
 result is prepared.}
-\RU{Почему именно 32-битная часть}\EN{But why using the 32-bit part}?
+\ES{El resultado de la función se devuelve por \RegX{0}, y \main devuelve 0, así que así se prepara el valor de retorno.}
+\RU{Почему именно 32-битная часть}\EN{But why using the 32-bit part}\ES{¿Por qué usar la parte de 32 bits}?
 \RU{Потому в ARM64, как и в x86-64, тип \Tint оставили 32-битным, для лучшей совместимости.}
 \EN{Because \Tint data type in ARM64, just like in x86-64, is still 32-bit, for better compatibility.}
+\ES{Porque el tipo \Tint en ARM64, igual que en x86-64, sigue siendo de 32 bits para una mejor compatibilidad.}
 \RU{Следовательно, раз уж функция возвращает 32-битный \Tint, то нужно заполнить только 32 младших бита 
 регистра \RegX{0}.}
 \EN{So if a function returns 32-bit \Tint, only the low 32 bits of \RegX{0} register has to be filled.}
+\ES{Por lo tanto, si una función devuelve un \Tint de 32 bits, solo hay que llenar los 32 bits bajos del registro \RegX{0}.}
 
 \RU{Для того, чтобы удостовериться в этом, немного отредактируем этот пример и перекомпилируем его.}%
 \EN{In order to verify this, let's change this example slightly and recompile it.}
+\ES{Para verificarlo, modifiquemos un poco este ejemplo y recompilémoslo.}
 \RU{Теперь \main возвращает 64-битное значение:}%
 \EN{Now \main returns 64-bit value:}
+\ES{Ahora \main devuelve un valor de 64 bits:}
 
-\begin{lstlisting}[caption=\main \RU{возвращающая значение типа}\EN{returning a value of} \TT{uint64\_t}\EN{ type}]
+\begin{lstlisting}[caption=\main \RU{возвращающая значение типа}\EN{returning a value of}\ES{que devuelve un valor de tipo} \TT{uint64\_t}\EN{ type}\ES{ }]
 #include <stdio.h>
 #include <stdint.h>
 
@@ -101,6 +112,7 @@ uint64_t main()
 
 \RU{Результат точно такой же, только \MOV в той строке теперь выглядит так:}
 \EN{The result is the same, but that's how \MOV at that line looks like now:}
+\ES{El resultado es el mismo, solo que así se ve ahora el \MOV en esa línea:}
 
 \begin{lstlisting}[caption=\NonOptimizing GCC 4.8.1 + objdump]
   4005a4:       d2800000        mov     x0, #0x0                        // #0
@@ -109,18 +121,21 @@ uint64_t main()
 \index{ARM!\Instructions!LDP}
 \RU{Далее при помощи инструкции \TT{LDP} (\IT{Load Pair}) восстанавливаются регистры \RegX{29} и \RegX{30}.}
 \EN{\TT{LDP} (\IT{Load Pair}) then restores \RegX{29} and \RegX{30} registers.}
+\ES{Luego, con la instrucción \TT{LDP} (\IT{Load Pair}) se restauran los registros \RegX{29} y \RegX{30}.}
 \RU{Восклицательного знака после инструкции нет. Это означает, что сначала значения достаются из стека,
 и только потом \ac{SP} увеличивается на 16.}
 \EN{There is no exclamation mark after the instruction: this implies that the value is first loaded from the stack,
 only then \ac{SP} it is increased by 16.}
-\RU{Это называется}\EN{This is called} \IT{post-index}.
+\ES{No hay signo de exclamación tras la instrucción: esto implica que primero se cargan los valores de la pila y solo después \ac{SP} se incrementa en 16.}
+\RU{Это называется}\EN{This is called}\ES{Esto se llama} \IT{post-index}.
 
 \index{ARM!\Instructions!RET}
-\RU{В ARM64 есть новая инструкция}\EN{New instruction appeared in ARM64}: \RET. 
-\RU{Она работает так же как и}\EN{It works just as} \TT{BX LR}, \RU{но там добавлен специальный бит,
+\RU{В ARM64 есть новая инструкция}\EN{New instruction appeared in ARM64}\ES{En ARM64 apareció una instrucción nueva}: \RET. 
+\RU{Она работает так же как и}\EN{It works just as}\ES{Funciona igual que} \TT{BX LR}, \RU{но там добавлен специальный бит,
 подсказывающий процессору, что это именно выход из функции, а не просто переход, чтобы процессор
 мог более оптимально исполнять эту инструкцию}\EN{only a special \IT{hint} bit is added, informing the \ac{CPU}
-that this is a return from a function, not just another jump instruction, so it can execute it more optimally}.
+that this is a return from a function, not just another jump instruction, so it can execute it more optimally}\ES{, solo que se añade un bit de \IT{pista} especial que informa a la \ac{CPU} de que es un retorno de función, no un salto cualquiera, para poder ejecutarla de forma más óptima}.
 
 \RU{Из-за простоты этой функции оптимизирующий GCC генерирует точно такой же код.}
 \EN{Due to the simplicity of the function, optimizing GCC generates the very same code.}
+\ES{Debido a la simplicidad de la función, el GCC con optimización genera exactamente el mismo código.}

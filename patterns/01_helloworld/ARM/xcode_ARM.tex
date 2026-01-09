@@ -2,6 +2,7 @@
 
 Xcode 4.6.3 \RU{без включенной оптимизации выдает слишком много лишнего кода, поэтому включим оптимизацию компилятора (ключ \Othree), потому что там меньше инструкций.}
 \EN{without optimization turned on produces a lot of redundant code so we'll study optimized output, where the instruction count is as small as possible, setting the compiler switch \Othree.}
+\ES{sin optimización genera demasiado código redundante, así que estudiaremos la salida optimizada, donde hay el menor número de instrucciones posible, activando el conmutador del compilador \Othree.}
 
 \begin{lstlisting}[caption=\OptimizingXcodeIV (\ARMMode)]
 __text:000028C4             _hello_world
@@ -17,61 +18,67 @@ __text:000028E0 80 80 BD E8   LDMFD           SP!, {R7,PC}
 __cstring:00003F62 48 65 6C 6C+aHelloWorld_0  DCB "Hello world!",0
 \end{lstlisting}
 
-\RU{Инструкции}\EN{The instructions} \TT{STMFD} \AndENRU \TT{LDMFD} \RU{нам уже знакомы}\EN{are already familiar to us}.
+\RU{Инструкции}\EN{The instructions}\ES{Las instrucciones} \TT{STMFD} \AndENRU \TT{LDMFD} \RU{нам уже знакомы}\EN{are already familiar to us}\ES{ya nos son familiares}.
 
 \index{ARM!\Instructions!MOV}
 \RU{Инструкция \MOV просто записывает число \TT{0x1686} в регистр \Reg{0}~--- это смещение, указывающее на строку \q{Hello world!}}%
 \EN{The \MOV instruction just writes the number \TT{0x1686} into the \Reg{0} register.
-This is the offset pointing to the \q{Hello world!} string}.
+This is the offset pointing to the \q{Hello world!} string}.\ES{La instrucción \MOV simplemente escribe el número \TT{0x1686} en \Reg{0}: es el desplazamiento que apunta a la cadena \q{Hello world!}}.
 
 \RU{Регистр \TT{R7} (по стандарту, принятому в \cite{IOSABI}) это frame pointer, о нем будет рассказано позже.}
 \EN{The \TT{R7} register (as it is standardized in \cite{IOSABI}) is a frame pointer. More on that below.}
+\ES{El registro \TT{R7} (según el estándar de \cite{IOSABI}) es el frame pointer; lo veremos más abajo.}
 
 \index{ARM!\Instructions!MOVT}
 \RU{Инструкция}\EN{The} \TT{MOVT R0, \#0} (MOVe Top) \RU{записывает 0 в старшие 16 бит регистра}%
-\EN{instruction writes 0 into higher 16 bits of the register}.
+\EN{instruction writes 0 into higher 16 bits of the register}.\ES{ escribe 0 en los 16 bits altos del registro}.
 \RU{Дело в том, что обычная инструкция \MOV в режиме ARM может записывать какое-либо значение только в младшие 16 бит регистра, ведь в ней нельзя закодировать больше}%
-\EN{The issue here is that the generic \MOV instruction in ARM mode may write only the lower 16 bits of the register}.
+\EN{The issue here is that the generic \MOV instruction in ARM mode may write only the lower 16 bits of the register}.\ES{ El asunto es que la \MOV genérica en modo ARM solo puede escribir en los 16 bits bajos del registro}.
 \RU{Помните, что в режиме ARM опкоды всех инструкций ограничены длиной в 32 бита. Конечно, это ограничение не касается перемещений данных между регистрами.}
 \EN{Remember, all instruction opcodes in ARM mode are limited in size to 32 bits. Of course, this limitation is not related to moving data between registers.}
+\ES{Recuerda que en modo ARM todos los opcodes están limitados a 32 bits. Claro que esto no afecta a los movimientos de datos entre registros.}
 \RU{Поэтому для записи в старшие биты (с 16-го по 31-й включительно) существует дополнительная команда \TT{MOVT}}%
-\EN{That's why an additional instruction \TT{MOVT} exists for writing into the higher bits (from 16 to 31 inclusive)}.
+\EN{That's why an additional instruction \TT{MOVT} exists for writing into the higher bits (from 16 to 31 inclusive)}.\ES{ Por eso existe la instrucción adicional \TT{MOVT} para escribir en los bits altos (del 16 al 31 inclusive)}.
 \RU{Впрочем, здесь её использование избыточно, потому что инструкция \TT{MOV R0, \#0x1686} выше и так обнулила старшую часть регистра}%
-\EN{Its usage here, however, is redundant because the \TT{MOV R0, \#0x1686} instruction above cleared the higher part of the register}.
-\RU{Возможно, это недочет компилятора}\EN{This is probably a shortcoming of the compiler}.
+\EN{Its usage here, however, is redundant because the \TT{MOV R0, \#0x1686} instruction above cleared the higher part of the register}.\ES{ Su uso aquí es redundante, porque \TT{MOV R0, \#0x1686} ya limpió la parte alta del registro}.
+\RU{Возможно, это недочет компилятора}\EN{This is probably a shortcoming of the compiler}.\ES{ Probablemente sea una limitación del compilador}.
 
 \index{ARM!\Instructions!ADD}
 \RU{Инструкция}\EN{The} \TT{ADD R0, PC, R0} \RU{прибавляет \ac{PC} к \Reg{0} для вычисления действительного адреса строки \q{Hello world!}. Как нам уже известно, это \q{\PICcode}, поэтому такая корректива необходима}%
 \EN{instruction adds the value in the \ac{PC} to the value in the \Reg{0}, to calculate absolute address of the \q{Hello world!} string. 
-As we already know, it is \q{\PICcode} so this correction is essential here}.
+As we already know, it is \q{\PICcode} so this correction is essential here}.\ES{ suma \ac{PC} a \Reg{0} para calcular la dirección absoluta de la cadena \q{Hello world!}. Como ya sabemos, es \q{\PICcode}, así que esta corrección es esencial}.
 
 \RU{Инструкция \TT{BL} вызывает \puts вместо \printf}%
-\EN{The \TT{BL} instruction calls the \puts function instead of \printf}.
+\EN{The \TT{BL} instruction calls the \puts function instead of \printf}.\ES{ La instrucción \TT{BL} llama a \puts en lugar de \printf}.
 
 \label{puts}
 \index{\CStandardLibrary!puts()}
-\index{puts() \RU{вместо}\EN{instead of} printf()}
+\index{puts() \RU{вместо}\EN{instead of}\ES{en lugar de} printf()}
 \RU{Компилятор заменил вызов \printf на \puts. 
 Действительно, \printf с одним аргументом это почти аналог \puts.}
 \EN{GCC replaced the first \printf call with \puts.
 Indeed: \printf with a sole argument is almost analogous to \puts.} 
+\ES{El compilador sustituyó \printf por \puts. En efecto, \printf con un único argumento es casi equivalente a \puts.} 
 \RU{\IT{Почти}, если принять условие, что в строке не будет управляющих символов \printf, 
 начинающихся со знака процента. Тогда эффект от работы этих двух функций будет разным}%
 \EN{\IT{Almost}, because the two functions are producing the same result only in case the 
 string does not contain printf format identifiers starting with \IT{\%}. 
 In case it does, the effect of these two functions would be different}%
+\ES{\IT{Casi}, porque ambas funciones producen el mismo resultado solo si la cadena no contiene especificadores de formato de \printf que empiezan por \IT{\%}. Si los contiene, el efecto será diferente}%
 \footnote{
 \RU{Также нужно заметить, что \puts не требует символа перевода строки `\textbackslash{}n' в конце строки,
 поэтому его здесь нет.}
 \EN{It has also to be noted the \puts does not require a `\textbackslash{}n' new line symbol 
-at the end of a string, so we do not see it here.}}.
+at the end of a string, so we do not see it here.}\ES{También hay que notar que \puts no requiere el símbolo de nueva línea `\textbackslash{}n' al final de la cadena, por eso aquí no aparece.}}.
 
 \RU{Зачем компилятор заменил один вызов на другой? Наверное потому что \puts работает быстрее}%
 \EN{Why did the compiler replace the \printf with \puts? Probably because \puts is faster}%
+\ES{¿Por qué el compilador sustituyó \printf por \puts? Probablemente porque \puts es más rápida}%
 \footnote{\href{http://go.yurichev.com/17063}{ciselant.de/projects/gcc\_printf/gcc\_printf.html}}. 
 \RU{Видимо потому что \puts проталкивает символы в \gls{stdout} не сравнивая каждый со знаком процента.}
 \EN{Because it just passes characters to \gls{stdout} without comparing every one of them with the \IT{\%} symbol.}
+\ES{Seguramente porque \puts envía los caracteres a \gls{stdout} sin comparar cada uno con el símbolo \IT{\%}.}
 
-\RU{Далее уже знакомая инструкция}\EN{Next, we see the familiar} 
+\RU{Далее уже знакомая инструкция}\EN{Next, we see the familiar}\ES{A continuación, vemos la conocida} 
 \TT{MOV R0, \#0}\RU{, служащая для установки в 0 возвращаемого значения функции}%
-\EN{instruction intended to set the \Reg{0} register to 0}.
+\EN{instruction intended to set the \Reg{0} register to 0}\ES{ instrucción para establecer a 0 el valor devuelto en \Reg{0}}.

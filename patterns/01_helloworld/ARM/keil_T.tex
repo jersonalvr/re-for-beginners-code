@@ -1,12 +1,12 @@
 \subsection{\NonOptimizingKeilVI (\ThumbMode)}
 
-\RU{Скомпилируем тот же пример в Keil для режима Thumb}\EN{Let's compile the same example using Keil in Thumb mode}:
+\RU{Скомпилируем тот же пример в Keil для режима Thumb}\EN{Let's compile the same example using Keil in Thumb mode}\ES{Compilamos el mismo ejemplo en Keil en modo Thumb}:
 
 \begin{lstlisting}
 armcc.exe --thumb --c90 -O0 1.c 
 \end{lstlisting}
 
-\RU{Получим (в \IDA)}\EN{We are getting (in \IDA)}:
+\RU{Получим (в \IDA)}\EN{We are getting (in \IDA)}\ES{Obtenemos (en \IDA)}:
 
 \begin{lstlisting}[caption=\NonOptimizingKeilVI (\ThumbMode) + \IDA]
 .text:00000000             main
@@ -21,28 +21,33 @@ armcc.exe --thumb --c90 -O0 1.c
 
 \RU{Сразу бросаются в глаза двухбайтные (16-битные) опкоды\EMDASH{}это, как уже было отмечено, Thumb.}%
 \EN{We can easily spot the 2-byte (16-bit) opcodes. This is, as was already noted, Thumb.}
+\ES{Saltan a la vista los opcodes de 2 bytes (16 bits); como ya se señaló, es Thumb.}
 \index{ARM!\Instructions!BL}
-\RU{Кроме инструкции \TT{BL}.}\EN{The \TT{BL} instruction, however, }
+\RU{Кроме инструкции \TT{BL}.}\EN{The \TT{BL} instruction, however, }\ES{Excepto la instrucción \TT{BL}.}
 \RU{Но на самом деле она состоит из двух 16-битных инструкций}%
-\EN{consists of two 16-bit instructions}.
+\EN{consists of two 16-bit instructions}.\ES{En realidad consta de dos instrucciones de 16 bits}.
 \RU{Это потому что в одном 16-битном опкоде слишком мало места для задания смещения, по которому находится функция \printf}%
-\EN{This is because it is impossible to load an offset for the \printf function while using the small space in one 16-bit opcode}.
+\EN{This is because it is impossible to load an offset for the \printf function while using the small space in one 16-bit opcode}.\ES{Esto es porque en un solo op\-code de 16 bits hay muy poco espacio para especificar el desplazamiento hasta la función \printf}.
 \RU{Так что первая 16-битная инструкция загружает старшие 10 бит смещения, а вторая~--- младшие 11 бит смещения}%
 \EN{Therefore, the first 16-bit instruction loads the higher 10 bits of the offset and the second instruction loads 
-the lower 11 bits of the offset}.
+the lower 11 bits of the offset}.\ES{Así que la primera instrucción de 16 bits carga los 10 bits altos del desplazamiento y la segunda los 11 bits bajos}.
 \RU{Как уже было упомянуто, все инструкции в Thumb-режиме имеют длину 2 байта (или 16 бит)}%
 \EN{As was noted, all instructions in Thumb mode have a size of 2 bytes (or 16 bits)}.
+\ES{Como se mencionó, todas las instrucciones en modo Thumb tienen longitud de 2 bytes (o 16 bits).}
 \RU{Поэтому невозможна такая ситуация, когда Thumb-инструкция начинается по нечетному адресу.}
 \EN{This implies it is impossible for a Thumb-instruction to be at an odd address whatsoever.}
+\ES{Por tanto, es imposible que una instrucción Thumb empiece en una dirección impar.}
 \RU{Учитывая сказанное, последний бит адреса можно не кодировать}%
 \EN{Given the above, the last address bit may be omitted while encoding instructions}.
+\ES{Dado lo anterior, el último bit de la dirección puede omitirse al codificar instrucciones}.
 \RU{Таким образом, в Thumb-инструкции \TT{BL} можно закодировать адрес}
-\EN{In summary, \TT{BL} Thumb-instruction can encode the address} $current\_PC \pm{}\approx{}2M$.
+\EN{In summary, \TT{BL} Thumb-instruction can encode the address} $current\_PC \pm{}\approx{}2M$.\ES{En resumen, en la instrucción Thumb \TT{BL} se puede codificar la dirección} $current\_PC \pm{}\approx{}2M$.
 
 \index{ARM!\Instructions!PUSH}
 \index{ARM!\Instructions!POP}
 \RU{Остальные инструкции в функции (\PUSH и \POP) здесь работают почти так же, как и описанные \TT{STMFD}/\TT{LDMFD}, только регистр \ac{SP} здесь не указывается явно}%
 \EN{As for the other instructions in the function: \PUSH and \POP work here just like the described \TT{STMFD}/\TT{LDMFD} only the \ac{SP} register is not mentioned explicitly here}.
-\TT{ADR} \RU{работает так же, как и в предыдущем примере}\EN{works just like in the previous example}.
+\ES{El resto de instrucciones de la función (\PUSH y \POP) funcionan aquí casi igual que las \TT{STMFD}/\TT{LDMFD} descritas; solo que el registro \ac{SP} no se indica explícitamente}.
+\TT{ADR} \RU{работает так же, как и в предыдущем примере}\EN{works just like in the previous example}\ES{funciona igual que en el ejemplo anterior}.
 \TT{MOVS} \RU{записывает 0 в регистр \Reg{0} для возврата нуля}%
-\EN{writes 0 into the \Reg{0} register in order to return zero}.
+\EN{writes 0 into the \Reg{0} register in order to return zero}.\ES{escribe 0 en el registro \Reg{0} para devolver cero}.

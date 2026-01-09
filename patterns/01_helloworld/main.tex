@@ -3,6 +3,7 @@
 
 \RU{Продолжим, используя знаменитый пример из книги}
 \EN{Let's use the famous example from the book}
+\ES{Continuemos usando el famoso ejemplo del libro}
 ``The C programming Language''\cite{Kernighan:1988:CPL:576122}:
 
 \lstinputlisting{patterns/01_helloworld/hw.c}
@@ -34,12 +35,14 @@
 
 \RU{Основная разница между кодом x86/ARM и x64/ARM64 в том, что указатель на строку теперь 64-битный.}
 \EN{The main difference between x86/ARM and x64/ARM64 code is that pointer to the string is now 64-bits in length.}
+\ES{La principal diferencia entre el código x86/ARM y x64/ARM64 es que el puntero a la cadena ahora es de 64 bits.}
 \RU{Действительно, ведь для того современные \ac{CPU} и стали 64-битными, потому что подешевела память,
 её теперь можно поставить в компьютер намного больше, и чтобы её адресовать, 32-х бит уже
 недостаточно.}
 \EN{Indeed, modern \ac{CPU}s are now 64-bit due to both the reduced cost of memory and the greater demand for it by modern applications. 
 We can add much more memory to our computers than 32-bit pointers are able to address.}
-\RU{Поэтому все указатели теперь 64-битные.}\EN{As such, all pointers are now 64-bit.}
+\ES{En efecto, las \ac{CPU} modernas son de 64 bits porque la memoria se abarató y ahora se puede instalar mucha más; para direccionarla, 32 bits ya no bastan.}
+\RU{Поэтому все указатели теперь 64-битные.}\EN{As such, all pointers are now 64-bit.}\ES{Por eso todos los punteros son ahora de 64 bits.}
 
 % sections
 \ifdefined\IncludeExercises
