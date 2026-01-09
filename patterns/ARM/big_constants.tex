@@ -1,16 +1,18 @@
-﻿\section{\RU{Загрузка констант в регистр}\EN{Loading a constant into a register}}
+﻿\section{\RU{Загрузка констант в регистр}\EN{Loading a constant into a register}\ES{Cargar una constante en un registro}}
 \label{ARM_big_constants}
 
-\subsection{\RU{32-битный}\EN{32-bit} ARM}
+\subsection{\RU{32-битный}\EN{32-bit}\ES{32 bits} ARM}
 \label{ARM_big_constants_loading}
 
 \RU{Как мы уже знаем, все инструкции имеют длину в 4 байта в режиме ARM и 2 байта в режиме Thumb.}
 \EN{Aa we already know, all instructions have a length of 4 bytes in ARM mode and 2 bytes in Thumb mode.}
+\ES{Como ya sabemos, todas las instrucciones tienen una longitud de 4 bytes en modo ARM y de 2 bytes en modo Thumb.}
 \RU{Как в таком случае записать в регистр 32-битное число, если его невозможно закодировать
 внутри одной инструкции?}
 \EN{Then how can we load a 32-bit value into a register, if it's not possible to encode it in one instruction?}
+\ES{Entonces, ¿cómo podemos cargar un valor de 32 bits en un registro si no es posible codificarlo en una sola instrucción?}
 
-\RU{Попробуем}\EN{Let's try}:
+\RU{Попробуем}\EN{Let's try}\ES{Probemos}:
 
 \begin{lstlisting}
 unsigned int f()
@@ -29,8 +31,10 @@ f:
 
 \RU{Т.е., значение \TT{0x12345678} просто записано в памяти отдельно и загружается, если нужно.}
 \EN{So, the \TT{0x12345678} value is just stored aside in memory and loaded if needed.}
+\ES{Es decir, el valor \TT{0x12345678} se almacena aparte en memoria y se carga cuando es necesario.}
 \RU{Но можно обойтись и без дополнительного обращения к памяти.}
 \EN{But it's possible to get rid of the additional memory access.}
+\ES{Pero también es posible evitar el acceso adicional a memoria.}
 
 \begin{lstlisting}[caption=GCC 4.6.3 -O3 -march{=}armv7-a (\ARMMode)]
 movw    r0, #22136      ; 0x5678
@@ -42,20 +46,26 @@ bx      lr
 (при помощи инструкции MOVW), затем старшая (при помощи MOVT).}
 \EN{We see that the value is loaded into the register by parts, the lower part first (using MOVW), 
 then the higher (using MOVT).}
+\ES{Se ve que el valor se carga en el registro por partes: primero la parte baja (con MOVW) y luego la alta (con MOVT).}
 
 \RU{Следовательно, нужно 2 инструкции в режиме ARM, чтобы записать 32-битное число в регистр.}
 \EN{This implies that 2 instructions are necessary in ARM mode for loading a 32-bit value into a register.}
+\ES{Por lo tanto, se necesitan 2 instrucciones en modo ARM para cargar un valor de 32 bits en un registro.}
 \RU{Это не так уж и страшно, потому что в реальном коде не так уж и много констант (кроме 0 и 1).}
 \EN{It's not a real problem, because in fact there are not many constants in real code (except of 0 and 1).}
+\ES{No es un gran problema, porque en el código real no hay tantas constantes (excepto 0 y 1).}
 \RU{Значит ли это, что это исполняется медленнее чем одна инструкция, как две инструкции?}
 \EN{Does it mean that the two-instruction version is slower than one-instruction version?}
+\ES{¿Significa eso que la versión de dos instrucciones es más lenta que la de una sola instrucción?}
 \RU{Вряд ли, наверняка современные процессоры ARM наверняка умеют распознавать такие 
 последовательности и исполнять их быстро.}
 \EN{Doubtfully. Most likely, modern ARM processors are able to detect such sequences and execute
 them fast.}
+\ES{Probablemente no. Lo más seguro es que los procesadores ARM modernos detecten estas secuencias y las ejecuten rápidamente.}
 
 \RU{А \IDA легко распознает подобные паттерны в коде и дизассемблирует эту функцию как:}
 \EN{On the other hand, \IDA is able to detect such patterns in the code and disassembles this function as:}
+\ES{Por otro lado, \IDA reconoce fácilmente estos patrones en el código y desensambla esta función como:}
 
 \begin{lstlisting}
 MOV    R0, 0x12345678
@@ -82,18 +92,21 @@ ret
 \index{ARM!\Instructions!MOVK}
 \TT{MOVK} \RU{означает}\EN{stands for} \q{MOV Keep}, \RU{т.е. она записывает 16-битное значение в регистр, не трогая
 при этом остальные биты.}\EN{i.e., it writes a 16-bit value into the register, not touching the rest of the bits.}
+\ES{i.e., escribe un valor de 16 bits en el registro sin tocar el resto de los bits.}
 \index{ARM!Optional operators!LSL}
 \EN{The}\RU{Суффикс} \TT{LSL} \RU{сдвигает значение в каждом случае влево на 16, 32 и 48 бит. Сдвиг происходит
 перед загрузкой.}\EN{suffix shifts left the value by 16, 32 and 48 bits at each step. The shifting is done before loading.}
 \RU{Таким образом, нужно 4 инструкции, чтобы записать в регистр 64-битное значение.}
 \EN{This implies that 4 instructions are necessary to load a 64-bit value into a register.}
+\ES{Por lo tanto, se necesitan 4 instrucciones para cargar un valor de 64 bits en un registro.}
 
-\subsubsection{\RU{Записать числа с плавающей точкой в регистр}\EN{Storing floating-point number into register}}
+\subsubsection{\RU{Записать числа с плавающей точкой в регистр}\EN{Storing floating-point number into register}\ES{Almacenar un número en coma flotante en un registro}}
 
 \RU{Некоторые числа можно записывать в D-регистр при помощи только одной инструкции.}
 \EN{It's possible to store a floating-point number into a D-register using only one instruction.}
+\ES{Algunos números se pueden escribir en un registro D usando solo una instrucción.}
 
-\RU{Например}\EN{For example}:
+\RU{Например}\EN{For example}\ES{Por ejemplo}:
 
 \begin{lstlisting}
 double a()
@@ -110,18 +123,22 @@ double a()
 
 \RU{Число $1.5$ действительно было закодировано в 32-битной инструкции.}
 \EN{The number $1.5$ was indeed encoded in a 32-bit instruction.}
-\RU{Но как}\EN{But how}?
+\ES{El número $1.5$ efectivamente fue codificado en una instrucción de 32 bits.}
+\RU{Но как}\EN{But how}?\ES{¿Pero cómo?}
 \index{ARM!\Instructions!FMOV}
 \RU{В ARM64, инструкцию \TT{FMOV} есть 8 бит для кодирования некоторых чисел с плавающей запятой.}
 \EN{In ARM64, there are 8 bits in the \TT{FMOV} instruction for encoding some floating-point numbers.}
+\ES{En ARM64, la instrucción \TT{FMOV} dispone de 8 bits para codificar ciertos números en coma flotante.}
 \RU{В \cite{ARM64ref} алгоритм называется \TT{VFPExpandImm()}.}
 \EN{The algorithm is called \TT{VFPExpandImm()} in \cite{ARM64ref}.}
+\ES{El algoritmo se denomina \TT{VFPExpandImm()} en \cite{ARM64ref}.}
 \index{minifloat}
-\EN{This is also called}\RU{Это также называется} \IT{minifloat}\footnote{\href{http://go.yurichev.com/17139}{wikipedia}}.
+\EN{This is also called}\RU{Это также называется}\ES{Esto también se llama} \IT{minifloat}\footnote{\href{http://go.yurichev.com/17139}{wikipedia}}.
 \RU{Мы можем попробовать разные: $30.0$ и $31.0$ компилятору удается закодировать, а $32.0$ уже нет, для него
 приходится выделять 8 байт в памяти и записать его там в формате IEEE 754:}
 \EN{We can try different values: the compiler is able to encode $30.0$ and $31.0$, but it couldn't encode $32.0$,
 as 8 bytes have to be allocated for this number in the IEEE 754 format:}
+\ES{Podemos probar con distintos valores: el compilador puede codificar $30.0$ y $31.0$, pero no pudo codificar $32.0$, por lo que se deben reservar 8 bytes en memoria y escribirlo allí en formato IEEE 754:}
 
 \begin{lstlisting}
 double a()

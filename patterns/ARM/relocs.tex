@@ -1,20 +1,24 @@
-﻿\section{\RU{Релоки}\EN{Relocs} \InENRU ARM64}
+﻿\section{\RU{Релоки}\EN{Relocs} \InENRU ARM64\ES{Relocaciones en ARM64}}
 \label{ARM64_relocs}
 
 \RU{Как известно, в ARM64 инструкции 4-байтные, так что записать длинное число в регистр одной инструкцией нельзя.}
 \EN{As we know, there are 4-byte instructions in ARM64, so it is impossible to write a large number into a register
 using a single instruction.}
+\ES{Como sabemos, en ARM64 las instrucciones tienen 4 bytes, por lo que es imposible escribir un número grande en un registro con una sola instrucción.}
 \RU{Тем не менее, файл может быть загружен по произвольному адресу в памяти, для этого релоки и нужны.}
 \EN{Nevertheless, an executable image can be loaded at any random address in memory, so that's why relocs exists.}
-\RU{Больше о них (в связи с Win32 PE)}\EN{Read more about them (in relation to Win32 PE)}: \myref{subsec:relocs}.
+\ES{Sin embargo, una imagen ejecutable puede cargarse en cualquier dirección aleatoria de memoria; para eso existen las relocaciones.}
+\RU{Больше о них (в связи с Win32 PE)}\EN{Read more about them (in relation to Win32 PE)}\ES{Más sobre ellas (en relación con Win32 PE)}: \myref{subsec:relocs}.
 
 \index{ARM!\Instructions!ADRP/ADD pair}
 \RU{В ARM64 принят следующий метод: адрес формируется при помощи пары инструкций: \TT{ADRP} и \ADD.}
 \EN{The address is formed using the \TT{ADRP} and \ADD instruction pair in ARM64.}
+\ES{En ARM64 se adopta el siguiente método: la dirección se forma mediante el par de instrucciones \TT{ADRP} y \ADD.}
 \RU{Первая загружает в регистр адрес 4Kb-страницы, а вторая прибавляет остаток.}
 \EN{The first loads a 4Kb-page address and the second one adds the remainder.}
-\RU{Скомпилируем пример из}\EN{Let's compile the example from} \q{\HelloWorldSectionName} 
-(\lstref{hw_c}) \InENRU GCC (Linaro) 4.9 \RU{под}\EN{under} win32:
+\ES{La primera carga en un registro la dirección de una página de 4 KB y la segunda suma el resto.}
+\RU{Скомпилируем пример из}\EN{Let's compile the example from}\ES{Compilaremos el ejemplo de} \q{\HelloWorldSectionName} 
+(\lstref{hw_c}) \InENRU GCC (Linaro) 4.9 \RU{под}\EN{under}\ES{en} win32:
 
 \begin{lstlisting}[caption=GCC (Linaro) 4.9 \AndENRU objdump \EN{of object file}\RU{объектного файла}]
 ...>aarch64-linux-gnu-gcc.exe hw.c -c
@@ -46,6 +50,7 @@ OFFSET           TYPE              VALUE
 
 \RU{Итак, в этом объектом файле три релока.}
 \EN{So there are 3 relocs in this object file.}
+\ES{Así que en este archivo objeto hay 3 relocaciones.}
 
 \begin{itemize}
 \item 
@@ -55,19 +60,23 @@ OFFSET           TYPE              VALUE
 \EN{The first one takes the page address, cuts the lowest 12 bits and writes the remaining high 21 bits
 to the \TT{ADRP} instruction's bit fields. This is because we don't need to encode the low 12 bits,
 and the ADRP instruction has space only for 21 bits.}
+\ES{La primera toma la dirección de la página, recorta los 12 bits inferiores y escribe los 21 bits altos restantes en los campos de bits de la instrucción \TT{ADRP}. Esto se debe a que no es necesario codificar los 12 bits bajos y la instrucción ADRP solo tiene espacio para 21 bits.}
 
 \item \RU{Второй ---- 12 бит адреса, относительного от начала страницы, в поля инструкции \ADD.}
 \EN{The second one puts the 12 bits of the address relative to the page start into the \ADD instruction's bit fields.}
+\ES{La segunda coloca los 12 bits de la dirección relativa al inicio de la página en los campos de bits de la instrucción \ADD.}
 
 \item \RU{Последний, 26-битный, накладывается на инструкцию по адресу \TT{0x10}, где переход на функцию \printf.}
 \EN{The last, 26-bit one, is applied to the instruction at address \TT{0x10} where the 
 jump to the \printf function is.}
+\ES{La última, de 26 bits, se aplica a la instrucción en la dirección \TT{0x10} donde está el salto a la función \printf.}
 \RU{Все адреса инструкций в ARM64 (да и в ARM в режиме ARM) имеют нули в двух младших битах
 (потому что все инструкции имеют размер в 4 байта),
 так что нужно кодировать только старшие 26 бит из 28-битного адресного пространства ($\pm 128$MB).}
 \EN{All ARM64 (and in ARM in ARM mode) instruction addresses have zeroes in the two lowest bits
 (because all instructions have a size of 4 bytes),
 so one need to encode only the highest 26 bits of 28-bit address space ($\pm 128$MB).}
+\ES{Todas las direcciones de instrucciones en ARM64 (y en ARM en modo ARM) tienen ceros en los dos bits menos significativos (porque todas las instrucciones tienen un tamaño de 4 bytes), así que solo es necesario codificar los 26 bits superiores del espacio de direcciones de 28 bits ($\pm 128$ MB).}
 
 \end{itemize}
 
@@ -75,10 +84,12 @@ so one need to encode only the highest 26 bits of 28-bit address space ($\pm 128
 где будет находится строка \q{Hello!}, и в какой странице, а также известен адрес функции \puts.}
 \EN{There are no such relocs in the executable file: because it's known where the \q{Hello!} string
 is located, in which page, and the address of \puts is also known.}
+\ES{En el archivo ejecutable enlazado no hay tales relocaciones en estos lugares, porque ya se conoce dónde estará la cadena \q{Hello!}, en qué página, y también se conoce la dirección de la función \puts.}
 \RU{И поэтому там, в инструкциях \TT{ADRP}, \ADD и \TT{BL}, уже проставлены нужные значения 
 (их проставил линкер во время компоновки):}
 \EN{So there are values set already in the \TT{ADRP}, \ADD and \TT{BL} instructions
 (the linker has written them while linking):}
+\ES{Por lo tanto, los valores ya están establecidos en las instrucciones \TT{ADRP}, \ADD y \TT{BL} (el enlazador los escribió durante el enlace):}
 
 \begin{lstlisting}[caption=objdump \EN{of executable file}\RU{исполняемого файла}]
 0000000000400590 <main>:
@@ -99,21 +110,22 @@ Contents of section .rodata:
 
 \index{ARM!\Instructions!BL}
 \RU{В качестве примера, попробуем дизассемблировать инструкцию BL вручную.}
-\EN{As an example, let's try to disassemble the BL instruction manually.}\ESph{}\PTBRph{}\PLph{}\\
+\EN{As an example, let's try to disassemble the BL instruction manually.}\ES{Como ejemplo, intentemos desensamblar manualmente la instrucción BL.}\PTBRph{}\PLph{}\\
 \TT{0x97ffffa0} \RU{это}\EN{is} $10010111111111111111111110100000b$.
-\RU{В соответствии с}\EN{According to} \cite[C5.6.26]{ARM64ref}, 
-imm26 \RU{это последние 26 бит}\EN{is the last 26 bits}: 
+\RU{В соответствии с}\EN{According to}\ES{De acuerdo con} \cite[C5.6.26]{ARM64ref}, 
+imm26 \RU{это последние 26 бит}\EN{is the last 26 bits}\ES{son los últimos 26 bits}: 
 $imm26 = 11111111111111111110100000$.
-\RU{Это}\EN{It is} \TT{0x3FFFFA0}, \RU{но}\EN{but the} \ac{MSB} \RU{это}\EN{is} 1, 
+\RU{Это}\EN{It is}\ES{Es} \TT{0x3FFFFA0}, \RU{но}\EN{but the}\ES{pero el} \ac{MSB} \RU{это}\EN{is}\ES{es} 1, 
 \RU{так что число отрицательное, и в терминах модульной арифметики, по модулю $2^{32}$, это}
 \EN{so the number is negative, and in terms of modular arithmetic by modulo $2^{32}$, it is} 
-\TT{0xFFFFFFA0}.
-\RU{И снова, по модулю}\EN{Again, by modulo} $2^{32}$, \TT{0xFFFFFFA0} * 4 = \TT{0xFFFFFE80}, 
+\ES{por lo que el número es negativo y, en términos de aritmética modular módulo $2^{32}$, es} \TT{0xFFFFFFA0}.
+\RU{И снова, по модулю}\EN{Again, by modulo}\ES{De nuevo, módulo} $2^{32}$, \TT{0xFFFFFFA0} * 4 = \TT{0xFFFFFE80}, 
 \AndENRU \TT{0x4005a0} + \TT{FFFFFE80} = \TT{0x400420} 
 (\EN{please note: we consider the address of the BL instruction, 
 not the current value of \ac{PC}, which may be different!}
 \RU{пожалуйста заметьте: мы берем адрес инструкции BL, 
-а не текущее значение \ac{PC}, которое может быть другим!}).
-\RU{Так что адрес в итоге}\EN{So the destination address is} \TT{0x400420}.\\
+а не текущее значение \ac{PC}, которое может быть другим!}
+\ES{ten en cuenta: consideramos la dirección de la instrucción BL, no el valor actual de \ac{PC}, que puede ser distinto}).
+\RU{Так что адрес в итоге}\EN{So the destination address is}\ES{Así que la dirección de destino es} \TT{0x400420}.\\
 \\
-\RU{Больше о релоках связанных с ARM64}\EN{More about ARM64-related relocs}: \cite{ARM64_ELF}.
+\RU{Больше о релоках связанных с ARM64}\EN{More about ARM64-related relocs}\ES{Más sobre relocaciones relacionadas con ARM64}: \cite{ARM64_ELF}.
