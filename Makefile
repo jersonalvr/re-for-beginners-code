@@ -104,6 +104,9 @@ PTBR:	$(PTBR_LISTINGS)
 ES-lite: $(ES_LISTINGS)
 	$(call compile,Reverse_Engineering_for_Beginners-ES-lite)
 
+ES-A5: $(ES_LISTINGS)
+	$(call compile,Reverse_Engineering_for_Beginners-ES-A5)
+
 PTBR-lite: $(PTBR_LISTINGS)
 	$(call compile,Reverse_Engineering_for_Beginners-PTBR-lite)
 

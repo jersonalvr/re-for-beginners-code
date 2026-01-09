@@ -1,24 +1,24 @@
-\part{\RU{Инструменты}\EN{Tools}}
+\part{\RU{Инструменты}\EN{Tools}\PTBR{Ferramentas}\ES{Herramientas}}
 
-\chapter{\RU{Дизассемблер}\EN{Disassembler}}
+\chapter{\RU{Дизассемблер}\EN{Disassembler}\PTBR{Desmontador}\ES{Desensamblador}}
 
 \section{IDA}
 
 \label{IDA}
-\RU{Старая бесплатная версия доступна для скачивания}\EN{An older freeware version is available for download}
+\RU{Старая бесплатная версия доступна для скачивания}\EN{An older freeware version is available for download}\PTBR{Uma versão gratuita mais antiga está disponível para download}\ES{Una versión gratuita más antigua está disponible para descarga}
 \footnote{\href{http://go.yurichev.com/17031}{hex-rays.com/products/ida/support/download\_freeware.shtml}}.
 
 \ifx\LITE\undefined
 \ShortHotKeyCheatsheet: \myref{sec:IDA_cheatsheet}
 \fi
 
-\chapter{\RU{Отладчик}\EN{Debugger}}
+\chapter{\RU{Отладчик}\EN{Debugger}\PTBR{Depurador}\ES{Depurador}}
 
 \ifdefined\IncludeOlly
 \section{\olly}
 \index{\olly}
 
-\RU{Очень популярный отладчик пользовательской среды win32}\EN{Very popular user-mode win32 debugger}:\\
+\RU{Очень популярный отладчик пользовательской среды win32}\EN{Very popular user-mode win32 debugger}\PTBR{Depurador de modo usuário win32 muito popular}\ES{Depurador de modo usuario win32 muy popular}:\\
 \href{http://go.yurichev.com/17032}{ollydbg.de}.
 
 \ShortHotKeyCheatsheet: \myref{sec:Olly_cheatsheet}
@@ -29,16 +29,16 @@
 \index{GDB}
 
 \RU{Не очень популярный отладчик у реверсеров, тем не менее, крайне удобный}\EN{Not very popular
-debugger among reverse engineers, but very comfortable nevertheless}.
-\RU{Некоторые команды}\EN{Some commands}: \myref{sec:GDB_cheatsheet}.
+debugger among reverse engineers, but very comfortable nevertheless}\PTBR{Depurador não muito popular entre engenheiros reversos, mas muito confortável mesmo assim}\ES{Depurador no muy popular entre ingenieros inversos, pero muy cómodo de todos modos}.
+\RU{Некоторые команды}\EN{Some commands}\PTBR{Alguns comandos}\ES{Algunos comandos}: \myref{sec:GDB_cheatsheet}.
 \fi
 
 \section{tracer}
 
 \index{tracer}
 \label{tracer}
-\RU{Автор часто использует}\EN{The author often use} \IT{tracer}\footnote{\EN{\href{http://go.yurichev.com/17338}{yurichev.com}}\RU{\href{http://go.yurichev.com/17339}{yurichev.com}}}
-\RU{вместо отладчика}\EN{instead of a debugger}.
+\RU{Автор часто использует}\EN{The author often use}\PTBR{O autor frequentemente usa}\ES{El autor a menudo usa} \IT{tracer}\footnote{\EN{\href{http://go.yurichev.com/17338}{yurichev.com}}\RU{\href{http://go.yurichev.com/17339}{yurichev.com}}}
+\RU{вместо отладчика}\EN{instead of a debugger}\PTBR{em vez de um depurador}\ES{en lugar de un depurador}.
 
 \RU{Со временем, автор этих строк отказался использовать отладчик, потому что всё что ему нужно от него это иногда подсмотреть 
 какие-либо аргументы какой-либо функции во время исполнения или состояние регистров в определенном месте. 
@@ -49,17 +49,17 @@ debugger among reverse engineers, but very comfortable nevertheless}.
 executing, or registers state at some point.
 Loading a debugger each time is too much, so a small utility called \IT{tracer} was born.
 It works from command line, allows intercepting function execution,
-setting breakpoints at arbitrary places, reading and changing registers state, etc.}
+setting breakpoints at arbitrary places, reading and changing registers state, etc.}\PTBR{O autor destas linhas parou de usar um depurador eventualmente, já que tudo que ele precisa dele é detectar argumentos de função enquanto executando, ou estado dos registradores em algum ponto. Carregar um depurador cada vez é demais, então uma pequena utilidade chamada \IT{tracer} nasceu. Ela funciona a partir da linha de comando, permite interceptar execução de função, definir pontos de parada em lugares arbitrários, ler e alterar estado dos registradores, etc.}\ES{El autor de estas líneas dejó de usar un depurador eventualmente, ya que todo lo que necesita de él es detectar argumentos de función mientras se ejecuta, o el estado de los registros en algún punto. Cargar un depurador cada vez es demasiado, así que nació una pequeña utilidad llamada \IT{tracer}. Funciona desde la línea de comandos, permite interceptar la ejecución de funciones, establecer puntos de interrupción en lugares arbitrarios, leer y cambiar el estado de los registros, etc.}
 
 \RU{Но для учебы очень полезно трассировать код руками в отладчике, наблюдать как меняются значения регистров 
 (например, как минимум классический SoftICE, OllyDbg, WinDbg подсвечивают измененные регистры), 
 флагов, данные, менять их самому, смотреть реакцию, \etc.}
 \EN{However, for learning purposes it is highly advisable to trace code in a debugger manually, watch how the registers state
 changes (e.g. classic SoftICE, OllyDbg, WinDbg highlight changed registers), flags, data, change them
-manually, watch the reaction, \etc{}.}
+manually, watch the reaction, \etc{}.}\PTBR{No entanto, para fins de aprendizado é altamente recomendável traçar código em um depurador manualmente, observar como o estado dos registradores muda (ex. SoftICE clássico, OllyDbg, WinDbg destacam registradores alterados), flags, dados, alterá-los manualmente, observar a reação, etc.}\ES{Sin embargo, para fines de aprendizaje es altamente recomendable trazar código en un depurador manualmente, observar cómo cambia el estado de los registros (ej. SoftICE clásico, OllyDbg, WinDbg resaltan registros cambiados), flags, datos, cambiarlos manualmente, observar la reacción, etc.}
 
 \ifx\LITE\undefined
-\chapter{\RU{Трассировка системных вызовов}\EN{System calls tracing}}
+\chapter{\RU{Трассировка системных вызовов}\EN{System calls tracing}\PTBR{Rastreamento de chamadas de sistema}\ES{Rastreo de llamadas al sistema}}
 
 \label{strace}
 \index{strace}
@@ -68,8 +68,8 @@ manually, watch the reaction, \etc{}.}
 
 \index{syscall}
 \RU{Позволяет показать, какие системные вызовы (syscalls(\myref{syscalls})) прямо сейчас вызывает процесс.}
-\EN{It shows which system calls (syscalls(\myref{syscalls})) are called by a process right now.}
-\RU{Например}\EN{For example}:
+\EN{It shows which system calls (syscalls(\myref{syscalls})) are called by a process right now.}\PTBR{Mostra quais chamadas de sistema (syscalls(\myref{syscalls})) estão sendo chamadas por um processo agora.}\ES{Muestra qué llamadas al sistema (syscalls(\myref{syscalls})) están siendo llamadas por un proceso en este momento.}
+\RU{Например}\EN{For example}\PTBR{Por exemplo}\ES{Por ejemplo}:
 
 \begin{lstlisting}
 # strace df -h
@@ -84,44 +84,44 @@ mmap2(NULL, 1780508, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0xb
 \end{lstlisting}
 
 \index{\MacOSX}
-\RU{В \MacOSX для этого же имеется dtruss}\EN{\MacOSX has dtruss for doing the same}.
+\RU{В \MacOSX для этого же имеется dtruss}\EN{\MacOSX has dtruss for doing the same}\PTBR{No \MacOSX há dtruss para fazer o mesmo}\ES{En \MacOSX hay dtruss para hacer lo mismo}.
 
 \index{Cygwin}
 \RU{В Cygwin также есть strace, впрочем, насколько известно, 
 он показывает результаты только для .exe-файлов скомпилированных для среды самого cygwin.}%
 \EN{Cygwin also has strace, but as far as it's known, it works only for .exe-files
-compiled for the cygwin environment itself.}
+compiled for the cygwin environment itself.}\PTBR{Cygwin também tem strace, mas até onde se sabe, funciona apenas para arquivos .exe compilados para o próprio ambiente cygwin.}\ES{Cygwin también tiene strace, pero hasta donde se sabe, funciona solo para archivos .exe compilados para el propio entorno cygwin.}
 \fi
 
-\chapter{\RU{Декомпиляторы}\EN{Decompilers}}
+\chapter{\RU{Декомпиляторы}\EN{Decompilers}\PTBR{Descompiladores}\ES{Descompiladores}}
 
 \RU{Пока существует только один публично доступный декомпилятор в Си высокого качества}
-\EN{There is only one known, publicly available, high-quality decompiler to C code}: Hex-Rays:\\
+\EN{There is only one known, publicly available, high-quality decompiler to C code}\PTBR{Existe apenas um descompilador conhecido, publicamente disponível, de alta qualidade para código C}\ES{Hay solo uno conocido, públicamente disponible, descompilador de alta calidad para código C}: Hex-Rays:\\
 \href{http://go.yurichev.com/17033}{hex-rays.com/products/decompiler/}
 
 % TODO Java, .NET, VB, etc
 
-\chapter{\RU{Прочие инструменты}\EN{Other tools}}
+\chapter{\RU{Прочие инструменты}\EN{Other tools}\PTBR{Outras ferramentas}\ES{Otras herramientas}}
 
 \begin{itemize}
 \item
 Microsoft Visual Studio Express\footnote{\href{http://go.yurichev.com/17034}{visualstudio.com/en-US/products/visual-studio-express-vs}}:
 \RU{Усеченная бесплатная версия Visual Studio, пригодная для простых экспериментов.}
-\EN{Stripped-down free version of Visual Studio, convenient for simple experiments.}
+\EN{Stripped-down free version of Visual Studio, convenient for simple experiments.}\PTBR{Versão gratuita reduzida do Visual Studio, conveniente para experimentos simples.}\ES{Versión gratuita reducida de Visual Studio, conveniente para experimentos simples.}
 \ifx\LITE\undefined
-\RU{Некоторые полезные опции}\EN{Some useful options}: \myref{sec:MSVC_options}.
+\RU{Некоторые полезные опции}\EN{Some useful options}\PTBR{Algumas opções úteis}\ES{Algunas opciones útiles}: \myref{sec:MSVC_options}.
 \fi
 
 \item
 \label{Hiew}
 Hiew\footnote{\href{http://go.yurichev.com/17035}{hiew.ru}} \RU{для мелкой модификации кода в исполняемых файлах.}
-\EN{for small modifications of code in binary files.}
+\EN{for small modifications of code in binary files.}\PTBR{para pequenas modificações de código em arquivos binários.}\ES{para pequeñas modificaciones de código en archivos binarios.}
 
 \item
 \index{binary grep}
 binary grep: \RU{небольшая утилита для поиска констант (либо просто последовательности байт)
 в большом количестве файлов, включая неисполняемые: \BGREPURL.}
 \EN{a small utility for searching any byte sequence in a big pile of files, 
-including non-executable ones: \BGREPURL.}
+including non-executable ones: \BGREPURL.}\PTBR{uma pequena utilidade para procurar qualquer sequência de bytes em uma grande pilha de arquivos, incluindo não executáveis: \BGREPURL.}\ES{una pequeña utilidad para buscar cualquier secuencia de bytes en una gran pila de archivos, incluyendo no ejecutables: \BGREPURL.}
 \end{itemize}
 

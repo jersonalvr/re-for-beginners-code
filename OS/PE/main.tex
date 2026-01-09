@@ -3,29 +3,32 @@
 \index{Windows!Win32}
 
 \acs{PE} \RU{это формат исполняемых файлов, принятый в Windows}\EN{is an executable file format used in
-Windows}.
+Windows}\ES{es un formato de archivo ejecutable usado en Windows}.
 
 \RU{Разница между .exe, .dll, и .sys в том, что у .exe и .sys обычно нет экспортов, только импорты}
-\EN{The difference between .exe, .dll and .sys is that .exe and .sys usually do not have exports, only imports}.
+\EN{The difference between .exe, .dll and .sys is that .exe and .sys usually do not have exports, only imports}\ES{La diferencia entre .exe, .dll y .sys es que .exe y .sys normalmente no tienen exportaciones, solo importaciones}.
 
 \index{OEP}
 \RU{У \ac{DLL}, как и у всех PE-файлов, есть точка входа (\ac{OEP})
 (там располагается функция DllMain()), но обычно эта функция ничего не делает.}
 \EN{A \ac{DLL}, just like any other PE-file, has an entry point (\ac{OEP}) (the function DllMain() is located there) 
-but this function usually does nothing.}
+but this function usually does nothing.}\ES{Una \ac{DLL}, igual que cualquier otro archivo PE, tiene un punto de entrada (\ac{OEP})
+(allí está la función DllMain()), pero normalmente esa función no hace nada.}
 
-.sys \RU{это обычно драйвера устройств}\EN{is usually a device driver}.
+.sys \RU{это обычно драйвера устройств}\EN{is usually a device driver}\ES{normalmente es un controlador de dispositivo}.
 
 \RU{Для драйверов, Windows требует, чтобы контрольная сумма в PE-файле была проставлена
 и была верной}
 \EN{As of drivers, Windows requires the checksum to be present in the PE file and for it to be correct}
-\footnote{\RU{Например}\EN{For example}, Hiew(\myref{Hiew}) \RU{умеет её подсчитывать}\EN{can calculate it}}.
+\ES{Para los controladores, Windows exige que la suma de comprobación esté presente en el archivo PE y sea correcta}
+\footnote{\RU{Например}\EN{For example}\ES{Por ejemplo}, Hiew(\myref{Hiew}) \RU{умеет её подсчитывать}\EN{can calculate it}\ES{puede calcularla}}.
 
 \index{Windows!Windows Vista}
 \RU{А начиная с}\EN{Starting at} Windows Vista, 
 \RU{файлы драйверов должны быть также подписаны при помощи электронной подписи, 
 иначе они не будут загружаться.}
 \EN{a driver's files must also be signed with a digital signature. It will fail to load otherwise.}
+\ES{Desde Windows Vista, los archivos de los controladores también deben ir firmados digitalmente; de lo contrario no se cargarán.}
 
 \index{MS-DOS}
 \RU{В начале всякого PE-файла есть крохотная DOS-программа,
@@ -34,31 +37,32 @@ message like} \q{This program cannot be run in DOS mode.}\EMDASH{}%
 \RU{если запустить эту программу в DOS либо Windows 3.1 (\ac{OS} не знающие о PE-формате), 
 выведется это сообщение.}
 \EN{if you run this program in DOS or Windows 3.1 (\ac{OS}-es which are not aware of the PE format), 
-this message will be printed.}
+this message will be printed.}\ES{Al comienzo de cualquier archivo PE hay un pequeño programa DOS que muestra un mensaje como} \q{This program cannot be run in DOS mode.}\EMDASH{}%
+\ES{si se ejecuta en DOS o Windows 3.1 (\ac{OS} que no conocen el formato PE), se mostrará ese mensaje.}
 
 \subsection{\RU{Терминология}\EN{Terminology}}
 
 \begin{itemize}
 \item
-\RU{Модуль}\EN{Module}\EMDASH{}\RU{это отдельный файл}\EN{a separate file}, .exe \OrENRU{} .dll.
+\RU{Модуль}\EN{Module}\ES{Módulo}\EMDASH{}\RU{это отдельный файл}\EN{a separate file}\ES{es un archivo independiente}, .exe \OrENRU{} .dll.
 
 \item
-	\RU{Процесс}\EN{Process}\EMDASH{}\RU{это некая загруженная в память и работающая программа}\EN{a program
-loaded into memory and currently running}.
+  \RU{Процесс}\EN{Process}\ES{Proceso}\EMDASH{}\RU{это некая загруженная в память и работающая программа}\EN{a program
+loaded into memory and currently running}\ES{es un programa cargado en memoria y ejecutándose}.
 \RU{Как правило состоит из одного .exe-файла и массы .dll-файлов}\EN{Commonly consists of 
-one .exe file and bunch of .dll files}.
+one .exe file and bunch of .dll files}\ES{Normalmente consta de un archivo .exe y un montón de archivos .dll}.
 
 \item
-	\RU{Память процесса}\EN{Process memory}\EMDASH{}\RU{память с которой работает процесс}\EN{the memory a process
-works with}.
-\RU{У каждого процесса\EMDASH{}своя}\EN{Each process has its own}.
+  \RU{Память процесса}\EN{Process memory}\ES{Memoria del proceso}\EMDASH{}\RU{память с которой работает процесс}\EN{the memory a process
+works with}\ES{la memoria con la que trabaja el proceso}.
+\RU{У каждого процесса\EMDASH{}своя}\EN{Each process has its own}\ES{Cada proceso tiene la suya}.
 \RU{Там обычно имеются загруженные модули, память стека, \glslink{heap}{кучи},}
-\EN{There usually are loaded modules, memory of the stack, \gls{heap}(s),}\etc{}.
+\EN{There usually are loaded modules, memory of the stack, \gls{heap}(s),}\ES{Suele haber módulos cargados, memoria de la pila, \gls{heap}(s),}\etc{}.
 
 \item
 \index{VA}
 \ac{VA}\EMDASH{}\RU{это адрес, который будет использоваться в самой программе во время исполнения.}
-\EN{an address which is to be used in program while runtime.}
+\EN{an address which is to be used in program while runtime.}\ES{es una dirección que se usa en el propio programa en tiempo de ejecución.}
 
 \item
 \index{\RU{Базовый адрес}\EN{Base address}}
@@ -67,40 +71,41 @@ works with}.
 \EN{the address within the process memory at which the module is to be loaded.}
 \EN{\ac{OS} loader may change it, if the base address is already occupied by another module just loaded before.}
 \RU{Загрузчик \ac{OS} может его изменить, если этот базовый адрес уже занят другим модулем, загруженным перед ним.}
+\ES{es la dirección en la memoria del proceso donde debe cargarse el módulo. El cargador de la \ac{OS} puede cambiarla si ese destino ya está ocupado por otro módulo cargado antes.}
 
 \item
 \index{RVA}
-\ac{RVA}\EMDASH{}\RU{это}\EN{the} \ac{VA}-\RU{адрес минус базовый адрес}\EN{address minus the base address}.
+\ac{RVA}\EMDASH{}\RU{это}\EN{the} \ac{VA}-\RU{адрес минус базовый адрес}\EN{address minus the base address}.\ES{es la dirección \ac{VA} menos la dirección base.}
 \RU{Многие адреса в таблицах PE-файла используют}
 \EN{Many addresses in PE-file tables use}
-\ac{RVA}-\RU{адреса}\EN{addresses}.
+\ac{RVA}-\RU{адреса}\EN{addresses}\ES{Muchas direcciones en las tablas de un archivo PE usan direcciones \ac{RVA}}.
 
 %\item
 %Data directory\EMDASH{}...
 
 \item 
 \index{Windows!IAT}
-\ac{IAT}\EMDASH{}\RU{массив адресов импортированных символов}\EN{an array of addresses of imported symbols}
+\ac{IAT}\EMDASH{}\RU{массив адресов импортированных символов}\EN{an array of addresses of imported symbols}\ES{un arreglo de direcciones de símbolos importados}
 \footnote{\cite{Pietrek1}}. 
 \RU{Иногда, директория}\EN{Sometimes, the} \TT{IMAGE\_DIRECTORY\_ENTRY\_IAT} \RU{указывает на}
-\EN{data directory points at the} \ac{IAT}. 
+\EN{data directory points at the} \ac{IAT}\ES{A veces, la entrada de directorio de datos \TT{IMAGE\_DIRECTORY\_ENTRY\_IAT} apunta a la \ac{IAT}}. 
 \label{IDA_idata}
 \RU{Важно отметить, что}\EN{It is worth noting that} \ac{IDA} (\RU{по крайней мере}\EN{as of} 6.1) 
 \RU{может выделить псевдо-секцию с именем}\EN{may allocate a pseudo-section named} \TT{.idata} \ForENRU
 \ac{IAT}, \RU{даже если}\EN{even if the} \ac{IAT} \RU{является частью совсем другой секции}
-\EN{is a part of another section}!
+\EN{is a part of another section}!\ES{Es importante notar que \ac{IDA} (al menos hasta la 6.1) puede crear una seudosección llamada \TT{.idata} para la \ac{IAT}, incluso si la \ac{IAT} forma parte de otra sección}!
 
 \item 
 \index{Windows!INT}
 \ac{INT}\EMDASH{}\RU{массив имен символов для импортирования}
-\EN{an array of names of symbols to be imported}\footnote{\cite{Pietrek1}}.
+\EN{an array of names of symbols to be imported}\ES{un arreglo con los nombres de los símbolos a importar}\footnote{\cite{Pietrek1}}.
 \end{itemize}
 
 \subsection{\RU{Базовый адрес}\EN{Base address}}
 
 \RU{Дело в том, что несколько авторов модулей могут готовить DLL-файлы для других, и нет возможности договориться о том, какие адреса и кому будут отведены.}
 \EN{The problem is that several module authors can prepare DLL files for others to use and it is not possible
-to reach an agreement which addresses is to be assigned to whose modules.}
+to reach an agreement which addresses is to be assigned to whose modules.}\ES{El problema es que varios autores de módulos pueden preparar DLL para que otros las usen y no es posible acordar qué direcciones se asignan a quién.}
 
 \RU{Поэтому, если у двух необходимых для загрузки процесса DLL одинаковые базовые адреса,
 одна из них будет загружена по этому базовому адресу, 
@@ -108,7 +113,7 @@ to reach an agreement which addresses is to be assigned to whose modules.}
 во второй DLL будут скорректированы.}
 \EN{So that is why if two necessary DLLs for a process have the same base address,
 	one of them will be loaded at this base address, and the other\EMDASH{}at some other free space in process memory,
-and each virtual addresses in the second DLL will be corrected.}\ESph{}\PTBRph{}\PLph{} \\
+and each virtual addresses in the second DLL will be corrected.}\ES{Por eso, si dos DLL necesarias para un proceso tienen la misma dirección base, una se cargará en esa base y la otra en otro espacio libre de la memoria del proceso, y todas las direcciones virtuales de la segunda DLL se ajustarán.} \\
 \\
 \RU{Очень часто линкер в}\EN{Often,} \ac{MSVC} \RU{генерирует .exe-файлы с базовым адресом}
 \EN{the linker generates the .exe files with a base address of} \TT{0x400000}
@@ -118,18 +123,18 @@ and each virtual addresses in the second DLL will be corrected.}\ESph{}\PTBRph{}
 \RU{Это значит, что}\EN{This mean that the} \ac{RVA} \RU{начала секции кода\EMDASH{}}\EN{of the start of the code section is} \TT{0x1000}.
 \RU{А \ac{DLL} часто генерируются MSVC-линкером с базовым адресом}
 \EN{DLLs are often generated by MSVC's linker with a base address of} \TT{0x10000000}
-\footnote{\RU{Это можно изменять опцией /BASE в линкере}\EN{This can be changed by the /BASE linker option}}.
+\footnote{\RU{Это можно изменять опцией /BASE в линкере}\EN{This can be changed by the /BASE linker option}}\ES{Con frecuencia, el enlazador de \ac{MSVC} genera archivos .exe con dirección base \TT{0x400000} y la sección de código arrancando en \TT{0x401000}; esto significa que el \ac{RVA} del inicio de la sección de código es \TT{0x1000}. Las \ac{DLL} suelen generarse con base \TT{0x10000000}, y se puede cambiar con la opción /BASE del enlazador}.
 
 \index{ASLR}
 \RU{Помимо всего прочего, есть еще одна причина намеренно загружать модули по разным адресам, а точнее, 
 по случайным}
-\EN{There is also another reason to load modules at various base addresses, in this case random ones}.
+\EN{There is also another reason to load modules at various base addresses, in this case random ones}\ES{Además hay otra razón para cargar los módulos en direcciones distintas, concretamente en direcciones aleatorias}.
 
-\RU{Это}\EN{It is} \ac{ASLR}\footnote{\RU{\href{http://go.yurichev.com/17042}{wikipedia}}\EN{\href{http://go.yurichev.com/17140}{wikipedia}}}.
+\RU{Это}\EN{It is} \ac{ASLR}\footnote{\RU{\href{http://go.yurichev.com/17042}{wikipedia}}\EN{\href{http://go.yurichev.com/17140}{wikipedia}}}\ES{Esto es} \ac{ASLR}.
 
 \index{Shellcode}
 \RU{Дело в том, что некий шеллкод, пытающийся исполниться на зараженной системе, должен вызывать какие-то системные функции, а следовательно, знать их адреса.}
-\EN{A shellcode trying to get executed on a compromised system must call system functions, hence, know their addresses.}
+\EN{A shellcode trying to get executed on a compromised system must call system functions, hence, know their addresses.}\ES{Un shellcode que intenta ejecutarse en un sistema comprometido debe llamar funciones del sistema y, por lo tanto, conocer sus direcciones}.
 
 \RU{И в старых}\EN{In older} \ac{OS} (\RU{в линейке \gls{Windows NT}: до}\EN{in \gls{Windows NT} line: before} Windows Vista),
 \RU{системные}\EN{system} DLL (\RU{такие как}\EN{like} kernel32.dll, user32.dll) \RU{загружались все время
@@ -137,37 +142,38 @@ and each virtual addresses in the second DLL will be corrected.}\ESph{}\PTBRph{}
 \RU{а если еще и вспомнить, что версии этих DLL редко менялись}\EN{and if we also recall
 that their versions rarely changed}, \RU{то адреса отдельных
 функций, можно сказать, фиксированы и шеллкод может вызывать их напрямую}\EN{the addresses of functions were
-fixed and shellcode could call them directly}.
+fixed and shellcode could call them directly}\ES{las DLL del sistema (como kernel32.dll o user32.dll) se cargaban siempre en direcciones conocidas y, si recordamos que sus versiones cambiaban rara vez, las direcciones de las funciones eran prácticamente fijas y el shellcode podía llamarlas directamente}.
 
 \RU{Чтобы избежать этого, методика}\EN{In order to avoid this, the} \ac{ASLR}
 \RU{загружает и вашу программу, и все модули ей необходимые, по случайным адресам, разным при каждом запуске}
-\EN{method loads your program and all modules it needs at random base addresses, different every time}.
+\EN{method loads your program and all modules it needs at random base addresses, different every time}\ES{carga tanto tu programa como todos los módulos que necesita en direcciones base aleatorias, diferentes en cada ejecución}.
 
 \RU{В PE-файлах, поддержка \ac{ASLR} отмечается выставлением флага}
-\EN{\ac{ASLR} support is denoted in a PE file by setting the flag}\ESph{}\PTBRph{}\PLph{} \\
+\EN{\ac{ASLR} support is denoted in a PE file by setting the flag}\ES{El soporte de \ac{ASLR} en un archivo PE se marca activando el indicador} \\
 \TT{IMAGE\_DLL\_CHARACTERISTICS\_DYNAMIC\_BASE} \cite{Russinovich}.
 
 \subsection{Subsystem}
 
-\RU{Имеется также поле \IT{subsystem}, обычно это}\EN{There is also a \IT{subsystem} field, usually it is}:
+\RU{Имеется также поле \IT{subsystem}, обычно это}\EN{There is also a \IT{subsystem} field, usually it is}\ES{También hay un campo \IT{subsystem}, que suele ser}:
 
 \index{Native API}
 \begin{itemize}
-\item native\footnote{\EN{Meaning, the module use Native API instead of Win32}\RU{Что означает, что модуль использует Native API а не Win32}} 
-(.sys-\RU{драйвер}\EN{driver}), 
+\item native\footnote{\EN{Meaning, the module use Native API instead of Win32}\RU{Что означает, что модуль использует Native API а не Win32}\ES{Significa que el módulo usa Native API en lugar de Win32}} 
+(.sys-\RU{драйвер}\EN{driver}\ES{controlador}), 
 
-\item console (\RU{консольное приложение}\EN{console application}) \OrENRU 
+\item console (\RU{консольное приложение}\EN{console application}\ES{aplicación de consola}) \OrENRU 
 
-\item \ac{GUI} (\RU{не консольное}\EN{non-console}).
+\item \ac{GUI} (\RU{не консольное}\EN{non-console}\ES{no es de consola}).
 \end{itemize}
 
 \subsection{\RU{Версия ОС}\EN{OS version}}
 
 \RU{PE-файле также задает минимальный номер версии Windows, необходимый для загрузки модуля.}
 \EN{A PE file also specifies the minimal Windows version it needs in order to be loadable.}
+\ES{El archivo PE también especifica el número mínimo de versión de Windows necesario para cargar el módulo.}
 \RU{Соответствие номеров версий в файле и кодовых наименований Windows, можно посмотреть}
 \EN{The table of version numbers stored in the PE file and corresponding Windows codenames is}
-\RU{здесь}\EN{here}\footnote{\href{http://go.yurichev.com/17044}{wikipedia}}.
+\RU{здесь}\EN{here}\ES{aquí}\footnote{\href{http://go.yurichev.com/17044}{wikipedia}}.
 
 \index{Windows!Windows NT4}
 \index{Windows!Windows 2000}
@@ -175,7 +181,7 @@ fixed and shellcode could call them directly}.
 .exe files for running on} Windows NT4 (\RU{версия}\EN{version} 4.00),
 \RU{а вот}\EN{but} \ac{MSVC} 2008 \RU{уже нет}\EN{does not} 
 (\RU{генерируемые файлы имеют версию}\EN{the generated files have a version of} 5.00, 
-\RU{для запуска необходима как минимум Windows 2000}\EN{at least Windows 2000 is needed to run them}).
+\RU{для запуска необходима как минимум Windows 2000}\EN{at least Windows 2000 is needed to run them}\ES{los archivos generados tienen versión 5.00 y requieren al menos Windows 2000 para ejecutarse}).
 
 \index{Windows!Windows XP}
 \RU{\ac{MSVC} 2012 по умолчанию генерирует .exe-файлы версии 6.00, для запуска нужна как минимум 
@@ -187,7 +193,7 @@ Windows Vista.
 targeting at least Windows Vista. 
 However, by changing the compiler's options
 \footnote{\href{http://go.yurichev.com/17045}{MSDN}},
-it is possible to force it to compile for Windows XP.}
+it is possible to force it to compile for Windows XP.}\ES{Por defecto, \ac{MSVC} 2012 genera archivos .exe de versión 6.00, que necesitan al menos Windows Vista; sin embargo, cambiando las opciones del compilador\footnote{\href{http://go.yurichev.com/17045}{MSDN}} es posible forzar la generación para Windows XP.}
 
 \subsection{\RU{Секции}\EN{Sections}}
 
@@ -213,54 +219,54 @@ data}\EMDASH\IT{IMAGE\_SCN\_CNT\_UNINITIALIZED\_DATA}, \IT{IMAGE\_SCN\_MEM\_READ
 \item
 \RU{А на секции с константными данными, то есть, защищенными от записи}\EN{On a constant data section
 (one that's protected from writing)}, \RU{могут быть флаги}
-\EN{the flags} \\
+\EN{the flags}\ES{En una sección de datos constantes (protegida contra escritura) pueden estar los indicadores} \\
 \IT{IMAGE\_SCN\_CNT\_INITIALIZED\_DATA} \AndENRU \IT{IMAGE\_SCN\_MEM\_READ} \RU{без}\EN{can be set, but not} \IT{IMAGE\_SCN\_MEM\_WRITE}. 
 \RU{Если попытаться записать что-то в эту секцию, процесс упадет}\EN{A process going to crash if it tries to write to this
-section}.
+section}\ES{Si se intenta escribir algo en esa sección, el proceso fallará}.
 \end{itemize}
 
 \RU{В PE-файле можно задавать название для секции, но это не важно}\EN{Each section in PE-file may have a name, however,
-it is not very important}.
-\RU{Часто (но не всегда)}\EN{Often (but not always)} \RU{секция кода называется}\EN{the code section is named} \TT{.text}, 
+it is not very important}\ES{En un archivo PE se puede asignar un nombre a cada sección, aunque no es algo crucial}.
+\RU{Часто (но не всегда)}\EN{Often (but not always)} \RU{секция кода называется}\EN{the code section is named} \TT{.text}\ES{la sección de código se llama} \TT{.text}, 
 \index{TLS}
 \index{BSS}
 \RU{секция данных}\EN{the data section}\EMDASH{}\TT{.data}, \RU{константных данных}\EN{the constant data section} --- \TT{.rdata} 
-\IT{(readable data)}.
-\RU{Еще популярные имена секций}\EN{Other popular section names are}: 
+\IT{(readable data)}\ES{(datos legibles)}.
+\RU{Еще популярные имена секций}\EN{Other popular section names are}\ES{Otros nombres comunes de secciones son}: 
 
 \index{MIPS}
 \begin{itemize}
-\item \TT{.idata}\EMDASH{}\RU{секция импортов}\EN{imports section}.
+\item \TT{.idata}\EMDASH{}\RU{секция импортов}\EN{imports section}\ES{sección de importaciones}.
 \ac{IDA} \RU{может создавать псевдо-секцию с этим же именем}
-\EN{may create a pseudo-section named like this}: \myref{IDA_idata}.
-\item \TT{.edata}\EMDASH{}\RU{секция экспортов (редко встречается)}\EN{exports section (rare)}
+\EN{may create a pseudo-section named like this}\ES{puede crear una seudosección con el mismo nombre}: \myref{IDA_idata}.
+\item \TT{.edata}\EMDASH{}\RU{секция экспортов (редко встречается)}\EN{exports section (rare)}\ES{sección de exportaciones (poco común)}
 \item \TT{.pdata}\EMDASH{}\RU{секция содержащая информацию об исключениях в Windows NT для MIPS, \ac{IA64} и x64}
-\EN{section containing all information about exceptions in Windows NT for MIPS, \ac{IA64} and x64}: \myref{SEH_win64}
-\item \TT{.reloc}\EMDASH{}\RU{секция релоков}\EN{relocs section}
-\item \TT{.bss}\EMDASH{}\RU{неинициализированные данные}\EN{uninitialized data (\ac{BSS})}
-\item \TT{.tls}\EMDASH{}thread local storage (\ac{TLS})
-\item \TT{.rsrc}\EMDASH{}\RU{ресурсы}\EN{resources}
+\EN{section containing all information about exceptions in Windows NT for MIPS, \ac{IA64} and x64}\ES{sección que contiene toda la información sobre excepciones en Windows NT para MIPS, \ac{IA64} y x64}: \myref{SEH_win64}
+\item \TT{.reloc}\EMDASH{}\RU{секция релоков}\EN{relocs section}\ES{sección de relocs}
+\item \TT{.bss}\EMDASH{}\RU{неинициализированные данные}\EN{uninitialized data (\ac{BSS})}\ES{datos no inicializados (\ac{BSS})}
+\item \TT{.tls}\EMDASH{}thread local storage (\ac{TLS})\ES{almacenamiento local de hilo (\ac{TLS})}
+\item \TT{.rsrc}\EMDASH{}\RU{ресурсы}\EN{resources}\ES{recursos}
 \item \TT{.CRT}\EMDASH{}\RU{может присутствует в бинарных файлах, скомпилированных очень старыми версиями MSVC}
-\EN{may present in binary files compiled by ancient MSVC versions}
+\EN{may present in binary files compiled by ancient MSVC versions}\ES{puede aparecer en binarios compilados con versiones muy antiguas de MSVC}
 \end{itemize}
 
 \RU{Запаковщики/зашифровщики PE-файлов часто затирают имена секций, или меняют на свои}
-\EN{PE file packers/encryptors often garble section names or replace the names with their own}.
+\EN{PE file packers/encryptors often garble section names or replace the names with their own}\ES{Los empaquetadores o cifradores de archivos PE suelen borrar los nombres de las secciones o cambiarlos por los suyos propios}.
 
 \RU{В \ac{MSVC} можно объявлять данные в произвольно названной секции}
-\EN{\ac{MSVC} allows you to declare data in arbitrarily named section}
+\EN{\ac{MSVC} allows you to declare data in arbitrarily named section}\ES{En \ac{MSVC} se pueden declarar datos en una sección con nombre arbitrario}
 \footnote{\href{http://go.yurichev.com/17047}{MSDN}}.
 
 \RU{Некоторые компиляторы и линкеры могут добавлять также секцию с отладочными символами 
 и вообще отладочной информацией (например, MinGW).}
 \EN{Some compilers and linkers can add a section with debugging symbols and 
-other debugging information (MinGW for instance).}
+other debugging information (MinGW for instance).}\ES{Algunos compiladores y enlazadores pueden añadir también una sección con símbolos de depuración y, en general, información de depuración (por ejemplo, MinGW).}
 \index{Windows!PDB}
 \RU{Хотя это не так в современных версиях}\EN{However it is not so in modern versions of} \ac{MSVC} 
 (\RU{там принято отладочную информацию сохранять в отдельных \gls{PDB}-файлах}
-\EN{separate \gls{PDB} files are used there for this purpose}).\\
+\EN{separate \gls{PDB} files are used there for this purpose})\ES{allí se suele guardar la información de depuración en archivos \gls{PDB} separados}.\\
 \\
-\RU{Вот как PE-секция описывается в файле}\EN{That is how a PE section is described in the file}:
+\RU{Вот как PE-секция описывается в файле}\EN{That is how a PE section is described in the file}\ES{Así se describe una sección PE en el archivo}:
 
 \begin{lstlisting}
 typedef struct _IMAGE_SECTION_HEADER {
@@ -282,9 +288,9 @@ typedef struct _IMAGE_SECTION_HEADER {
 \footnote{\href{http://go.yurichev.com/17048}{MSDN}}
 
 \index{Hiew}
-\RU{Еще немного терминологии}\EN{A word about terminology}:
+\RU{Еще немного терминологии}\EN{A word about terminology}\ES{Algo más de terminología}:
 \IT{PointerToRawData} \RU{называется}\EN{it called} \q{Offset} \InENRU Hiew
-\AndENRU \IT{VirtualAddress} \RU{называется}\EN{is called} \q{RVA} \RU{там же}\EN{there}.
+\AndENRU \IT{VirtualAddress} \RU{называется}\EN{is called} \q{RVA} \RU{там же}\EN{there}\ES{allí}.
 
 \subsection{\RU{Релоки}\EN{Relocations (relocs)}}
 \label{subsec:relocs}
