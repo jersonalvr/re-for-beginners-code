@@ -1,15 +1,15 @@
-\chapter{\RU{Оператор GOTO}\EN{GOTO operator}}
+\chapter{\RU{Оператор GOTO}\EN{GOTO operator}\ES{El operador GOTO}}
 
-\RU{Оператор GOTO считается анти-паттерном}\EN{The GOTO operator is generally considered as anti-pattern.} 
+\RU{Оператор GOTO считается анти-паттерном}\EN{The GOTO operator is generally considered as anti-pattern.}\ES{El operador GOTO generalmente se considera como un anti-patrón.} 
 \cite{Dijkstra:1968:LEG:362929.362947}, 
 \RU{но тем не менее, его можно использовать в разумных пределах}
-\EN{Nevertheless, it can be used reasonably} \cite{Knuth:1974:SPG:356635.356640}, \cite[1.3.2]{CBook}.
+\EN{Nevertheless, it can be used reasonably}\ES{Sin embargo, puede usarse de manera razonable} \cite{Knuth:1974:SPG:356635.356640}, \cite[1.3.2]{CBook}.
 
-\RU{Вот простейший пример}\EN{Here is a very simple example}:
+\RU{Вот простейший пример}\EN{Here is a very simple example}\ES{Aquí hay un ejemplo muy simple}:
 
 \lstinputlisting{patterns/065_GOTO/goto.c}
 
-\RU{Вот что мы получаем в}\EN{Here is what we have got in} MSVC 2012:
+\RU{Вот что мы получаем в}\EN{Here is what we have got in}\ES{Esto es lo que obtenemos en} MSVC 2012:
 
 \lstinputlisting[caption=MSVC 2012]{patterns/065_GOTO/MSVC_goto.asm}
 
@@ -17,6 +17,7 @@
 безусловный переход в другое место.}
 \EN{The \IT{goto} statement has been simply replaced by a \JMP instruction, which has the same
 effect: unconditional jump to another place.}
+\ES{La instrucción \IT{goto} simplemente ha sido reemplazada por una instrucción \JMP, que tiene el mismo efecto: un salto incondicional a otro lugar.}
 
 \RU{Вызов второго \printf может исполнится только при помощи человеческого вмешательства,
 используя отладчик или модифицирование кода.}
@@ -28,7 +29,8 @@ by using a debugger or by patching the code.}
 \clearpage
 \RU{Это также может быть простым упражнением на модификацию кода.}
 \EN{This could also be useful as a simple patching exercise.}
-\RU{Откроем исполняемый файл в}\EN{Let's open the resulting executable in} Hiew:
+\ES{Esto también podría ser útil como un ejercicio simple de parcheo.}
+\RU{Откроем исполняемый файл в}\EN{Let's open the resulting executable in}\ES{Abramos el ejecutable resultante en} Hiew:
 
 \begin{figure}[H]
 \centering
@@ -38,9 +40,9 @@ by using a debugger or by patching the code.}
 \end{figure}
 
 \clearpage
-\RU{Поместите курсор по адресу}\EN{Place the cursor to address} \JMP (\TT{0x410}), 
-\RU{нажмите}\EN{press} F3 (\RU{редактирование}\EN{edit}), \RU{нажмите два нуля, так что
-опкод становится}\EN{press zero twice, so the opcode becomes} \TT{EB 00}:
+\RU{Поместите курсор по адресу}\EN{Place the cursor to address}\ES{Coloque el cursor en la dirección} \JMP (\TT{0x410}), 
+\RU{нажмите}\EN{press}\ES{presione} F3 (\RU{редактирование}\EN{edit}\ES{editar}), \RU{нажмите два нуля, так что
+опкод становится}\EN{press zero twice, so the opcode becomes}\ES{presione cero dos veces, de modo que el opcode se convierta en} \TT{EB 00}:
 
 \begin{figure}[H]
 \centering
@@ -53,43 +55,51 @@ by using a debugger or by patching the code.}
 прямо после текущей инструкции.}
 \EN{The second byte of the \JMP opcode denotes the relative offset for the jump, 0 means the point
 right after the current instruction.}
+\ES{El segundo byte del opcode \JMP denota el desplazamiento relativo para el salto, 0 significa el punto justo después de la instrucción actual.}
 \RU{Теперь \JMP не будет пропускать следующий вызов \printf.}
 \EN{So now \JMP not skipping the second \printf call.}
+\ES{Así que ahora \JMP no se saltará la segunda llamada a \printf.}
 
 \RU{Нажмите F9 (запись) и выйдите.}
 \EN{Press F9 (save) and exit.}
+\ES{Presione F9 (guardar) y salga.}
 \RU{Теперь мы запускаем исполняемый файл и видим это}\EN{Now if we run the executable we should see 
-this}:
+this}\ES{Ahora, si ejecutamos el ejecutable, deberíamos ver esto}:
 
 \begin{figure}[H]
 \centering
 \includegraphics[scale=\NormalScale]{patterns/065_GOTO/result.png}
-\caption{\RU{Результат}\EN{Patched executable output}}
+\caption{\RU{Результат}\EN{Patched executable output}\ES{Salida del ejecutable parcheado}}
 \label{fig:goto_result}
 \end{figure}
 
 \RU{Подобного же эффекта можно достичь, если заменить инструкцию \JMP на две инструкции \NOP.}
 \EN{The same result could be achieved by replacing the \JMP instruction with 2 \NOP instructions.}
+\ES{El mismo resultado se podría lograr reemplazando la instrucción \JMP por 2 instrucciones \NOP.}
 \RU{\NOP имеет опкод \TT{0x90} и длину в 1 байт, так что нужно 2 инструкции для замены.}
 \EN{\NOP has an opcode of \TT{0x90} and length of 1 byte, so we need 2 instructions as \JMP replacement (which is 2 bytes in size).}
+\ES{\NOP tiene un opcode de \TT{0x90} y una longitud de 1 byte, por lo que necesitamos 2 instrucciones como reemplazo de \JMP (que tiene un tamaño de 2 bytes).}
 \fi
 
-\section{\RU{Мертвый код}\EN{Dead code}}
+\section{\RU{Мертвый код}\EN{Dead code}\ES{Código muerto}}
 
 \RU{Вызов второго \printf также называется \q{мертвым кодом} (\q{dead code}) 
 в терминах компиляторов.}
 \EN{The second \printf call is also called \q{dead code} in compiler terms.}
+\ES{La segunda llamada a \printf también se llama \q{código muerto} (\IT{dead code}) en términos del compilador.}
 \RU{Это значит, что он никогда не будет исполнен.}
 \EN{This means that the code will never be executed.}
+\ES{Esto significa que el código nunca se ejecutará.}
 \EN{So when you compile this example with optimizations, the compiler removes \q{dead code}, leaving
 no trace of it:}
 \RU{Так что если вы компилируете этот пример с оптимизацией, компилятор удаляет \q{мертвый
 код} не оставляя следа:}
+\ES{Por lo tanto, cuando compilas este ejemplo con optimizaciones, el compilador elimina el \q{código muerto}, sin dejar rastro de él:}
 
 \lstinputlisting[caption=\Optimizing MSVC 2012]{patterns/065_GOTO/MSVC_goto_Ox.asm}
 
-\RU{Впрочем, строку}\EN{However, the compiler forgot to remove the} \q{skip me!} \RU{компилятор 
-убрать забыл}\EN{string}.
+\RU{Впрочем, строку}\EN{However, the compiler forgot to remove the}\ES{Sin embargo, el compilador se olvidó de eliminar la} \q{skip me!} \RU{компилятор 
+убрать забыл}\EN{string}\ES{cadena}.
 
 %Note: cl "/Ox" option for maximum optimisation does get rid of "skip me" string as well
 
@@ -99,4 +109,6 @@ no trace of it:}
 % TODO debugger example can fit here
 \RU{Попробуйте добиться того же самого в вашем любимом компиляторе и отладчике.}
 \EN{Try to achieve the same result using your favorite compiler and debugger.}
+\ES{Intente lograr el mismo resultado usando su compilador y depurador favoritos.}
 \fi
+
