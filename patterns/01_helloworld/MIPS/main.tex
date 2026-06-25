@@ -1,140 +1,141 @@
 \section{MIPS}
 
-\subsection{\RU{О \q{глобальном указателе} (\q{global pointer})}\EN{A word about \q{global pointer}}}
+\subsection{\RU{О \q{глобальном указателе} (\q{global pointer})}\EN{A word about \q{global pointer}}\ES{Una palabra sobre el \q{global pointer}}}
 \label{MIPS_GP}
 
 \index{MIPS!\GlobalPointer}
 \RU{\q{Глобальный указатель} (\q{global pointer})~--- это важная концепция в MIPS.}
-\EN{One important MIPS concept is \q{global pointer}.}
+\EN{One important MIPS concept is \q{global pointer}.}\ES{Un concepto importante en MIPS es el \q{global pointer} (puntero global).}
 \RU{Как мы уже возможно знаем, каждая инструкция в MIPS имеет размер 32 бита, поэтому невозможно
 закодировать 32-битный адрес внутри одной инструкции. Вместо этого нужно использовать пару инструкций
 (как это сделал GCC для загрузки адреса текстовой строки в нашем примере).}
 \EN{As we may already know, each MIPS instruction has size of 32 bits, so it's impossible to embed 32-bit
 address into one instruction: a pair has to be used for this 
-(like GCC did in our example for the text string address loading).}
+(like GCC did in our example for the text string address loading).}\ES{Como tal vez ya sepamos, cada instrucción MIPS tiene un tamaño de 32 bits, por lo que es imposible incrustar una dirección de 32 bits en una sola instrucción: se debe usar un par de ellas para esto (como hizo GCC en nuestro ejemplo para cargar la dirección de la cadena de texto).}
 
 \RU{С другой стороны, используя только одну инструкцию, 
 возможно загружать данные по адресам в пределах $register-32768...register+32767$, потому что 16 бит
 знакового смещения можно закодировать в одной инструкции).}
 \EN{It's possible, however, to load data from the address in range of $register-32768...register+32767$ using one
-single instruction (because 16 bits of signed offset could be encoded in single instruction).}
+single instruction (because 16 bits of signed offset could be encoded in single instruction).}\ES{Sin embargo, es posible cargar datos desde la dirección en el rango de $register-32768...register+32767$ usando una sola instrucción (porque se pueden codificar 16 bits de desplazamiento con signo en una sola instrucción).}
 \RU{Так мы можем выделить какой-то регистр для этих целей и ещё выделить буфер в 64KiB для самых 
 частоиспользуемых данных.}
-\EN{So we can allocate some register for this purpose and also allocate 64KiB area of most used data.}
+\EN{So we can allocate some register for this purpose and also allocate 64KiB area of most used data.}\ES{Así que podemos asignar algún registro para este propósito y también asignar un área de 64 KiB para los datos más utilizados.}
 \RU{Выделенный регистр называется \q{глобальный указатель} (\q{global pointer}) и он указывает на середину
 области 64KiB.}
-\EN{This allocated register is called \q{global pointer} and it points to the middle of the 64KiB area.}
+\EN{This allocated register is called \q{global pointer} and it points to the middle of the 64KiB area.}\ES{Este registro asignado se llama \q{global pointer} y apunta al medio del área de 64 KiB.}
+
 \RU{Эта область обычно содержит глобальные переменные и адреса импортированных функций вроде \printf,
 потому что разработчики GCC решили, что получение адреса функции должно быть как можно более быстрой операцией,
 исполняющейся за одну инструкцию вместо двух.}
 \EN{This area usually contains global variables and addresses of imported functions like \printf, 
 because GCC developers decided that getting address of some function must be as fast as single instruction
-execution instead of two.}
+execution instead of two.}\ES{Esta área usualmente contiene variables globales y direcciones de funciones importadas como \printf, porque los desarrolladores de GCC decidieron que obtener la dirección de alguna función debe ser tan rápido como la ejecución de una sola instrucción en lugar de dos.}
 \RU{В ELF-файле эта 64KiB-область находится частично в секции .sbss (\q{small \ac{BSS}}) для неинициализированных
 данных и в секции .sdata (\q{small data}) для инициализированных данных.}
 \EN{In an ELF file this 64KiB area is located partly in sections .sbss (\q{small \ac{BSS}}) for not initialized data and 
-.sdata (\q{small data}) for initialized data.}
+.sdata (\q{small data}) for initialized data.}\ES{En un archivo ELF, esta área de 64 KiB se encuentra parcialmente en las secciones .sbss (\q{BSS pequeño}) para datos no inicializados y .sdata (\q{datos pequeños}) para datos inicializados.}
 
 \RU{Это значит что программист может выбирать, к чему нужен как можно более быстрый доступ, и затем расположить
 это в секциях .sdata/.sbss.}
 \EN{This implies that the programmer may choose what data he/she wants to be accessed fast and place it into 
-.sdata/.sbss.}
+.sdata/.sbss.}\ES{Esto implica que el programador puede elegir qué datos desea acceder de forma rápida y colocarlos en .sdata/.sbss.}
 
 \RU{Некоторые программисты \q{старой школы} могут вспомнить модель памяти в MS-DOS \myref{8086_memory_model} 
 или в менеджерах памяти вроде XMS/EMS, где вся память делилась на блоки по 64KiB.}
 \EN{Some old-school programmers may recall the MS-DOS memory model \myref{8086_memory_model} 
-or the MS-DOS memory managers like XMS/EMS where all memory was divided in 64KiB blocks.}
+or the MS-DOS memory managers like XMS/EMS where all memory was divided in 64KiB blocks.}\ES{Algunos programadores de la \q{vieja escuela} pueden recordar el modelo de memoria de MS-DOS \myref{8086_memory_model} o los gestores de memoria de MS-DOS como XMS/EMS, donde toda la memoria se dividía en bloques de 64 KiB.}
 
 \index{PowerPC}
 \RU{Эта концепция применяется не только в MIPS. По крайней мере PowerPC также использует эту технику.}
-\EN{This concept is not unique to MIPS. At least PowerPC uses this technique as well.}
+\EN{This concept is not unique to MIPS. At least PowerPC uses this technique as well.}\ES{Este concepto no es exclusivo de MIPS. Al menos PowerPC también utiliza esta técnica.}
 
 \subsection{\Optimizing GCC}
 
 \EN{Lets consider the following example which illustrates \q{global pointer} concept.}
-\RU{Рассмотрим следующий пример, иллюстрирующий концепцию \q{глобального указателя}.}
+\RU{Рассмотрим следующий пример, иллюстрирующий концепцию \q{глобального указателя}.}\ES{Consideremos el siguiente ejemplo que ilustra el concepto del \q{global pointer}.}
 
 \lstinputlisting[caption=\Optimizing GCC 4.4.5 (\assemblyOutput),numbers=left]{patterns/01_helloworld/MIPS/hw_O3.s.\LANG}
 
 \RU{Как видно, регистр \$GP в прологе функции выставляется в середину этой области.}
-\EN{As we see, the \$GP register is set in the function prologue to point the middle of this area.}
+\EN{As we see, the \$GP register is set in the function prologue to point the middle of this area.}\ES{Como vemos, el registro \$GP se configura en el prólogo de la función para apuntar al medio de esta área.}
 \RU{Регистр \ac{RA} сохраняется в локальном стеке.}
-\EN{The \ac{RA} register is also saved in the local stack.}
+\EN{The \ac{RA} register is also saved in the local stack.}\ES{El registro \ac{RA} también se guarda en la pila local.}
 \RU{Здесь также используется \puts вместо \printf.}
-\EN{\puts is also used here instead of \printf.}
+\EN{\puts is also used here instead of \printf.}\ES{Aquí también se utiliza \puts en lugar de \printf.}
 \index{MIPS!\Instructions!LW}
 \RU{Адрес функции \puts загружается в \$25 инструкцией LW (\q{Load Word}).}
-\EN{The address of the \puts function is loaded into \$25 using LW the instruction (\q{Load Word}).}
+\EN{The address of the \puts function is loaded into \$25 using LW the instruction (\q{Load Word}).}\ES{La dirección de la función \puts se carga en \$25 utilizando la instrucción LW (\q{Load Word}).}
 \index{MIPS!\Instructions!LUI}
 \index{MIPS!\Instructions!ADDIU}
 \RU{Затем адрес текстовой строки загружается в \$4 парой инструкций LUI (\q{Load Upper Immediate}) и
 ADDIU (\q{Add Immediate Unsigned Word}).}
 \EN{Then the address of the text string is loaded to \$4 using LUI (\q{Load Upper Immediate}) and 
-ADDIU (\q{Add Immediate Unsigned Word}) instruction pair.}
+ADDIU (\q{Add Immediate Unsigned Word}) instruction pair.}\ES{Luego, la dirección de la cadena de texto se carga en \$4 mediante el par de instrucciones LUI (\q{Load Upper Immediate}) y ADDIU (\q{Add Immediate Unsigned Word}).}
 \RU{LUI устанавливает старшие 16 бит регистра (поэтому в имени инструкции присутствует \q{upper}) и ADDIU
 прибавляет младшие 16 бит к адресу.}
 \EN{LUI sets the high 16 bits of the register (hence \q{upper} word in instruction name) and ADDIU adds
-the lower 16 bits of the address.}
+the lower 16 bits of the address.}\ES{LUI establece los 16 bits superiores del registro (de ahí la palabra \q{upper} en el nombre de la instrucción) y ADDIU suma los 16 bits inferiores de la dirección.}
 \RU{ADDIU следует за JALR (помните о \IT{branch delay slots}?).}
-\EN{ADDIU follows JALR (remember \IT{branch delay slots}?).}
+\EN{ADDIU follows JALR (remember \IT{branch delay slots}?).}\ES{ADDIU sigue a JALR (¿recuerdas los \IT{branch delay slots}?).}
 \RU{Регистр \$4 также называется \$A0, который используется для передачи первого аргумента функции}%
 \EN{The register \$4 is also called \$A0, which is used for passing the first function argument}%
 \footnote{\RU{Таблица регистров в MIPS доступна в приложении}\EN{The MIPS registers table %
-is available in appendix} \myref{MIPS_registers_ref}}.
+is available in appendix} \myref{MIPS_registers_ref}}.\ES{El registro \$4 también se llama \$A0, que se utiliza para pasar el primer argumento de la función}\footnote{\ES{La tabla de registros MIPS está disponible en el apéndice} \myref{MIPS_registers_ref}}.
 
 \index{MIPS!\Instructions!JALR}
 \RU{JALR (\q{Jump and Link Register}) делает переход по адресу в регистре \$25 (там адрес \puts) 
 при этом сохраняя адрес следующей инструкции (LW) в \ac{RA}.}
 \EN{JALR (\q{Jump and Link Register}) jumps to the address stored in the \$25 register (address of \puts) 
-while saving the address of the next instruction (LW) in \ac{RA}.}
-\RU{Это так же как и в ARM}\EN{This is very similar to ARM}.
+while saving the address of the next instruction (LW) in \ac{RA}.}\ES{JALR (\q{Jump and Link Register}) salta a la dirección almacenada en el registro \$25 (dirección de \puts) mientras guarda la dirección de la siguiente instrucción (LW) en \ac{RA}.}
+\RU{Это так же как и в ARM}\EN{This is very similar to ARM}.\ES{Esto es muy similar a ARM}.
 \RU{И ещё одна важная вещь: адрес сохраняемый в \ac{RA} это адрес не следующей инструкции (потому что
 это \IT{delay slot} и исполняется перед инструкцией перехода),
 а инструкции после неё (после \IT{delay slot}).}
 \EN{Oh, and one important thing is that the address saved in \ac{RA} is not the address of the next instruction (because
 it's in a \IT{delay slot} and is executed before the jump instruction),
-but the address of the instruction after the next one (after the \IT{delay slot}).}
+but the address of the instruction after the next one (after the \IT{delay slot}).}\ES{Ah, y una cosa importante es que la dirección guardada en \ac{RA} no es la dirección de la siguiente instrucción (porque está en un \IT{delay slot} y se ejecuta antes de la instrucción de salto), sino la dirección de la instrucción posterior a la siguiente (después del \IT{delay slot}).}
 \RU{Таким образом во время исполнения \TT{JALR} в \ac{RA} записывается $PC + 8$. В нашем случае это адрес
 инструкции LW следующей после ADDIU.}
 \EN{Hence, $PC + 8$ is written to \ac{RA} during the execution of \TT{JALR}, in our case, this is the address of the LW
-instruction next to ADDIU.}
+instruction next to ADDIU.}\ES{Por lo tanto, se escribe $PC + 8$ en \ac{RA} durante la ejecución de \TT{JALR}; en nuestro caso, esta es la dirección de la instrucción LW que sigue a ADDIU.}
 
 \RU{LW (\q{Load Word}) в строке 19 восстанавливает \ac{RA} из локального стека 
 (эта инструкция скорее часть эпилога функции).}
 \EN{LW (\q{Load Word}) at line 19 restores \ac{RA} from the local stack 
-(this instruction is rather part of function epilogue).}
+(this instruction is rather part of function epilogue).}\ES{LW (\q{Load Word}) en la línea 19 restaura \ac{RA} de la pila local (esta instrucción es más bien parte del epílogo de la función).}
 
 \index{MIPS!\Pseudoinstructions!MOVE}
 \RU{MOVE в строке 22 копирует значение из регистра \$0 (\$ZERO) в \$2 (\$V0).}
-\EN{MOVE at line 22 copies the value from \$0 (\$ZERO) register to \$2 (\$V0).}
+\EN{MOVE at line 22 copies the value from \$0 (\$ZERO) register to \$2 (\$V0).}\ES{MOVE en la línea 22 copia el valor del registro \$0 (\$ZERO) al \$2 (\$V0).}
 \label{MIPS_zero_register}
 \RU{В MIPS есть \IT{константный} регистр, всегда содержащий ноль.}
-\EN{MIPS has a \IT{constant} register, which always holds zero.}
+\EN{MIPS has a \IT{constant} register, which always holds zero.}\ES{MIPS tiene un registro \IT{constante}, que siempre contiene cero.}
 \RU{Должно быть, разработчики MIPS решили что 0 это самая востребованная константа в программировании,
 так что пусть будет использоваться регистр \$0, всякий раз, когда будет нужен 0.}
 \EN{Apparently, the MIPS developers came with the idea that zero is in fact the busiest constant in the computer programming,
-so let's just use \$0 register every time zero is needed.}
+so let's just use \$0 register every time zero is needed.}\ES{Aparentemente, a los desarrolladores de MIPS se les ocurrió la idea de que el cero es, de hecho, la constante más utilizada en la programación informática, así que simplemente usemos el registro \$0 cada vez que se necesite cero.}
 \RU{Другой интересный факт: в MIPS нет инструкции, копирующей значения из регистра в регистр.}
-\EN{Another interesting fact is that MIPS lacks instruction which transfers data between registers.}
-\RU{На самом деле}\EN{In fact}, \TT{MOVE DST, SRC} \RU{это}\EN{is} \TT{ADD DST, SRC, \$ZERO} ($DST=SRC+0$), 
-\RU{которая делает тоже самое}\EN{which does the same}.
+\EN{Another interesting fact is that MIPS lacks instruction which transfers data between registers.}\ES{Otro dato interesante es que MIPS carece de una instrucción que transfiera datos entre registros.}
+\RU{На самом деле}\EN{In fact}\ES{De hecho}, \TT{MOVE DST, SRC} \RU{это}\EN{is}\ES{es} \TT{ADD DST, SRC, \$ZERO} ($DST=SRC+0$), 
+\RU{которая делает тоже самое}\EN{which does the same}.\ES{lo cual hace lo mismo.}
 \RU{Очевидно, разработчики MIPS хотели сделать как можно более компактную таблицу опкодов.}
-\EN{Apparently, MIPS developers wanted to have compact opcode table.}
+\EN{Apparently, MIPS developers wanted to have compact opcode table.}\ES{Al parecer, los desarrolladores de MIPS querían tener una tabla de opcodes compacta.}
 \RU{Это не значит, что сложение происходит во время каждой инструкции MOVE.}
-\EN{This does not mean an actual addition happens at each MOVE instruction.}
+\EN{This does not mean an actual addition happens at each MOVE instruction.}\ES{Esto no significa que ocurra una suma real en cada instrucción MOVE.}
 \RU{Скорее всего, эти псевдоинструкции оптимизируются в \ac{CPU} и \ac{ALU} никогда не используется.}
-\EN{Most likely, the \ac{CPU} optimizes these pseudoinstructions and \ac{ALU} is never used.}
+\EN{Most likely, the \ac{CPU} optimizes these pseudoinstructions and \ac{ALU} is never used.}\ES{Lo más probable es que la \ac{CPU} optimice estas pseudoinstrucciones y la \ac{ALU} nunca sea utilizada.}
 
 \index{MIPS!\Instructions!J}
 \RU{J в строке 24 делает переход по адресу в \ac{RA}, и это работает как выход из функции.}
-\EN{J at line 24 jumps to the address in \ac{RA}, which is effectively performing return from the function.}
+\EN{J at line 24 jumps to the address in \ac{RA}, which is effectively performing return from the function.}\ES{J en la línea 24 salta a la dirección en \ac{RA}, lo que efectivamente realiza el retorno de la función.}
 \RU{ADDIU после J на самом деле исполняется перед J (помните о \IT{branch delay slots}?) 
 и это часть эпилога функции.}
 \EN{ADDIU after J is in fact executed before J (remember \IT{branch delay slots}?) 
-and is part of function epilogue.}
+and is part of function epilogue.}\ES{ADDIU después de J se ejecuta de hecho antes de J (¿recuerdas los \IT{branch delay slots}?) y es parte del epílogo de la función.}
 
 \RU{Вот листинг сгенерированный \IDA. Каждый регистр имеет свой псевдоним:}
-\EN{Here is also a listing generated by \IDA. Each register here has its own pseudoname:}
+\EN{Here is also a listing generated by \IDA. Each register here has its own pseudoname:}\ES{Aquí también hay un listado generado por \IDA. Cada registro aquí tiene su propio seudónimo:}
 
 \lstinputlisting[caption=\Optimizing GCC 4.4.5 (\IDA),numbers=left]{patterns/01_helloworld/MIPS/hw_O3_IDA.lst.\LANG}
 
@@ -142,36 +143,36 @@ and is part of function epilogue.}
 в листинге от GCC, может быть из-за ошибки в самом GCC\footnote{Очевидно, функция вывода листингов не так критична
 для пользователей GCC, поэтому там вполне могут быть неисправленные ошибки.}.}
 \EN{The instruction at line 15 saves GP value into the local stack, and this instruction is missing mysteriously from the GCC output listing, maybe by a GCC error\footnote{Apparently, functions generating listings 
-are not so critical to GCC users, so some unfixed errors may still exist.}.}
+are not so critical to GCC users, so some unfixed errors may still exist.}.}\ES{La instrucción en la línea 15 guarda el valor de GP en la pila local, y esta instrucción falta misteriosamente en el listado de salida de GCC, tal vez por un error de GCC}\footnote{\ES{Aparentemente, las funciones que generan listados no son tan críticas para los usuarios de GCC, por lo que aún pueden existir algunos errores no corregidos.}}.
 \RU{Значение GP должно быть сохранено, потому что всякая функция может работать со своим собственным окном данных
 размером 64KiB.}
-\EN{The GP value has to be saved indeed, because each function can use its own 64KiB data window.}
+\EN{The GP value has to be saved indeed, because each function can use its own 64KiB data window.}\ES{El valor de GP debe guardarse de hecho, porque cada función puede usar su propia ventana de datos de 64 KiB.}
 
 \RU{Регистр, содержащий адрес функции \puts называется \$T9, потому что регистры с префиксом T- называются
 \q{temporaries} и их содержимое можно не сохранять.}
 \EN{The register containing the \puts address is called \$T9, because registers prefixed with T- are called
-\q{temporaries} and their contents may not be preserved.}
+\q{temporaries} and their contents may not be preserved.}\ES{El registro que contiene la dirección de \puts se llama \$T9, porque los registros con prefijo T- se denominan \q{temporaries} (temporales) y no es necesario conservar su contenido.}
 
 \subsection{\NonOptimizing GCC}
 
-\NonOptimizing GCC \RU{более многословный}\EN{is more verbose}.
+\NonOptimizing GCC \RU{более многословный}\EN{is more verbose}\ES{es más verboso}.
 
 \lstinputlisting[caption=\NonOptimizing GCC 4.4.5 (\assemblyOutput),numbers=left]{patterns/01_helloworld/MIPS/hw_O0.s.\LANG}
 
 \RU{Мы видим, что регистр FP используется как указатель на фрейм стека.}
-\EN{We see here that register FP is used as a pointer to the stack frame.}
-\RU{Мы также видим 3 \ac{NOP}-а.}\EN{We also see 3 \ac{NOP}s.}
+\EN{We see here that register FP is used as a pointer to the stack frame.}\ES{Vemos aquí que el registro FP se utiliza como un puntero al marco de la pila.}
+\RU{Мы также видим 3 \ac{NOP}-а.}\EN{We also see 3 \ac{NOP}s.}\ES{También vemos 3 \ac{NOP}s.}
 \RU{Второй и третий следуют за инструкциями перехода.}
-\EN{The second and third of which follow the branch instructions.}
+\EN{The second and third of which follow the branch instructions.}\ES{El segundo y el tercero de los cuales siguen a las instrucciones de ramificación.}
 
 \RU{Вероятно, компилятор GCC всегда добавляет \ac{NOP}-ы (из-за \IT{branch delay slots})
 после инструкций переходов и затем, если включена оптимизация, от них может избавляться.}%
 \EN{Perhaps, the GCC compiler always adds \ac{NOP}s (because of \IT{branch delay slots}) after branch
-instructions and then, if optimization is turned on, maybe eliminates them.}
-\RU{Так что они остались здесь}\EN{So in this case they are left here}.
+instructions and then, if optimization is turned on, maybe eliminates them.}\ES{Tal vez, el compilador GCC siempre añade \ac{NOP}s (debido a los \IT{branch delay slots}) después de las instrucciones de ramificación y luego, si la optimización está activada, tal vez los elimine.}
+\RU{Так что они остались здесь}\EN{So in this case they are left here}.\ES{Así que en este caso se dejan aquí.}
 
 \RU{Вот также листинг от \IDA:}
-\EN{Here is also \IDA listing:}
+\EN{Here is also \IDA listing:}\ES{Aquí también está el listado de \IDA:}
 
 \lstinputlisting[caption=\NonOptimizing GCC 4.4.5 (\IDA),numbers=left]{patterns/01_helloworld/MIPS/hw_O0_IDA.lst.\LANG}
 
@@ -179,40 +180,40 @@ instructions and then, if optimization is turned on, maybe eliminates them.}
 \RU{Интересно что \IDA распознала пару инструкций LUI/ADDIU и собрала их в одну псевдоинструкцию 
 LA (\q{Load Address}) в строке 15.}
 \EN{Interestingly, \IDA recognized LUI/ADDIU instructions pair and coalesces them into one 
-LA (\q{Load Address}) pseudoinstruction at line 15.}
+LA (\q{Load Address}) pseudoinstruction at line 15.}\ES{Curiosamente, \IDA reconoció el par de instrucciones LUI/ADDIU y las fusionó en una sola pseudoinstrucción LA (\q{Load Address}) en la línea 15.}
 \RU{Мы также видим, что размер этой псевдоинструкции 8 байт!}
-\EN{We may also see that this pseudoinstruction has size of 8 bytes!}
+\EN{We may also see that this pseudoinstruction has size of 8 bytes!}\ES{¡También podemos ver que esta pseudoinstrucción tiene un tamaño de 8 bytes!}
 \RU{Это псевдоинструкция (или \IT{макрос}), потому что это не настоящая инструкция MIPS, а скорее
 просто удобное имя для пары инструкций.}
 \EN{This is a pseudoinstruction (or \IT{macro}) because it's not a real MIPS instruction, but rather
-handy name for an instruction pair.}
+handy name for an instruction pair.}\ES{Esta es una pseudoinstrucción (o \IT{macro}) porque no es una instrucción MIPS real, sino más bien un nombre práctico para un par de instrucciones.}
 
 \index{MIPS!\Pseudoinstructions!NOP}
 \index{MIPS!\Instructions!OR}
 \RU{Ещё кое что: \IDA не распознала \ac{NOP}-инструкции в строках 22, 26 и 41.}
-\EN{Another thing is that \IDA doesn't recognize \ac{NOP} instructions, so here they are at lines 22, 26 and 41.}
-\RU{Это}\EN{It is} \TT{OR \$AT, \$ZERO}.
+\EN{Another thing is that \IDA doesn't recognize \ac{NOP} instructions, so here they are at lines 22, 26 and 41.}\ES{Otra cosa es que \IDA no reconoce las instrucciones \ac{NOP}, por lo que aquí están en las líneas 22, 26 y 41.}
+\RU{Это}\EN{It is}\ES{Esto es} \TT{OR \$AT, \$ZERO}.
 \RU{По своей сути это инструкция, применяющая операцию ИЛИ к содержимому регистра \$AT с нулем, что,
 конечно же, холостая операция.}
 \EN{Essentially, this instruction applies OR operation to contents of \$AT register
-with zero, which is, of course, idle instruction.}
+with zero, which is, of course, idle instruction.}\ES{Esencialmente, esta instrucción aplica la operación OR al contenido del registro \$AT con cero, lo cual es, por supuesto, una instrucción ociosa (idle).}
 \RU{MIPS, как и многие другие \ac{ISA}, не имеет отдельной \ac{NOP}-инструкции.}
-\EN{MIPS, like many other \ac{ISA}s, doesn't have a separate \ac{NOP} instruction.}
+\EN{MIPS, like many other \ac{ISA}s, doesn't have a separate \ac{NOP} instruction.}\ES{MIPS, al igual que muchas otras \ac{ISA}, no tiene una instrucción \ac{NOP} separada.}
 
-\subsection{\RU{Роль стекового фрейма в этом примере}\EN{Role of the stack frame in this example}}
+\subsection{\RU{Роль стекового фрейма в этом примере}\EN{Role of the stack frame in this example}\ES{El papel del marco de pila en este ejemplo}}
 
 \RU{Адрес текстовой строки передается в регистре.}
-\EN{The address of the text string is passed in register.}
-\RU{Так зачем устанавливать локальный стек?}\EN{Why setup local stack anyway?}
+\EN{The address of the text string is passed in register.}\ES{La dirección de la cadena de texto se pasa en un registro.}
+\RU{Так зачем устанавливать локальный стек?}\EN{Why setup local stack anyway?}\ES{Entonces, ¿por qué configurar una pila local de todos modos?}
 \RU{Причина в том, что значения регистров \ac{RA} и GP должны быть сохранены где-то
 (потому что вызывается \printf) и для этого используется локальный стек.}
 \EN{The reason for this lies in the fact that registers \ac{RA} and GP's values has to be saved somewhere 
-(because \printf is called), and the local stack is used for this purpose.}
+(because \printf is called), and the local stack is used for this purpose.}\ES{La razón de esto radica en el hecho de que los valores de los registros \ac{RA} y GP tienen que guardarse en algún lugar (porque se llama a \printf), y la pila local se utiliza para este propósito.}
 \RU{Если бы это была \gls{leaf function}, тогда можно было бы избавиться от пролога и эпилога функции. Например:}
 \EN{If this was a \gls{leaf function}, it would have been possible to get rid of the function prologue and epilogue,
-for example:} \myref{MIPS_leaf_function_ex1}.
+for example:} \myref{MIPS_leaf_function_ex1}.\ES{Si esta fuera una \gls{leaf function}, habría sido posible deshacerse del prólogo y epílogo de la función, por ejemplo:} \myref{MIPS_leaf_function_ex1}.
 
-\subsection{\Optimizing GCC: \RU{загрузим в}\EN{load it into} GDB}
+\subsection{\Optimizing GCC: \RU{загрузим в}\EN{load it into}\ES{carguemos en} GDB}
 
 \index{GDB}
-\lstinputlisting[caption=\RU{пример сессии в GDB}\EN{sample GDB session}]{patterns/01_helloworld/MIPS/O3_GDB.txt}
+\lstinputlisting[caption=\RU{пример сессии в GDB}\EN{sample GDB session}\ES{sesión de ejemplo en GDB}]{patterns/01_helloworld/MIPS/O3_GDB.txt}

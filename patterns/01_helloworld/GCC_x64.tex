@@ -1,50 +1,50 @@
 \subsection{GCC\EMDASH{}x86-64}
 
 \index{x86-64}
-\RU{Попробуем GCC в 64-битном Linux}\EN{Let's also try GCC in 64-bit Linux}:
+\RU{Попробуем GCC в 64-битном Linux}\EN{Let's also try GCC in 64-bit Linux}\ES{Probemos también con GCC en Linux de 64 bits}:
 
 \lstinputlisting[caption=GCC 4.4.6 x64]{patterns/01_helloworld/GCC_x64.s.\LANG}
 
 \RU{В Linux, *BSD и \MacOSX для x86-64 также принят способ передачи аргументов функции через регистры}
-\EN{A method to pass function arguments in registers is also used in Linux, *BSD and \MacOSX}\cite{SysVABI}.
+\EN{A method to pass function arguments in registers is also used in Linux, *BSD and \MacOSX}\cite{SysVABI}.\ES{En Linux, *BSD y \MacOSX para x86-64 también se adopta el método de pasar los argumentos de las funciones a través de los registros}
 \RU{6 первых аргументов передаются через регистры}\EN{The first 6 arguments are passed in the}
 \RDI, \RSI, \RDX, \RCX, \Reg{8}, \Reg{9}\RU{, а остальные}\EN{ registers, and the rest}\EMDASH{}\RU{через стек}\EN{via
-the stack}.
+the stack}.\ES{Los primeros 6 argumentos se pasan en los registros \RDI, \RSI, \RDX, \RCX, \Reg{8}, \Reg{9}, y el resto a través de la pila.}
 
 \RU{Так что указатель на строку передается через \EDI (32-битную часть регистра)}\EN{So the pointer to the
-string is passed in \EDI (32-bit part of register)}.
-\RU{Но почему не через 64-битную часть}\EN{But why not use the 64-bit part}, \RDI?
+string is passed in \EDI (32-bit part of register)}.\ES{Así que el puntero a la cadena se pasa en \EDI (la parte de 32 bits del registro)}.
+\RU{Но почему не через 64-битную часть}\EN{But why not use the 64-bit part}, \RDI?\ES{Pero ¿por qué no usar la parte de 64 bits, \RDI?}
 
 \RU{Важно запомнить что в 64-битном режиме все инструкции \MOV, записывающие что-либо в 
 младшую 32-битную часть регистра,
 обнуляют старшие 32-бита}\EN{It is important to keep in mind that all \MOV instructions in 64-bit mode
-that write something into the lower 32-bit register part, also clear the higher 32-bits}\cite{Intel}.
+that write something into the lower 32-bit register part, also clear the higher 32-bits}\cite{Intel}.\ES{Es importante tener en cuenta que en modo de 64 bits todas las instrucciones \MOV que escriben algo en la parte inferior de 32 bits de un registro, también limpian los 32 bits superiores}
 \RU{То есть, инструкция}\EN{I.e., the} \TT{MOV EAX, 011223344h} \RU{корректно запишет это значение в \RAX, 
-старшие биты сбросятся в ноль}\EN{writes a value into \RAX correctly, since the higher bits will be cleared}.
+старшие биты сбросятся в ноль}\EN{writes a value into \RAX correctly, since the higher bits will be cleared}.\ES{Es decir, la instrucción \TT{MOV EAX, 011223344h} escribe un valor en \RAX correctamente, ya que los bits superiores se limpiarán.}
 
 \RU{Если посмотреть в \IDA скомпилированный объектный файл (.o), увидим также опкоды всех инструкций}%
-\EN{If we open the compiled object file (.o), we can also see all instruction's opcodes}%
+\EN{If we open the compiled object file (.o), we can also see all instruction's opcodes}\ES{Si abrimos el archivo objeto compilado (.o), también podemos ver todos los opcodes de las instrucciones}%
 \footnote{\RU{Это нужно задать в}\EN{This must be enabled in} 
-Options $\rightarrow$ Disassembly $\rightarrow$ Number of opcode bytes}:
+Options $\rightarrow$ Disassembly $\rightarrow$ Number of opcode bytes\ES{Esto se debe habilitar en Options $\rightarrow$ Disassembly $\rightarrow$ Number of opcode bytes}}:
 
 \lstinputlisting[caption=GCC 4.4.6 x64]{patterns/01_helloworld/GCC_x64.lst}
 
 \label{hw_EDI_instead_of_RDI}
 \RU{Как видно, инструкция, записывающая в \EDI по адресу \TT{0x4004D4}, занимает 5 байт}%
-\EN{As we can see, the instruction that writes into \EDI at \TT{0x4004D4} occupies 5 bytes}.
+\EN{As we can see, the instruction that writes into \EDI at \TT{0x4004D4} occupies 5 bytes}.\ES{Como podemos ver, la instrucción que escribe en \EDI en \TT{0x4004D4} ocupa 5 bytes}.
 \RU{Та же инструкция, записывающая 64-битное значение в \RDI, занимает 7 байт.}
-\EN{The same instruction writing a 64-bit value into \RDI occupies 7 bytes.}
+\EN{The same instruction writing a 64-bit value into \RDI occupies 7 bytes.}\ES{La misma instrucción que escribe un valor de 64 bits en \RDI ocupa 7 bytes.}
 \RU{Возможно, GCC решил немного сэкономить}%
-\EN{Apparently, GCC is trying to save some space}. 
+\EN{Apparently, GCC is trying to save some space}.\ES{Aparentemente, GCC está tratando de ahorrar algo de espacio}. 
 \RU{К тому же, вероятно, он уверен, что сегмент данных, где хранится строка,
 никогда не будет расположен в адресах выше 4\gls{GiB}.}
 \EN{Besides, it can be sure that the data segment containing
-the string will not be allocated at the addresses higher than 4\gls{GiB}.}
+the string will not be allocated at the addresses higher than 4\gls{GiB}.}\ES{Además, puede estar seguro de que el segmento de datos que contiene la cadena no se asignará en direcciones superiores a 4\gls{GiB}.}
 
 \label{SysVABI_input_EAX}
 \RU{Здесь мы также видим обнуление регистра \EAX перед вызовом \printf}\EN{We also see that the \EAX register
-was cleared before the \printf function call}.
+was cleared before the \printf function call}.\ES{También vemos que el registro \EAX se limpió antes de la llamada a la función \printf}.
 \RU{Это делается потому что по стандарту передачи аргументов в *NIX для x86-64 
 в \EAX передается количество задействованных векторных регистров}\EN{This is done because the number of
-used vector registers is passed in \EAX by standard}:
+used vector registers is passed in \EAX by standard}\ES{Esto se hace porque, según el estándar de transferencia de argumentos en *NIX para x86-64, en \EAX se pasa el número de registros vectoriales utilizados}:
 \q{with variable arguments passes information about the number of vector registers used} \cite{SysVABI}.

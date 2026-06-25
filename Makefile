@@ -57,62 +57,84 @@ clean:
 	rm -f *.ni
 	rm -f *.odt
 	rm -f *.rtf
+SIZE ?= A4
+
+# Parse comma-separated width and height if present
+COMMA := ,
+ifneq ($(filter %$(COMMA)%,$(SIZE)),)
+    WIDTH := $(word 1,$(subst $(COMMA), ,$(SIZE)))
+    HEIGHT := $(word 2,$(subst $(COMMA), ,$(SIZE)))
+    SIZE_DEFS := \def\ebook{} \def\customwidth{$(WIDTH)} \def\customheight{$(HEIGHT)}
+    SIZE_SUFFIX := -$(WIDTH)x$(HEIGHT)
+else ifeq ($(SIZE),7inch)
+    SIZE_DEFS := \def\ebook{} \def\customwidth{10cm} \def\customheight{14cm}
+    SIZE_SUFFIX := -7inch
+else ifeq ($(SIZE),A5)
+    SIZE_DEFS := \def\ebook{}
+    SIZE_SUFFIX := -A5
+else ifeq ($(SIZE),A4)
+    SIZE_DEFS :=
+    SIZE_SUFFIX :=
+else
+    SIZE_DEFS :=
+    SIZE_SUFFIX := -$(SIZE)
+endif
 
 # there are two xelatex invocations at the end, because \myref{} doesn't show pages correctly otherwise
-define compile
+define compile_with_size
 	rm -f *.fls
 	rm -f *.bbl
 	rm -f *.aux
-	xelatex $1
-	biber $1
-	makeindex $1
-	makeglossaries $1
-	xelatex $1
-	xelatex $1
+	xelatex -jobname=$(1)$(SIZE_SUFFIX) "$(2) $(SIZE_DEFS) \input{main.tex}"
+	biber $(1)$(SIZE_SUFFIX)
+	makeindex $(1)$(SIZE_SUFFIX)
+	makeglossaries $(1)$(SIZE_SUFFIX)
+	xelatex -jobname=$(1)$(SIZE_SUFFIX) "$(2) $(SIZE_DEFS) \input{main.tex}"
+	xelatex -jobname=$(1)$(SIZE_SUFFIX) "$(2) $(SIZE_DEFS) \input{main.tex}"
 endef
 
 russian: $(RU_LISTINGS)
-	$(call compile,Reverse_Engineering_for_Beginners-ru)
+	$(call compile_with_size,Reverse_Engineering_for_Beginners-ru,\def\RUSSIAN{})
 
 english: $(EN_LISTINGS)
-	$(call compile,Reverse_Engineering_for_Beginners-en)
+	$(call compile_with_size,Reverse_Engineering_for_Beginners-en,\def\ENGLISH{})
 
 russian-A5: $(RU_LISTINGS)
-	$(call compile,Reverse_Engineering_for_Beginners-ru-A5)
+	$(call compile_with_size,Reverse_Engineering_for_Beginners-ru-A5,\def\RUSSIAN{} \def\ebook{})
 
 english-A5: $(EN_LISTINGS)
-	$(call compile,Reverse_Engineering_for_Beginners-en-A5)
+	$(call compile_with_size,Reverse_Engineering_for_Beginners-en-A5,\def\ENGLISH{} \def\ebook{})
 
 russian-lite: $(RU_LISTINGS)
-	$(call compile,Reverse_Engineering_for_Beginners-ru-lite)
+	$(call compile_with_size,Reverse_Engineering_for_Beginners-ru-lite,\def\RUSSIAN{} \def\LITE{})
 
 english-lite: $(EN_LISTINGS)
-	$(call compile,Reverse_Engineering_for_Beginners-en-lite)
+	$(call compile_with_size,Reverse_Engineering_for_Beginners-en-lite,\def\ENGLISH{} \def\LITE{})
 
 russian-A5-lite: $(RU_LISTINGS)
-	$(call compile,Reverse_Engineering_for_Beginners-ru-A5-lite)
+	$(call compile_with_size,Reverse_Engineering_for_Beginners-ru-A5-lite,\def\RUSSIAN{} \def\ebook{} \def\LITE{})
 
 english-A5-lite: $(EN_LISTINGS)
-	$(call compile,Reverse_Engineering_for_Beginners-en-A5-lite)
+	$(call compile_with_size,Reverse_Engineering_for_Beginners-en-A5-lite,\def\ENGLISH{} \def\ebook{} \def\LITE{})
 
 ES:	$(ES_LISTINGS)
-	$(call compile,Reverse_Engineering_for_Beginners-ES)
+	$(call compile_with_size,Reverse_Engineering_for_Beginners-ES,\def\SPANISH{})
 
 PTBR:	$(PTBR_LISTINGS)
-	$(call compile,Reverse_Engineering_for_Beginners-PTBR)
+	$(call compile_with_size,Reverse_Engineering_for_Beginners-PTBR,\def\BRAZILIAN{})
 
 ES-lite: $(ES_LISTINGS)
-	$(call compile,Reverse_Engineering_for_Beginners-ES-lite)
+	$(call compile_with_size,Reverse_Engineering_for_Beginners-ES-lite,\def\SPANISH{} \def\LITE{})
 
 ES-A5: $(ES_LISTINGS)
-	$(call compile,Reverse_Engineering_for_Beginners-ES-A5)
+	$(call compile_with_size,Reverse_Engineering_for_Beginners-ES-A5,\def\SPANISH{} \def\ebook{})
 
 PTBR-lite: $(PTBR_LISTINGS)
-	$(call compile,Reverse_Engineering_for_Beginners-PTBR-lite)
+	$(call compile_with_size,Reverse_Engineering_for_Beginners-PTBR-lite,\def\BRAZILIAN{} \def\LITE{})
 
 polish:	$(PL_LISTINGS)
-	$(call compile,Reverse_Engineering_for_Beginners-polish)
+	$(call compile_with_size,Reverse_Engineering_for_Beginners-polish,\def\POLISH{})
 
 polish-lite: $(PL_LISTINGS)
-	$(call compile,Reverse_Engineering_for_Beginners-polish-lite)
+	$(call compile_with_size,Reverse_Engineering_for_Beginners-polish-lite,\def\POLISH{} \def\LITE{})
 

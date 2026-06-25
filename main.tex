@@ -1,10 +1,15 @@
 \newcommand{\NormalScale}{0.66} % FIXME?
+\ifdefined\customwidth
+\documentclass[oneside]{book}
+\newcommand{\FigScale}{0.28}
+\else
 \ifdefined\ebook
 \documentclass[a5paper,oneside]{book}
 \newcommand{\FigScale}{0.4}
 \else
 \documentclass[a4paper,oneside]{book}
 \newcommand{\FigScale}{\NormalScale} 
+\fi
 \fi
 
 \usepackage{fontspec}
@@ -94,10 +99,14 @@
 
 \usepackage{shorttoc}
 \usetikzlibrary{calc,positioning,chains,arrows}
+\ifdefined\customwidth
+\usepackage[paperwidth=\customwidth,paperheight=\customheight,margin=0.25in,headheight=11pt]{geometry}
+\else
 \ifdefined\ebook
 \usepackage[margin=0.5in,headheight=11pt]{geometry}
 \else
 \usepackage[margin=0.5in,headheight=12.5pt]{geometry}
+\fi
 \fi
 
 \ifdefined\RUSSIAN

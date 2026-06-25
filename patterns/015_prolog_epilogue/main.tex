@@ -1,4 +1,4 @@
-\chapter{\RU{Пролог и эпилог функций}\EN{Function prologue and epilogue}}
+\chapter{\RU{Пролог и эпилог функций}\EN{Function prologue and epilogue}\ES{Prólogo y epílogo de funciones}}
 \label{sec:prologepilog}
 \index{Function epilogue}
 \index{Function prologue}
@@ -6,7 +6,7 @@
 \RU{Пролог функции это инструкции в самом начале функции. Как правило это что-то вроде такого
 фрагмента кода:}
 \EN{A function prologue is a sequence of instructions at the start of a function. It often looks something like the following
-code fragment:}
+code fragment:}\ES{El prólogo de una función es una secuencia de instrucciones al inicio de la misma. A menudo se ve como el siguiente fragmento de código:}
 
 \begin{lstlisting}
     push    ebp
@@ -18,19 +18,19 @@ code fragment:}
 затем подготавливают место в стеке для хранения локальных переменных.}
 \EN{What these instruction do: save the value in the \EBP register,
 sets the value of the \EBP register to the value of the \ESP and then allocate space on the stack 
-for local variables.}
+for local variables.}\ES{Lo que hacen estas instrucciones: guardan el valor del registro \EBP para el futuro, establecen el valor del registro \EBP al valor de \ESP y luego asignan espacio en la pila para las variables locales.}
 
 \RU{\EBP сохраняет свое значение на протяжении всей функции, он будет использоваться здесь для доступа 
 к локальным переменным и аргументам. Можно было бы использовать и \ESP, но он постоянно меняется и 
 это не очень удобно.}
 \EN{The value in the \EBP stays the same over the period of the function execution and is to be used for local variables and 
 arguments access. 
-For the same purpose one can use \ESP, but since it changes over time this approach is not too convenient.}
+For the same purpose one can use \ESP, but since it changes over time this approach is not too convenient.}\ES{El valor en \EBP permanece igual durante todo el período de ejecución de la función y se utiliza para el acceso a las variables locales y a los argumentos. Para el mismo propósito se podría usar \ESP, pero dado que cambia con el tiempo, este enfoque no es muy conveniente.}
 
 \RU{Эпилог функции аннулирует выделенное место в стеке, восстанавливает значение \EBP на старое и возвращает 
 управление в вызывающую функцию:}
 \EN{The function epilogue frees allocated space in the stack, returns the value in the \EBP register back to its initial state 
-and returns the control flow to the \gls{callee}:}
+and returns the control flow to the \gls{callee}:}\ES{El epílogo de la función libera el espacio asignado en la pila, restaura el valor del registro \EBP a su estado inicial y devuelve el flujo de control a la \gls{caller}:}
 
 \begin{lstlisting}
     mov    esp, ebp
@@ -40,13 +40,13 @@ and returns the control flow to the \gls{callee}:}
 
 % what about calling convention?
 \RU{Пролог и эпилог функции обычно находятся в дизассемблерах для отделения функций друг от друга.}
-\EN{Function prologues and epilogues are usually detected in disassemblers for function delimitation.}
+\EN{Function prologues and epilogues are usually detected in disassemblers for function delimitation.}\ES{Los prólogos y epílogos de funciones usualmente son detectados por los desensambladores para delimitar las funciones.}
 
 \section{\Recursion}
 
 \index{\Recursion}
 \RU{Наличие эпилога и пролога может несколько ухудшить эффективность рекурсии.}
-\EN{Epilogues and prologues can negatively affect the recursion performance.}
+\EN{Epilogues and prologues can negatively affect the recursion performance.}\ES{La presencia de prólogos y epílogos puede afectar negativamente el rendimiento de la recursión.}
 
-\EN{More about recursion in this book}\RU{Больше о рекурсии в этой книге}: 
+\EN{More about recursion in this book}\RU{Больше о рекурсии в этой книге}\ES{Más sobre la recursión en este libro}: 
 \myref{Recursion_and_tail_call}.

@@ -1,35 +1,35 @@
 \subsection{MSVC\EMDASH{}x86-64}
 
 \index{x86-64}
-\RU{Попробуем также 64-битный MSVC}\EN{Let's also try 64-bit MSVC}:
+\RU{Попробуем также 64-битный MSVC}\EN{Let's also try 64-bit MSVC}\ES{Probemos también con MSVC de 64 bits}:
 
 \lstinputlisting[caption=MSVC 2012 x64]{patterns/01_helloworld/MSVC_x64.asm}
 
 \RU{В x86-64 все регистры были расширены до 64-х бит и теперь имеют префикс \TT{R-}}%
-\EN{In x86-64, all registers were extended to 64-bit and now their names have an \TT{R-} prefix}.
+\EN{In x86-64, all registers were extended to 64-bit and now their names have an \TT{R-} prefix}.\ES{En x86-64, todos los registros se extendieron a 64 bits y ahora sus nombres tienen el prefijo \TT{R-}}%
 \index{fastcall}
 \RU{Чтобы поменьше задействовать стек (иными словами, поменьше обращаться кэшу и внешней памяти), уже давно имелся
 довольно популярный метод передачи аргументов функции через регистры}
 \EN{In order to use the stack less often (in other words, to access external memory/cache less often), there exists
-a popular way to pass function arguments via registers} 
+a popular way to pass function arguments via registers}\ES{Con el fin de utilizar menos la pila (en otras palabras, para acceder menos a la memoria externa y a la caché), existe una forma muy popular de pasar los argumentos de las funciones a través de los registros} 
 (fastcall%
 \ifx\LITE\undefined%
 : \myref{fastcall}%
 \fi
 ).
 \RU{Т.е. часть аргументов функции передается через регистры и часть}\EN{I.e., a part
-of the function arguments are passed in registers, the rest}\EMDASH{}\RU{через стек}\EN{via the stack}.
+of the function arguments are passed in registers, the rest}\EMDASH{}\RU{через стек}\EN{via the stack}.\ES{Es decir, una parte de los argumentos de la función se pasa en los registros y el resto a través de la pila.}
 \RU{В Win64 первые 4 аргумента функции передаются через регистры}\EN{In Win64, 4 function arguments
-are passed in} \RCX, \RDX, \Reg{8}, \Reg{9}\EN{ registers}.
+are passed in} \RCX, \RDX, \Reg{8}, \Reg{9}\EN{ registers}.\ES{En Win64, los primeros 4 argumentos de la función se pasan en los registros \RCX, \RDX, \Reg{8}, \Reg{9}.}
 \RU{Это мы здесь и видим: указатель на строку в \printf теперь передается не через стек, а через регистр \RCX}%
-\EN{That is what we see here: a pointer to the string for \printf is now passed not in stack, but in the \RCX register}.
+\EN{That is what we see here: a pointer to the string for \printf is now passed not in stack, but in the \RCX register}.\ES{Eso es lo que vemos aquí: el puntero a la cadena para \printf ahora no se pasa en la pila, sino en el registro \RCX}.
 
 \RU{Указатели теперь 64-битные, так что они передаются через 64-битные части регистров (имеющие префикс \TT{R-})}%
-\EN{The pointers are 64-bit now, so they are passed in the 64-bit registers (which have the \TT{R-} prefix)}.
+\EN{The pointers are 64-bit now, so they are passed in the 64-bit registers (which have the \TT{R-} prefix)}.\ES{Los punteros ahora son de 64 bits, por lo que se pasan en los registros de 64 bits (que tienen el prefijo \TT{R-})}.
 \RU{Но для обратной совместимости можно обращаться и к нижним 32 битам регистров используя префикс \TT{E-}}%
-\EN{However, for backward compatibility, it is still possible to access the 32-bit parts, using the \TT{E-} prefix}.
+\EN{However, for backward compatibility, it is still possible to access the 32-bit parts, using the \TT{E-} prefix}.\ES{Sin embargo, para mantener la compatibilidad hacia atrás, sigue siendo posible acceder a las partes de 32 bits, utilizando el prefijo \TT{E-}}.
 
-\RU{Вот как выглядит регистр}\EN{This is how} \RAX/\EAX/\AX/\AL \RU{в}\EN{register looks like in} x86-64:
+\RU{Вот как выглядит регистр}\EN{This is how} \RAX/\EAX/\AX/\AL \RU{в}\EN{register looks like in}\ES{registro se ve en} x86-64:
 
 \RegTableOne{RAX}{EAX}{AX}{AH}{AL}
 
@@ -37,9 +37,9 @@ are passed in} \RCX, \RDX, \Reg{8}, \Reg{9}\EN{ registers}.
 оставили 32-битным. Вот почему в конце функции \main обнуляется не \RAX, а \EAX, т.е. 32-битная часть регистра.}
 \EN{The \main function returns an \Tint{}-typed value, which is, in the \CCpp, for better backward compatibility
 and portability, still 32-bit, so that is why the \EAX register is cleared at the function end (i.e., 32-bit
-part of register) instead of \RAX{}.}
+part of register) instead of \RAX{}.}\ES{La función \main devuelve un valor de tipo \Tint, el cual en \CCpp, para una mejor compatibilidad hacia atrás y portabilidad, sigue siendo de 32 bits; es por eso que al final de la función se limpia el registro \EAX (es decir, la parte de 32 bits del registro) en lugar de \RAX{}.}
 
-\RU{Также видно, что 40 байт выделяются в локальном стеке}\EN{There are also 40 bytes allocated in the local stack}.
-\RU{Это}\EN{This is called} \q{shadow space}, 
+\RU{Также видно, что 40 байт выделяются в локальном стеке}\EN{There are also 40 bytes allocated in the local stack}.\ES{También se puede ver que se asignan 40 bytes en la pila local.}
+\RU{Это}\EN{This is called}\ES{Esto se llama} \q{shadow space}, 
 \RU{которое мы будем рассматривать позже}%
-\EN{about which we are going to talk later}: \myref{shadow_space}.
+\EN{about which we are going to talk later}\ES{del cual hablaremos más adelante}: \myref{shadow_space}.
