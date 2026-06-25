@@ -4,10 +4,10 @@
 
 \RU{Стек в информатике~--- это одна из наиболее фундаментальных структур данных}%
 \EN{The stack is one of the most fundamental data structures in computer science}%
-\footnote{\href{http://go.yurichev.com/17119}{wikipedia.org/wiki/Call\_stack}}.
+\footnote{\href{http://go.yurichev.com/17119}{wikipedia.org/wiki/Call\_stack}}.\ES{La pila es una de las estructuras de datos más fundamentales en las ciencias de la computación.}
 
 \RU{Технически это просто блок памяти в памяти процесса + регистр \ESP в x86 или \RSP в x64, либо \ac{SP} в ARM, который указывает где-то в пределах этого блока.}
-\EN{Technically, it is just a block of memory in process memory along with the \ESP or \RSP register in x86 or x64, or the \ac{SP} register in ARM, as a pointer within that block.}
+\EN{Technically, it is just a block of memory in process memory along with the \ESP or \RSP register in x86 or x64, or the \ac{SP} register in ARM, as a pointer within that block.}\ES{Técnicamente, es solo un bloque de memoria en la memoria del proceso junto con el registro \ESP o \RSP en x86 o x64, o el registro \ac{SP} en ARM, como un puntero dentro de ese bloque.}
 
 \index{ARM!\Instructions!PUSH}
 \index{ARM!\Instructions!POP}
@@ -17,25 +17,25 @@
 \PUSH уменьшает \ESP/\RSP/\ac{SP} на 4 в 32-битном режиме (или на 8 в 64-битном),
 затем записывает по адресу, на который указывает \ESP/\RSP/\ac{SP}, содержимое своего единственного операнда.}
 \EN{The most frequently used stack access instructions are \PUSH and \POP (in both x86 and ARM Thumb-mode). 
-\PUSH subtracts from \ESP/\RSP/\ac{SP} 4 in 32-bit mode (or 8 in 64-bit mode) and then writes the contents of its sole operand to the memory address pointed by \ESP/\RSP/\ac{SP}.} 
+\PUSH subtracts from \ESP/\RSP/\ac{SP} 4 in 32-bit mode (or 8 in 64-bit mode) and then writes the contents of its sole operand to the memory address pointed by \ESP/\RSP/\ac{SP}.}\ES{Las instrucciones más frecuentemente utilizadas para acceder a la pila son \PUSH y \POP (tanto en x86 como en el modo Thumb de ARM). \PUSH resta de \ESP/\RSP/\ac{SP} 4 en modo de 32 bits (u 8 en modo de 64 bits) y luego escribe el contenido de su único operando en la dirección de memoria apuntada por \ESP/\RSP/\ac{SP}.}
 
 \RU{\POP это обратная операция~--- сначала достает из \glslink{stack pointer}{указателя стека} значение и помещает его в операнд 
 (который очень часто является регистром) и затем увеличивает указатель стека на 4 (или 8).}
 \EN{\POP is the reverse operation: retrieve the data from memory pointed by \ac{SP}, 
-loads it into the instruction operand (often a register) and then add 4 (or 8) to the \gls{stack pointer}.}
+loads it into the instruction operand (often a register) and then add 4 (or 8) to the \gls{stack pointer}.}\ES{\POP es la operación inversa: recupera los datos de la memoria apuntada por \ac{SP}, los carga en el operando de la instrucción (a menudo un registro) y luego suma 4 (u 8) al \gls{stack pointer}.}
 
 \RU{В самом начале \glslink{stack pointer}{регистр-указатель} указывает на конец стека.}
-\EN{After stack allocation, the \gls{stack pointer} points at the bottom of the stack.}
+\EN{After stack allocation, the \gls{stack pointer} points at the bottom of the stack.}\ES{Después de la asignación de la pila, el \gls{stack pointer} apunta al final (fondo) de la pila.}
 \RU{\PUSH уменьшает \glslink{stack pointer}{регистр-указатель}, а \POP~--- увеличивает.}
-\EN{\PUSH decreases the \gls{stack pointer} and \POP increases it.}
+\EN{\PUSH decreases the \gls{stack pointer} and \POP increases it.}\ES{\PUSH disminuye el \gls{stack pointer} y \POP lo incrementa.}
 \RU{Конец стека находится в начале блока памяти, выделенного под стек. Это странно, но это так.}
 \EN{The bottom of the stack is actually at the beginning of the memory allocated for the stack block. 
-It seems strange, but that's the way it is.}
+It seems strange, but that's the way it is.}\ES{El fondo de la pila está en realidad al principio del bloque de memoria asignado para ella. Parece extraño, pero así es como funciona.}
 
 \ifdefined\IncludeARM
 \RU{В процессоре ARM, тем не менее, есть поддержка стеков, растущих как в сторону уменьшения, так и в
 сторону увеличения.}
-\EN{ARM supports both descending and ascending stacks.}
+\EN{ARM supports both descending and ascending stacks.}\ES{ARM soporta pilas tanto descendentes como ascendentes.}
 \index{ARM!\Instructions!STMFD}
 \index{ARM!\Instructions!LDMFD}
 \index{ARM!\Instructions!STMED}
@@ -50,30 +50,33 @@ It seems strange, but that's the way it is.}
 \RU{предназначены для descending-стека 
 (растет назад, начиная с высоких адресов в сторону низких).}
 \EN{instructions are intended to deal with a descending stack 
-(grows downwards, starting with a high address and progressing to a lower one).}
+(grows downwards, starting with a high address and progressing to a lower one).}\ES{estas instrucciones están destinadas a tratar con una pila descendente (crece hacia abajo, comenzando con una dirección alta y progresando hacia una más baja).}
 \RU{Инструкции}\EN{The}
 \ac{STMFA}/\ac{LDMFA}, \ac{STMEA}/\ac{LDMEA} 
 \RU{предназначены для ascending-стека 
 (растет вперед, начиная с низких адресов в сторону высоких).}
 \EN{instructions are intended to deal with an ascending stack 
-(grows upwards, starting from a low address and progressing to a higher one).}
+(grows upwards, starting from a low address and progressing to a higher one).}\ES{estas instrucciones están destinadas a tratar con una pila ascendente (crece hacia arriba, comenzando desde una dirección baja y progresando hacia una más alta).}
 \fi
 
-\section{\RU{Почему стек растет в обратную сторону?}\EN{Why does the stack grow backwards?}}
+\section{\RU{Почему стек растет в обратную сторону?}\EN{Why does the stack grow backwards?}\ES{¿Por qué la pila crece hacia atrás?}}
 
 \RU{Интуитивно мы можем подумать, что, как и любая другая структура данных, стек мог бы расти вперед, 
-т.е. в сторону увеличения адресов}\EN{Intuitively, we might think that the stack grow upwards, i.e. towards
-higher addresses, like any other data structure}.
+т.е. в сторону увеличения адресов}
+\EN{Intuitively, we might think that the stack grow upwards, i.e. towards
+higher addresses, like any other data structure}.\ES{Intuitivamente, podríamos pensar que la pila crece hacia arriba, es decir, hacia direcciones más altas, como cualquier otra estructura de datos.}
 
 \RU{Причина, почему стек растет назад, вероятно, историческая}%
-\EN{The reason that the stack grows backward is probably historical}.
+\EN{The reason that the stack grows backward is probably historical}.\ES{La razón por la que la pila crece hacia atrás es probablemente histórica.}
 \RU{Когда компьютеры были большие и занимали целую комнату, было очень легко разделить сегмент на две части:
-для \glslink{heap}{кучи} и для стека}\EN{When the computers were big and occupied a whole room, 
-it was easy to divide memory into two parts, one for the \gls{heap} and one for the stack}.
+для \glslink{heap}{кучи} и для стека}
+\EN{When the computers were big and occupied a whole room, 
+it was easy to divide memory into two parts, one for the \gls{heap} and one for the stack}.\ES{Cuando las computadoras eran grandes y ocupaban una habitación entera, era fácil dividir la memoria en dos partes, una para la \gls{heap} (pila de memoria dinámica / montón) y otra para la pila.}
 \RU{Заранее было неизвестно, насколько большой может быть \glslink{heap}{куча} или стек, 
-так что это решение было самым простым}\EN{Of course, 
+так что это решение было самым простым}
+\EN{Of course, 
 it was unknown how big the \gls{heap} and the stack would be during program execution, 
-so this solution was the simplest possible}.
+so this solution was the simplest possible}.\ES{Por supuesto, no se sabía qué tan grandes serían la \gls{heap} y la pila durante la ejecución del programa, por lo que esta solución fue la más simple posible.}
 
 \begin{center}
 	\begin{tikzpicture}
@@ -89,8 +92,8 @@ so this solution was the simplest possible}.
 	\draw [->] (heap) -- (center1);
 	\draw [->] (stack) -- (center2);
 
-	\node [] [above left=1.1cm and 0.2cm of heap] (t1) {\RU{Начало кучи}\EN{Start of heap}};
-	\node [] [above right=1.1cm and 0.2cm of stack] (t2) {\RU{Вершина стека}\EN{Start of stack}};
+	\node [] [above left=1.1cm and 0.2cm of heap] (t1) {\RU{Начало кучи}\EN{Start of heap}\ES{Inicio de la heap}};
+	\node [] [above right=1.1cm and 0.2cm of stack] (t2) {\RU{Вершина стека}\EN{Start of stack}\ES{Inicio de la pila}};
 
 	\draw [->] (t1) -- (memory.west);
 	\draw [->] (t2) -- (memory.east);
@@ -98,7 +101,7 @@ so this solution was the simplest possible}.
 	\end{tikzpicture}
 \end{center}
 
-\RU{В}\EN{In} \cite{Ritchie74} \RU{можно прочитать}\EN{we can read}:
+\RU{В}\EN{In}\ES{En} \cite{Ritchie74} \RU{можно прочитать}\EN{we can read}\ES{podemos leer}:
 
 \begin{framed}
 \begin{quotation}
@@ -107,15 +110,15 @@ The user-core part of an image is divided into three logical segments. The progr
 \end{framed}
 
 \RU{Это немного напоминает как некоторые студенты
-пишут два конспекта в одной тетрадке:
+пишут два конспеккта в одной тетрадке:
 первый конспект начинается обычным образом, второй пишется с конца, перевернув тетрадку.
 Конспекты могут встретиться где-то посредине, в случае недостатка свободного места.}
 \EN{This reminds us how some students write two lecture notes using only one notebook:
 notes for the first lecture are written as usual, 
 and notes for the second one are written from the end of notebook, by flipping it.
-Notes may meet each other somewhere in between, in case of lack of free space.}
+Notes may meet each other somewhere in between, in case of lack of free space.}\ES{Esto nos recuerda cómo algunos estudiantes escriben dos apuntes de clase usando un solo cuaderno: los apuntes para la primera clase se escriben de manera habitual, y los de la segunda se escriben desde el final del cuaderno, volteándolo. Los apuntes pueden encontrarse en algún lugar intermedio, en caso de falta de espacio libre.}
 
-\section{\RU{Для чего используется стек?}\EN{What is the stack used for?}}
+\section{\RU{Для чего используется стек?}\EN{What is the stack used for?}\ES{¿Para qué se utiliza la pila?}}
 
 % subsections
 \input{patterns/02_stack/01_saving_ret_addr}
@@ -125,16 +128,16 @@ Notes may meet each other somewhere in between, in case of lack of free space.}
 \input{patterns/02_stack/05_SEH}
 \input{patterns/02_stack/06_BO_protection}
 
-\subsection{\EN{Automatic deallocation of data in stack}\RU{Автоматическое освобождение данных в стеке}}
+\subsection{\EN{Automatic deallocation of data in stack}\RU{Автоматическое освобождение данных в стеке}\ES{Liberación automática de datos en la pila}}
 
 \RU{Возможно, причина хранения локальных переменных и SEH-записей в стеке в том, что после выхода из функции, всё эти данные освобождаются автоматически,
 используя только одну инструкцию корректирования указателя стека (часто это ADD).}
 \EN{Perhaps, the reason of storing local variables and SEH records in stack is because they are freed automatically upon function exit,
-using just one instruction of stack pointer correcting (it is often ADD).}
+using just one instruction of stack pointer correcting (it is often ADD).}\ES{Tal vez, la razón para almacenar variables locales y registros SEH en la pila sea porque se liberan automáticamente al salir de la función, usando solo una instrucción de corrección del puntero de pila (a menudo es ADD).}
 \RU{Аргументы функций, можно сказать, тоже освобождаются автоматически в конце функции.}
-\EN{Function arguments, as we could say, also deallocated automatically at the end of function.}
+\EN{Function arguments, as we could say, also deallocated automatically at the end of function.}\ES{Los argumentos de las funciones, por así decirlo, también se liberan automáticamente al final de la función.}
 \RU{А всё что хранится в куче (\IT{heap}) нужно освобождать явно.}
-\EN{On contrary, everything stored in \IT{heap} must be deallocated explicitly.}
+\EN{On contrary, everything stored in \IT{heap} must be deallocated explicitly.}\ES{Por el contrario, todo lo almacenado en la \IT{heap} debe ser liberado explíquitamente.}
 
 % sections
 \input{patterns/02_stack/07_layout}

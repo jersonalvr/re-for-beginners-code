@@ -1,6 +1,6 @@
 \subsection{MSVC: x86}
 
-\RU{Вот что выходит на ассемблере}\EN{Here is what we get in the assembly output} (MSVC 2010):
+\RU{Вот что выходит на ассемблере}\EN{Here is what we get in the assembly output}\ES{Esto es lo que obtenemos en la salida del ensamblador} (MSVC 2010):
 
 \lstinputlisting{patterns/04_scanf/3_checking_retval/ex3_MSVC_x86.asm}
 
@@ -9,31 +9,37 @@
 вызываемая функция (в нашем случае \scanf) оставляет это значение в регистре \EAX.}
 \EN{The \gls{caller} function (\main) needs the \gls{callee} function (\scanf) result, 
 so the \gls{callee} returns it in the \EAX register.}
+\ES{La función de llamada (\gls{caller}, \main) necesita el resultado de la función llamada (\gls{callee}, \scanf), por lo que la función llamada lo devuelve en el registro \EAX.}
 
 \index{x86!\Instructions!CMP}
 \RU{Мы проверяем его инструкцией \TT{CMP EAX, 1} (\IT{CoMPare}), то есть 
 сравниваем значение в \EAX с 1.}
 \EN{We check it with the help of the instruction \TT{CMP EAX, 1} (\IT{CoMPare}).
 In other words, we compare the value in the \EAX register with 1.} 
+\ES{Lo comprobamos con la ayuda de la instrucción \TT{CMP EAX, 1} (\IT{CoMPare}). En otras palabras, comparamos el valor en el registro \EAX con 1.}
 
 \index{x86!\Instructions!JNE}
 \RU{Следующий за инструкцией \CMP: условный переход \JNE. 
 Это означает \IT{Jump if Not Equal}, то есть условный переход \IT{если не равно}.}
 \EN{A \JNE conditional jump follows the \CMP instruction. \JNE stands for \IT{Jump if Not Equal}.}
+\ES{A la instrucción \CMP le sigue un salto condicional \JNE. \JNE significa \IT{Jump if Not Equal} (saltar si no es igual).}
 
 \RU{Итак, если \EAX не равен 1, то \JNE заставит \ac{CPU} перейти 
 по адресу указанном в операнде \JNE, у нас это \TT{\$LN2@main}.}
 \EN{So, if the value in the \EAX register is not equal to 1, 
 the \ac{CPU} will pass the execution to the 
 address mentioned in the \JNE operand, in our case \TT{\$LN2@main}.}
+\ES{Entonces, si el valor en el registro \EAX no es igual a 1, la \ac{CPU} pasará la ejecución a la dirección mencionada en el operando \JNE, en nuestro caso \TT{\$LN2@main}.}
 \RU{Передав управление по этому адресу, \ac{CPU} начнет исполнять вызов \printf с 
 аргументом \TT{What you entered? Huh?}.}
 \EN{Passing the control to this address results in the \ac{CPU} executing \printf 
 with the argument \TT{What you entered? Huh?}.}
+\ES{Pasar el control a esta dirección hace que la \ac{CPU} ejecute \printf con el argumento \TT{What you entered? Huh?}.}
 \RU{Но если всё нормально, перехода не случится и исполнится другой \printf с двумя аргументами: 
 \TT{'You entered \%d...'} и значением переменной \TT{x}.}
 \EN{But if everything is fine, the conditional jump is not be be taken, and another \printf call 
 is to be executed, with two arguments: \TT{'You entered \%d...'} and the value of \TT{x}. }
+\ES{Pero si todo está bien, el salto condicional no se realizará y se ejecutará otra llamada a \printf, con dos argumentos: \TT{'You entered \%d...'} y el valor de \TT{x}.}
 
 \index{x86!\Instructions!XOR}
 \index{\CLanguageElements!return}
@@ -42,18 +48,22 @@ is to be executed, with two arguments: \TT{'You entered \%d...'} and the value o
 после второго \printf и перед инструкцией \TT{XOR EAX, EAX}, которая реализует \TT{return 0}.}
 \EN{Since in this case the second \printf has not to be executed, there is a \JMP preceding it (unconditional jump). 
 It passes the control to the point after the second \printf and just before the \TT{XOR EAX, EAX} instruction, which implements \TT{return 0}.}
+\ES{Dado que en este caso el segundo \printf no debe ejecutarse, hay un \JMP que lo precede (salto incondicional). Este pasa el control al punto posterior al segundo \printf y justo antes de la instrucción \TT{XOR EAX, EAX}, que implementa \TT{return 0}.}
 
 \index{x86!\Registers!\Flags}
 \RU{Итак, можно сказать что в подавляющих случаях сравнение какой-либо переменной с чем-то другим 
 происходит при помощи пары инструкций \CMP и \Jcc, где \IT{cc} это \IT{condition code}.}
 \EN{So, it could be said that comparing a value with another is \IT{usually} implemented
 by \CMP/\Jcc instruction pair, where \IT{cc} is \IT{condition code}.}
+\ES{Por lo tanto, se podría decir que la comparación de un valor con otro se implementa \IT{generalmente} mediante el par de instrucciones \CMP/\Jcc, donde \IT{cc} es el código de condición (\IT{condition code}).}
 \RU{\CMP сравнивает два значения и выставляет 
 флаги процессора\footnote{См. также о флагах x86-процессора: \href{http://go.yurichev.com/17120}{wikipedia}.}.}
 \EN{\CMP compares two values and sets 
 processor flags\footnote{x86 flags, see also: \href{http://go.yurichev.com/17120}{wikipedia}.}.}
+\ES{\CMP compara dos valores y establece los flags del procesador\footnote{Flags de x86, ver también: \href{http://go.yurichev.com/17120}{wikipedia}.}.}
 \RU{\Jcc проверяет нужные ему флаги и выполняет переход по указанному адресу (или не выполняет).}
 \EN{\Jcc checks those flags and decides to either pass the control to the specified address or not.}
+\ES{\Jcc comprueba esos flags y decide si pasar el control a la dirección especificada o no.}
 
 \index{x86!\Instructions!CMP}
 \index{x86!\Instructions!SUB}
@@ -61,27 +71,34 @@ processor flags\footnote{x86 flags, see also: \href{http://go.yurichev.com/17120
 \RU{Но на самом деле, как это не парадоксально поначалу звучит, \CMP это почти то же самое что и 
 инструкция \SUB, которая отнимает числа одно от другого.}
 \EN{This could sound paradoxical, but the \CMP instruction is in fact \SUB (subtract).}
+\ES{Esto podría sonar paradójico, pero la instrucción \CMP es de hecho una resta (\SUB, subtract).}
 \RU{Все арифметические инструкции также выставляют флаги в соответствии с результатом, не только \CMP.}
 \EN{All arithmetic instructions set processor flags, not just \CMP.}
+\ES{Todas las instrucciones aritméticas establecen los flags del procesador, no solo \CMP.}
 \RU{Если мы сравним 1 и 1, от единицы отнимется единица, получится 0, и выставится флаг 
 \ZF (\IT{zero flag}), означающий, что последний полученный результат был 0.}
 \EN{If we compare 1 and 1, $1-1$ is 0 so the \ZF flag would be set (meaning that the last result was 0).}
+\ES{Si comparamos 1 y 1, $1-1$ is 0 por lo que se establecerá el flag \ZF (lo que significa que el último resultado fue 0).}
 \RU{Ни при каких других значениях \EAX, флаг \ZF не может быть выставлен, кроме тех, когда операнды равны друг другу.}
 \EN{In no other circumstances \ZF can be set, except when the operands are equal.}
+\ES{En ninguna otra circunstancia se puede establecer \ZF, excepto cuando los operandos son iguales.}
 \index{x86!\Instructions!JNE}
 \index{x86!\Registers!ZF}
 \RU{Инструкция \JNE проверяет только флаг \ZF, и совершает переход только если флаг не поднят. 
 Фактически, \JNE это синоним инструкции \JNZ (\IT{Jump if Not Zero}).}
 \EN{\JNE checks only the \ZF flag and jumps only if it is not set. 
 \JNE is in fact a synonym for \JNZ (\IT{Jump if Not Zero}).}
+\ES{\JNE comprueba solo el flag \ZF y salta solo si no está establecido. \JNE es de hecho un sinónimo de \JNZ (\IT{Jump if Not Zero}, saltar si no es cero).}
 \RU{Ассемблер транслирует обе инструкции в один и тот же опкод.}
 \EN{Assembler translates both \JNE and \JNZ instructions into the same opcode.}
+\ES{El ensamblador traduce tanto las instrucciones \JNE como \JNZ en el mismo código de operación (opcode).}
 \RU{Таким образом, можно \CMP заменить на \SUB и всё будет работать также, но разница в том, что \SUB 
 всё-таки испортит значение в первом операнде. \CMP это \IT{SUB без сохранения результата, но изменяющая флаги}.}
 \EN{So, the \CMP instruction can be replaced with a \SUB instruction 
 and almost everything will be fine,
 with the difference that \SUB alters the value of the first operand.
 \CMP is \IT{SUB without saving the result, but affecting flags}.}
+\ES{Por lo tanto, la instrucción \CMP se puede reemplazar con una instrucción \SUB y casi todo estará bien, con la diferencia de que \SUB altera el valor del primer operando. \CMP es \IT{\SUB sin guardar el resultado, pero afectando a los flags}.}
 
 \ifx\LITE\undefined
 \subsection{MSVC: x86: IDA}
@@ -89,76 +106,95 @@ with the difference that \SUB alters the value of the first operand.
 \index{IDA}
 \RU{Наверное, уже пора делать первые попытки анализа кода в \IDA}%
 \EN{It is time to run \IDA and try to do something in it}.
+\ES{Es hora de ejecutar \IDA e intentar hacer algo en él}.
 \RU{Кстати, начинающим полезно компилировать в MSVC с ключом \TT{/MD}, что означает что все эти стандартные
 функции не будут скомпонованы с исполняемым файлом, а будут импортироваться из файла \TT{MSVCR*.DLL}.}
 \EN{By the way, for beginners it is good idea to use \TT{/MD} option in MSVC, which means that all these
 standard functions are not be linked with the executable file, 
 but are to be imported from the \TT{MSVCR*.DLL} file instead.}
+\ES{Por cierto, para los principiantes es una buena idea utilizar la opción \TT{/MD} en MSVC, lo que significa que todas estas funciones estándar no se vincularán con el archivo ejecutable, sino que se importarán del archivo \TT{MSVCR*.DLL} en su lugar.}
 \RU{Так будет легче увидеть, где какая стандартная функция используется.}
 \EN{Thus it will be easier to see which standard function are used and where.}
+\ES{De este modo, será más fácil ver qué función estándar se utiliza y dónde.}
 
 \RU{Анализируя код в \IDA, очень полезно делать пометки для себя (и других).}
 \EN{While analysing code in \IDA, it is very helpful to leave notes for oneself (and others)}.
+\ES{Al analizar código en \IDA, es muy útil dejar notas para uno mismo (y para otros).}
 \RU{Например, разбирая этот пример, мы сразу видим, что \TT{JNZ} срабатывает в случае ошибки.}
 \EN{In instance, analysing this example, 
 we see that \TT{JNZ} is to be triggered in case of an error.}
+\ES{Por ejemplo, al analizar este ejemplo, vemos que \TT{JNZ} se activará en caso de error.}
 \RU{Можно навести курсор на эту метку, нажать \q{n} и переименовать метку в \q{error}.}
 \EN{So it is possible to move the cursor to the label, press \q{n} and rename it to \q{error}.}
+\ES{Por lo tanto, es posible mover el cursor a la etiqueta, presionar \q{n} y cambiarle el nombre a \q{error}.}
 \RU{Ещё одну метку}\EN{Create another label}\EMDASH{}\RU{в}\EN{into} \q{exit}.
+\ES{Cree otra etiqueta en \q{exit}.}
 \RU{Вот как у меня получилось в итоге}\EN{Here is my result}:
+\ES{Aquí está mi resultado}:
 
 \lstinputlisting{patterns/04_scanf/3_checking_retval/ex3.lst}
 
 \RU{Так понимать код становится чуть легче}\EN{Now it is slightly easier to understand the code}.
 \RU{Впрочем, меру нужно знать во всем и комментировать каждую инструкцию не стоит.}
 \EN{However, it is not a good idea to comment on every instruction.}
+\ES{Ahora es un poco más fácil entender el código. Sin embargo, no es una buena idea comentar cada instrucción.}
 
 % FIXME draw button?
 \RU{В \IDA также можно скрывать части функций: нужно выделить скрываемую часть, нажать \q{--} на цифровой клавиатуре и ввести текст}
 \EN{You could also hide(collapse) parts of a function in \IDA.
 To do that mark the block, then press \q{--} on the numerical pad and enter the text to be displayed instead}.
+\ES{También se pueden ocultar (contraer) partes de una función en \IDA. Para hacer eso, marque el bloque, luego presione \q{--} en el teclado numérico e ingrese el texto que se mostrará en su lugar.}
 
 \RU{Скроем две части и придумаем им названия}\EN{Let's hide two blocks and give them names}:
+\ES{Ocultemos dos bloques y démosles nombres}:
 
 \lstinputlisting{patterns/04_scanf/3_checking_retval/ex3_2.lst}
 
 % FIXME draw button?
 \RU{Раскрывать скрытые части функций можно при помощи \q{+} на цифровой клавиатуре}
 \EN{To expand previously collapsed parts of the code, use \q{+} on the numerical pad}.
+\ES{Para expandir las partes del código previamente contraídas, use \q{+} en el teclado numérico.}
 
 \clearpage
 \RU{Нажав \q{пробел}, мы увидим, как \IDA может представить функцию в виде графа}\EN{By pressing \q{space},
 we can see how \IDA represents a function as a graph}:
+\ES{Al presionar la \q{barra espaciadora}, podemos ver cómo \IDA representa una función como un gráfico}:
 
 \begin{figure}[H]
 \centering
 \includegraphics[scale=\FigScale]{patterns/04_scanf/3_checking_retval/IDA.png}
-\caption{\RU{Отображение функции в IDA в виде графа}\EN{Graph mode in IDA}}
+\caption{\RU{Отображение функции в IDA в виде графа}\EN{Graph mode in IDA}\ES{Modo gráfico en IDA}}
 \label{fig:ex3_IDA_1}
 \end{figure}
 
 \RU{После каждого условного перехода видны две стрелки: зеленая и красная}\EN{There are two arrows
 after each conditional jump: green and red}.
+\ES{Después de cada salto condicional se ven dos flechas: verde y roja.}
 \RU{Зеленая ведет к тому блоку, который исполнится если переход сработает, 
 а красная~--- если не сработает.}
 \EN{The green arrow points to the block which executes if the jump is triggered, 
 and red if otherwise.}
+\ES{La flecha verde apunta al bloque que se ejecuta si se activa el salto, y la roja en caso contrario.}
 
 \clearpage
 \RU{В этом режиме также можно сворачивать узлы и давать им названия}
 \EN{It is possible to fold nodes in this mode and give them names as well} (\q{group nodes}).
+\ES{También es posible contraer nodos en este modo y darles nombres (\q{group nodes}).}
 \RU{Сделаем это для трех блоков}\EN{Let's do it for 3 blocks}:
+\ES{Hagámoslo para 3 bloques}:
 
 \begin{figure}[H]
 \centering
 \includegraphics[scale=\FigScale]{patterns/04_scanf/3_checking_retval/IDA2.png}
-\caption{\RU{Отображение в IDA в виде графа с тремя свернутыми блоками}\EN{Graph mode in IDA with 3 nodes folded}}
+\caption{\RU{Отображение в IDA в виде графа с тремя свернутыми блоками}\EN{Graph mode in IDA with 3 nodes folded}\ES{Modo gráfico en IDA con 3 nodos contraídos}}
 \label{fig:ex3_IDA_2}
 \end{figure}
 
 \RU{Всё это очень полезно делать}\EN{That is very useful}.
+\ES{Todo esto es muy útil.}
 \RU{Вообще, очень важная часть работы реверсера (да и любого исследователя) состоит в том, чтобы уменьшать количество имеющейся информации.}
 \EN{It could be said that a very important part of the reverse engineers' job (and any other researcher as well) is to reduce the amount of information they deal with.}
+\ES{Se podría decir que una parte muy importante del trabajo del ingeniero inverso (y de cualquier otro investigador también) es reducir la cantidad de información con la que trata.}
 \fi
 
 \ifdefined\IncludeOlly
@@ -171,55 +207,67 @@ and red if otherwise.}
 
 \RU{Это ещё может быть и простым примером исправления исполняемого файла}\EN{This can also be used as 
 a simple example of executable file patching}.
+\ES{Esto también se puede utilizar como un ejemplo sencillo de parcheo de archivos ejecutables.}
 \RU{Мы можем попробовать исправить его таким образом, что программа всегда будет выводить числа,
 вне зависимости от ввода}\EN{We may try to patch the executable so the program would always 
 print the input, no matter what we enter}.
+\ES{Podemos intentar parchear el ejecutable de modo que el programa siempre imprima la entrada, sin importar lo que ingresemos.}
 
 \RU{Исполняемый файл скомпилирован с импортированием функций из}\EN{Assuming that the 
 executable is compiled against external} \TT{MSVCR*.DLL} (\RU{т.е. с опцией}\EN{i.e., with} 
 \TT{/MD}\EN{ option})\footnote{\RU{то, что ещё называют}\EN{that's what also called} \q{dynamic linking}}, 
 \RU{поэтому мы можем отыскать функцию}\EN{we see the} \main \RU{в самом начале секции}\EN{function at the 
 beginning of the} \TT{.text}\EN{ section}.
+\ES{Suponiendo que el ejecutable está compilado contra la biblioteca externa} \TT{MSVCR*.DLL} (\ES{es decir, con la opción} \TT{/MD})\footnote{\ES{lo que también se llama enlazado dinámico}}, \ES{vemos la función} \main \ES{al comienzo de la sección} \TT{.text}.
 \RU{Откроем исполняемый файл в Hiew, найдем самое начало секции}\EN{Let's open the executable in Hiew and 
 find the beginning of the} \TT{.text}\EN{ section} (Enter, F8, F6, Enter, Enter).
+\ES{Abramos el ejecutable en Hiew y busquemos el comienzo de la sección} \TT{.text} (Enter, F8, F6, Enter, Enter).
 
 \RU{Мы увидим следующее}\EN{We can see this}:
+\ES{Podemos ver esto}:
 
 \begin{figure}[H]
 \centering
 \includegraphics[scale=\FigScale]{patterns/04_scanf/3_checking_retval/hiew_1.png}
-\caption{Hiew: \RU{функция }\main\EN{ function}}
+\caption{Hiew: \RU{функция }\main\EN{ function}\ES{función }\main}
 \label{fig:scanf_ex3_hiew_1}
 \end{figure}
 
 Hiew \RU{находит}\EN{finds} \ac{ASCIIZ}\RU{-строки и показывает их, также как и имена импортируемых 
 функций}\EN{ strings and displays them, as it does with the imported functions' names}.
+\ES{Hiew encuentra las cadenas} \ac{ASCIIZ} \ES{y las muestra, tal como lo hace con los nombres de las funciones importadas}.
 
 \clearpage
 \RU{Переведите курсор на адрес}\EN{Move the cursor to address} \TT{.00401027} 
 (\RU{с инструкцией}\EN{where the} \TT{JNZ}\RU{, которую мы хотим заблокировать}\EN{ instruction, we 
 have to bypass, is located}), \RU{нажмите}\EN{press} F3,
 \RU{затем наберите}\EN{and then type} \q{9090}(\RU{ что означает два}\EN{, meaning two} \ac{NOP}\RU{-а}\EN{s}): 
+\ES{Mueva el cursor a la dirección} \TT{.00401027} (\ES{donde se encuentra la instrucción} \TT{JNZ} \ES{que queremos omitir}), \ES{presione} F3, \ES{y luego escriba} \q{9090} (\ES{que significa dos} \ac{NOP}\ES{s}):
 
 \begin{figure}[H]
 \centering
 \includegraphics[scale=\FigScale]{patterns/04_scanf/3_checking_retval/hiew_2.png}
-\caption{Hiew: \RU{замена}\EN{replacing} \TT{JNZ} \RU{на два}\EN{with two} \ac{NOP}\RU{-а}\EN{s}}
+\caption{Hiew: \RU{замена}\EN{replacing} \TT{JNZ} \RU{на два}\EN{with two} \ac{NOP}\RU{-а}\EN{s}\ES{reemplazando} \TT{JNZ} \ES{con dos} \ac{NOP}\ES{s}}
 \label{fig:scanf_ex3_hiew_2}
 \end{figure}
 
 \RU{Затем}\EN{Then press} F9 (update). \RU{Теперь исполняемый файл записан на диск. Он будет вести себя
 так, как нам надо.}\EN{Now the executable is saved to the disk. It will behave as we wanted.}
+\ES{Luego presione} F9 (actualizar). \ES{Ahora el ejecutable se guarda en el disco. Se comportará como queríamos.}
 
 \RU{Два}\EN{Two} \ac{NOP}\RU{-а}\EN{s} \RU{возможно, не так эстетично, как могло бы быть}\EN{are probably 
 not the most \ae{}sthetic approach}.
+\ES{Dos} \ac{NOP}\ES{s} \ES{probablemente no sean el enfoque más estético.}
 \RU{Другой способ изменить инструкцию это записать 0 во второй байт опкода (смещение перехода),
 так что}\EN{Another way to patch this instruction is to write just 0 to the second opcode byte (\gls{jump offset}), 
 so that} \TT{JNZ} \RU{всегда будет переходить на следующую инструкцию}\EN{will always jump to 
 the next instruction}.
+\ES{Otra forma de parchear esta instrucción es escribir solo 0 en el segundo byte del código de operación (\gls{jump offset}), de modo que} \TT{JNZ} \ES{siempre saltará a la siguiente instrucción}.
 
 \RU{Можно изменить и наоборот: первый байт заменить на \TT{EB}, второй байт (смещение перехода) не трогать.}
 \EN{We could also do the opposite: replace first byte with \TT{EB} while not touching the second byte (\gls{jump offset}).}
 \RU{Получится всегда срабатывающий безусловный переход}\EN{We would get an unconditional jump that is always triggered}.
+\ES{También podríamos hacer lo contrario: reemplazar el primer byte con \TT{EB} sin tocar el segundo byte (\gls{jump offset}). Obtendríamos un salto incondicional que siempre se activa.}
 \RU{Теперь сообщение об ошибке будет выдаваться всегда, даже если мы ввели число.}
 \EN{In this case the error message would be printed every time, no matter the input.}
+\ES{En este caso, el mensaje de error se imprimiría cada vez, sin importar la entrada.}

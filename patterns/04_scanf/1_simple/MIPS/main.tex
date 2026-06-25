@@ -2,16 +2,19 @@
 
 \RU{Для переменной $x$ выделено место в стеке, и к нему будут производиться обращения как $\$sp+24$.}
 \EN{A place in the local stack is allocated for the $x$ variable, and it is to be referred as $\$sp+24$.}
+\ES{Se asigna un lugar en la pila local para la variable $x$, al cual se accederá como $\$sp+24$.}
 \index{MIPS!\Instructions!LW}
 \RU{Её адрес передается в \scanf, а значение прочитанное от пользователя загружается используя 
 инструкцию LW (\q{Load Word}~--- загрузить слово) и затем оно передается в \printf.}
 \EN{Its address is passed to \scanf, and the user input values is loaded using the LW (\q{Load Word}) instruction
 and then passed to \printf.}
+\ES{Su dirección se pasa a \scanf, y el valor introducido por el usuario se carga utilizando la instrucción LW (\q{Load Word}) y luego se pasa a \printf.}
 
 \lstinputlisting[caption=\Optimizing GCC 4.4.5 (\assemblyOutput)]{patterns/04_scanf/1_simple/MIPS/ex1.O3.s.\LANG}
 
 \RU{IDA показывает разметку стека следующим образом:}
 \EN{IDA displays the stack layout as follows:}
+\ES{IDA muestra la disposición de la pila de la siguiente manera:}
 
 \lstinputlisting[caption=\Optimizing GCC 4.4.5 (IDA)]{patterns/04_scanf/1_simple/MIPS/ex1.O3.IDA.lst.\LANG}
 

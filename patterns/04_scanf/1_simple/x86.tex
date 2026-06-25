@@ -4,10 +4,12 @@
 
 \RU{Что получаем на ассемблере, компилируя в MSVC 2010:}
 \EN{Here is what we get after compiling with MSVC 2010:}
+\ES{Esto es lo que obtenemos tras compilar con MSVC 2010:}
 
 \lstinputlisting{patterns/04_scanf/1_simple/ex1_MSVC.asm.\LANG}
 
 \RU{Переменная \TT{x} является локальной.}\EN{\TT{x} is a local variable.} 
+\ES{La variable \TT{x} es una variable local.}
 
 \RU{По стандарту \CCpp она доступна только из этой же функции и нигде более. 
 Так получилось, что локальные переменные располагаются в стеке. 
@@ -15,6 +17,7 @@
 \EN{According to the \CCpp standard it must be visible only in this function and not from any other external scope. 
 Traditionally, local variables are stored on the stack. 
 There are probably other ways to allocate them, but in x86 that is the way it is.}
+\ES{De acuerdo con el estándar de \CCpp, debe ser visible solo en esta función y no desde ningún otro ámbito externo. Tradicionalmente, las variables locales se almacenan en la pila. Probablemente existan otras formas de asignarlas, pero en x86 se hace de esta manera.}
 
 \index{x86!\Instructions!PUSH}
 \RU{Следующая после пролога инструкция \TT{PUSH ECX} не ставит своей целью сохранить 
@@ -22,45 +25,51 @@ There are probably other ways to allocate them, but in x86 that is the way it is
 (Заметьте отсутствие соответствующей инструкции \TT{POP ECX} в конце функции).}
 \EN{The goal of the instruction following the function prologue, \TT{PUSH ECX}, is not to save the \ECX state 
 (notice the absence of corresponding \TT{POP ECX} at the function's end).}
+\ES{El objetivo de la instrucción que sigue al prólogo de la función, \TT{PUSH ECX}, no es guardar el estado de \ECX (note la ausencia del correspondiente \TT{POP ECX} al final de la función).}
 
 \RU{Она на самом деле выделяет в стеке 4 байта для хранения \TT{x} в будущем.} 
 \EN{In fact it allocates 4 bytes on the stack for storing the \TT{x} variable.} 
+\ES{De hecho, asigna 4 bytes en la pila para almacenar la variable \TT{x}.}
 
 \label{stack_frame}
-\index{\Stack!\RU{Стековый фрейм}\EN{Stack frame}}
+\index{\Stack!\RU{Стековый фрейм}\EN{Stack frame}\ES{Marco de pila}}
 \index{x86!\Registers!EBP}
 \RU{Доступ к \TT{x} будет осуществляться при помощи объявленного макроса \TT{\_x\$} 
 (он равен -4) и регистра \EBP указывающего на текущий фрейм.}
 \EN{\TT{x} is to be accessed with the assistance of the \TT{\_x\$} macro 
 (it equals to -4) and the \EBP register pointing to the current frame.}
+\ES{Se accederá a \TT{x} con la ayuda de la macro declarada \TT{\_x\$} (que equivale a -4) y el registro \EBP que apunta al marco actual.}
 
 \RU{Во всё время исполнения функции \EBP указывает на текущий \glslink{stack frame}{фрейм} и через \TT{EBP+смещение}
 можно получить доступ как к локальным переменным функции, так и аргументам функции.} 
 \EN{Over the span of the function's execution, \EBP is pointing to the current \gls{stack frame} 
 making it possible to access local variables and function arguments via \TT{EBP+offset}.}
+\ES{Durante la ejecución de la función, \EBP apunta al \glslink{stack frame}{marco de pila} actual, lo que permite acceder a las variables locales y a los argumentos de la función a través de \TT{EBP+desplazamiento}.}
 
 \index{x86!\Registers!ESP}
 \RU{Можно было бы использовать \ESP, но он во время исполнения функции часто меняется, а это не удобно. 
 Так что можно сказать, что \EBP это \IT{замороженное состояние} \ESP на момент начала исполнения функции.}
 \EN{It is also possible to use \ESP for the same purpose, although that is not very convenient since it changes frequently.
 The value of the \EBP could be perceived as a \IT{frozen state} of the value in \ESP at the start of the function's execution.}
+\ES{También se podría utilizar \ESP para el mismo propósito, aunque no es muy conveniente ya que cambia con frecuencia. El valor de \EBP puede verse como un \IT{estado congelado} del valor de \ESP al inicio de la ejecución de la función.}
 
 % FIXME1 это уже было в 02_stack?
 \RU{Разметка типичного стекового \glslink{stack frame}{фрейма} в 32-битной среде}%
 \EN{Here is a typical \gls{stack frame} layout in 32-bit environment}:
+\ES{Aquí se muestra el diseño típico de un \glslink{stack frame}{marco de pila} en un entorno de 32 bits}:
 
 \begin{center}
 \begin{tabular}{ | l | l | }
 \hline
 \dots & \dots \\
 \hline
-EBP-8 & \RU{локальная переменная}\EN{local variable} \#2, \MarkedInIDAAs{} \TT{var\_8} \\
+EBP-8 & \RU{локальная переменная}\EN{local variable}\ES{variable local} \#2, \MarkedInIDAAs{} \TT{var\_8} \\
 \hline
-EBP-4 & \RU{локальная переменная}\EN{local variable} \#1, \MarkedInIDAAs{} \TT{var\_4} \\
+EBP-4 & \RU{локальная переменная}\EN{local variable}\ES{variable local} \#1, \MarkedInIDAAs{} \TT{var\_4} \\
 \hline
-EBP & \RU{сохраненное значение}\EN{saved value of} \EBP \\
+EBP & \RU{сохраненное значение}\EN{saved value of}\ES{valor guardado de} \EBP \\
 \hline
-EBP+4 & \RU{адрес возврата}\EN{return address} \\
+EBP+4 & \RU{адрес возврата}\EN{return address}\ES{dirección de retorno} \\
 \hline
 EBP+8 & \argument \#1, \MarkedInIDAAs{} \TT{arg\_0} \\
 \hline
@@ -74,41 +83,50 @@ EBP+0x10 & \argument \#3, \MarkedInIDAAs{} \TT{arg\_8} \\
 \end{center}
 
 \RU{У функции \scanf в нашем примере два аргумента.}\EN{The \scanf function in our example has two arguments.}
+\ES{La función \scanf en nuestro ejemplo tiene dos argumentos.}
 
 \RU{Первый~--- указатель на строку, содержащую \TT{\%d} и второй~--- адрес переменной \TT{x}.} 
 \EN{The first one is a pointer to the string containing \TT{\%d} and the second is the address of the \TT{x} variable.} 
+\ES{El primero es un puntero a la cadena que contiene \TT{\%d} y el segundo es la dirección de la variable \TT{x}.}
 
 \index{x86!\Instructions!LEA}
 \RU{Вначале адрес \TT{x} помещается в регистр \EAX при помощи инструкции \TT{lea eax, DWORD PTR \_x\$[ebp]}.}
 \EN{First, the \TT{x} variable's address is loaded into the \EAX register by the \TT{lea eax, DWORD PTR \_x\$[ebp]} instruction}
+\ES{Primero, la dirección de la variable \TT{x} se carga en el registro \EAX mediante la instrucción \TT{lea eax, DWORD PTR \_x\$[ebp]}.}
 
 \ifx\LITE\undefined
 \RU{Инструкция \LEA означает \IT{load effective address}, и часто используется для формирования адреса чего-либо}
 \EN{\LEA stands for \IT{load effective address}, and is often used for forming an address}
+\ES{La instrucción \LEA significa \IT{load effective address} (cargar dirección efectiva), y se usa a menudo para formar una dirección}
 ~(\myref{sec:LEA}).
 \fi
 
 \RU{Можно сказать, что в данном случае \LEA просто помещает в \EAX результат суммы значения в регистре 
 \EBP и макроса \TT{\_x\$}.}
 \EN{We could say that in this case \LEA simply stores the sum of the \EBP register value and the \TT{\_x\$} macro in the \EAX register.}
+\ES{Podríamos decir que en este caso \LEA simplemente almacena la suma del valor del registro \EBP y la macro \TT{\_x\$} en el registro \EAX.}
 
-\RU{Это тоже что и}\EN{This is the same as} \TT{lea eax, [ebp-4]}.
+\RU{Это тоже что и}\EN{This is the same as}\ES{Esto es lo mismo que} \TT{lea eax, [ebp-4]}.
 
 \RU{Итак, от значения \EBP отнимается 4 и помещается в \EAX.
 Далее значение \EAX заталкивается в стек и вызывается \scanf.}
 \EN{So, 4 is being subtracted from the \EBP register value and the result is loaded in the \EAX register.
 Next the \EAX register value is pushed into the stack and \scanf is being called.}
+\ES{Entonces, se resta 4 al valor del registro \EBP y el resultado se carga en el registro \EAX. A continuación, el valor del registro \EAX se introduce en la pila y se llama a \scanf.}
 
 \RU{После этого вызывается \printf. Первый аргумент вызова строка:} 
 \EN{\printf is being called after that with its first argument --- a pointer to the string:} \TT{You entered \%d...\textbackslash{}n}.
+\ES{Después de eso se llama a \printf con su primer argumento (un puntero a la cadena):} \TT{You entered \%d...\textbackslash{}n}.
 
 \RU{Второй аргумент: \TT{mov ecx, [ebp-4]}. Эта инструкция помещает в \ECX не адрес переменной \TT{x}, 
 а её значение.}
 \EN{The second argument is prepared with: \TT{mov ecx, [ebp-4]}.
 The instruction stores the \TT{x} variable value and not its address, in the \ECX register.}
+\ES{El segundo argumento se prepara con: \TT{mov ecx, [ebp-4]}. La instrucción almacena el valor de la variable \TT{x}, y no su dirección, en el registro \ECX.}
 
 \RU{Далее значение \ECX заталкивается в стек и вызывается \printf.}
 \EN{Next the value in the \ECX is stored on the stack and the last \printf is being called.}
+\ES{A continuación, el valor en \ECX se guarda en la pila y se llama al último \printf.}
 
 \ifdefined\IncludeOlly
 \input{patterns/04_scanf/1_simple/olly.tex}
@@ -119,13 +137,15 @@ The instruction stores the \TT{x} variable value and not its address, in the \EC
 
 \RU{Попробуем тоже самое скомпилировать в Linux при помощи GCC 4.4.1:}
 \EN{Let's try to compile this code in GCC 4.4.1 under Linux:}
+\ES{Intentemos compilar este mismo código con GCC 4.4.1 en Linux:}
 
 \lstinputlisting{patterns/04_scanf/1_simple/ex1_GCC.asm}
 
-\index{puts() \RU{вместо}\EN{instead of} printf()}
+\index{puts() \RU{вместо}\EN{instead of}\ES{en lugar de} printf()}
 \RU{GCC заменил первый вызов \printf на \puts. Почему это было сделано, 
 уже было описано ранее~(\myref{puts}).}
 \EN{GCC replaced the \printf call with call to \puts. The reason for this was explained in ~(\myref{puts}).}
+\ES{GCC reemplazó la llamada a \printf por una llamada a \puts. El motivo de esto se explicó anteriormente en ~(\myref{puts}).}
 
 % TODO: rewrite
 %\RU{Почему \scanf переименовали в \TT{\_\_\_isoc99\_scanf}, я честно говоря, пока не знаю.}
@@ -138,15 +158,18 @@ The instruction stores the \TT{x} variable value and not its address, in the \EC
 
 \RU{Далее всё как и прежде~--- параметры заталкиваются через стек при помощи \MOV.}
 \EN{As in the MSVC example---the arguments are placed on the stack using the \MOV instruction.}
+\ES{Como en el ejemplo de MSVC, los argumentos se colocan en la pila mediante la instrucción \MOV.}
 \fi
 
-\subsubsection{\RU{Кстати}\EN{By the way}}
+\subsubsection{\RU{Кстати}\EN{By the way}\ES{Por cierto}}
 
 \RU{Кстати, этот простой пример иллюстрирует то обстоятельство, что компилятор преобразует
 список выражений в \CCpp-блоке просто в последовательный набор инструкций.}
 \EN{By the way, this simple example is a demonstration of the fact that compiler translates
 list of expressions in \CCpp-block into sequential list of instructions.}
+\ES{Por cierto, este sencillo ejemplo es una demostración de que el compilador traduce la lista de expresiones de un bloque de \CCpp en una lista secuencial de instrucciones.}
 \RU{Между выражениями в \CCpp ничего нет, и в итоговом машинном коде между ними тоже ничего нет, 
 управление переходит от одной инструкции к следующей за ней.}
 \EN{There are nothing between expressions in \CCpp, and so in resulting machine code, 
 there are nothing between, control flow slips from one expression to the next one.}
+\ES{No hay nada entre las expresiones en \CCpp, por lo que en el código de máquina resultante tampoco hay nada en medio; el flujo de control pasa de una expresión a la siguiente.}

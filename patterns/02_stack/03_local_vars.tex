@@ -1,11 +1,13 @@
-\subsection{\RU{Хранение локальных переменных}\EN{Local variable storage}}
+\subsection{\RU{Хранение локальных переменных}\EN{Local variable storage}\ES{Almacenamiento de variables locales}}
 
 \RU{Функция может выделить для себя некоторое место в стеке для локальных переменных, просто отодвинув 
 \glslink{stack pointer}{указатель стека} глубже к концу стека.}
 \EN{A function could allocate space in the stack for its local variables just by shifting 
 the \gls{stack pointer} towards the stack bottom.}
+\ES{Una función puede asignar espacio en la pila para sus variables locales simplemente desplazando el \glslink{stack pointer}{puntero de pila} hacia el final de la pila.}
 \RU{Это очень быстро вне зависимости от количества локальных переменных.}
 \EN{Hence, it's very fast, no matter how many local variables are defined.}
+\ES{Por lo tanto, es muy rápido, sin importar cuántas variables locales estén definidas.}
 
 \RU{Хранить локальные переменные в стеке не является необходимым требованием. 
 Вы можете хранить локальные переменные где угодно. 
@@ -13,3 +15,4 @@ the \gls{stack pointer} towards the stack bottom.}
 \EN{It is also not a requirement to store local variables in the stack.
 You could store local variables wherever you like, 
 but traditionally this is how it's done.}
+\ES{Tampoco es un requisito almacenar las variables locales en la pila. Podría almacenar variables locales donde quiera, pero tradicionalmente es así como se hace.}

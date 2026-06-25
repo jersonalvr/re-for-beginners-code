@@ -1,139 +1,144 @@
-\chapter{\RU{Указатели}\EN{Pointers}}
+\chapter{\RU{Указатели}\EN{Pointers}\ES{Apuntadores}}
 \index{\CLanguageElements!\Pointers}
 \label{label_pointers}
 
 \RU{Указатели также часто используются для возврата значений из функции (вспомните случай
 со \scanf{}~(\myref{label_scanf})).}
 \EN{Pointers are often used to return values from functions (recall \scanf case~(\myref{label_scanf})).}
+\ES{Los apuntadores también se utilizan a menudo para devolver valores de funciones (recuerde el caso de \scanf{}~(\myref{label_scanf})).}
 \RU{Например, когда функции нужно вернуть сразу два значения.}
 \EN{For example, when a function needs to return two values.}
+\ES{Por ejemplo, cuando una función necesita devolver dos valores a la vez.}
 
-\section{\RU{Пример с глобальными переменными}\EN{Global variables example}}
+\section{\RU{Пример с глобальными переменными}\EN{Global variables example}\ES{Ejemplo con variables globales}}
 
 \lstinputlisting{patterns/061_pointers/global.c}
 
-\RU{Это компилируется в}\EN{This compiles to}:
+\RU{Это компилируется в}\EN{This compiles to}\ES{Esto se compila en}:
 
 \lstinputlisting[caption=\Optimizing MSVC 2010 (/Ob0)]{patterns/061_pointers/global.asm}
 
 \index{\olly}
 \clearpage
-\RU{Посмотрим это в}\EN{Let's see this in} \olly:
+\RU{Посмотрим это в}\EN{Let's see this in}\ES{Veamos esto en} \olly:
 
 \begin{figure}[H]
 \centering
 \includegraphics[scale=\FigScale]{patterns/061_pointers/olly_global1.png}
 \caption{\olly: \RU{передаются адреса двух глобальных переменных в}
-\EN{global variables addresses are passed to} \ttfone}
+\EN{global variables addresses are passed to}\ES{se pasan las direcciones de dos variables globales a} \ttfone}
 \label{fig:pointers_olly_global_1}
 \end{figure}
 
 \RU{В начале адреса обоих глобальных переменных передаются в}\EN{First, global
-variables' addresses are passed to} \ttfone.
-\RU{Можно нажать}\EN{We can click} \q{Follow in dump} 
+variables' addresses are passed to}\ES{Al principio, las direcciones de ambas variables globales se pasan a} \ttfone.
+\RU{Можно нажать}\EN{We can click}\ES{Podemos hacer clic en} \q{Follow in dump} 
 \RU{на элементе стека и в окне слева 
 увидим место в сегменте данных, выделенное для двух переменных.}
 \EN{on the stack element, and we can see the place in the data segment allocated 
 for the two variables.}
+\ES{en el elemento de la pila, y veremos el lugar en el segmento de datos asignado para las dos variables.}
 \RU{Эти переменные обнулены, потому что по стандарту неинициализированные данные (\ac{BSS}) 
 обнуляются перед началом исполнения: \cite[6.7.8p10]{C99TC3}.}
 
 \clearpage
 \EN{These variables are zeroed, because non-initialized data (from \ac{BSS}) is cleared before
 the execution begins: \cite[6.7.8p10]{C99TC3}.}
+\ES{Estas variables se ponen a cero, porque según el estándar, los datos no inicializados (de \ac{BSS}) se limpian antes de que comience la ejecución: \cite[6.7.8p10]{C99TC3}.}
 \RU{И они находятся в сегменте данных, о чем можно удостовериться, нажав}
 \EN{They reside in the data segment, we can verify this by pressing} Alt-M \RU{и увидев карту
-памяти}\EN{and reviewing the memory map}:
+памяти}\EN{and reviewing the memory map}\ES{Y residen en el segmento de datos, lo cual podemos verificar presionando Alt-M y revisando el mapa de memoria}:
 
 \begin{figure}[H]
 \centering
 \includegraphics[scale=\FigScale]{patterns/061_pointers/olly_global5.png}
-\caption{\olly: \RU{карта памяти}\EN{memory map}}
+\caption{\olly: \RU{карта памяти}\EN{memory map}\ES{mapa de memoria}}
 \label{fig:pointers_olly_global_5}
 \end{figure}
 
 \clearpage
-\RU{Трассируем}\EN{Let's trace} (F7) \RU{до начала исполнения}\EN{to the start of} \ttfone: 
+\RU{Трассируем}\EN{Let's trace}\ES{Rastreamos} (F7) \RU{до начала исполнения}\EN{to the start of}\ES{hasta el inicio de} \ttfone: 
 
 \begin{figure}[H]
 \centering
 \includegraphics[scale=\FigScale]{patterns/061_pointers/olly_global2.png}
-\caption{\olly: \RU{начало работы \ttfone}\EN{\ttfone starts}}
+\caption{\olly: \RU{начало работы \ttfone}\EN{\ttfone starts}\ES{inicio de \ttfone}}
 \label{fig:pointers_olly_global_2}
 \end{figure}
 
-\RU{В стеке видны значения}\EN{Two values are visible in the stack} 456 (\TT{0x1C8}) \AndENRU 
-123 (\TT{0x7B}), \RU{а также адреса двух глобальных переменных}\EN{and also the addresses of the two global variables}.
+\RU{В стеке видны значения}\EN{Two values are visible in the stack}\ES{Dos valores son visibles en la pila} 456 (\TT{0x1C8}) \AndENRU 
+123 (\TT{0x7B}), \RU{а также адреса двух глобальных переменных}\EN{and also the addresses of the two global variables}\ES{así como las direcciones de las dos variables globales}.
 
 \clearpage
-\RU{Трассируем до конца}\EN{Let's trace until the end of} \ttfone.
+\RU{Трассируем до конца}\EN{Let's trace until the end of}\ES{Rastreamos hasta el final de} \ttfone.
 \RU{Мы видим в окне слева, как результаты вычисления появились в глобальных переменных}%
-\EN{In the left bottom window we see how the results of the calculation appear in the global variables}: 
+\EN{In the left bottom window we see how the results of the calculation appear in the global variables}%
+\ES{En la ventana inferior izquierda vemos cómo aparecen los resultados del cálculo en las variables globales}: 
 
 \begin{figure}[H]
 \centering
 \includegraphics[scale=\FigScale]{patterns/061_pointers/olly_global3.png}
-\caption{\olly: \ttfone \RU{заканчивает работу}\EN{execution completed}}
+\caption{\olly: \ttfone \RU{заканчивает работу}\EN{execution completed}\ES{ejecución completada}}
 \label{fig:pointers_olly_global_3}
 \end{figure}
 
 \clearpage
 \RU{Теперь из глобальных переменных значения загружаются в регистры для передачи в}
-\EN{Now the global variables' values are loaded into registers ready for passing to} \printf \EN{(via the stack)}:
+\EN{Now the global variables' values are loaded into registers ready for passing to}\ES{Ahora los valores de las variables globales se cargan en registros listos para pasarse a} \printf \EN{(via the stack)}\ES{(a través de la pila)}:
 
 \begin{figure}[H]
 \centering
 \includegraphics[scale=\FigScale]{patterns/061_pointers/olly_global4.png}
 \caption{\olly: \RU{адреса глобальных переменных передаются в}
-\EN{global variables' addresses are passed into} \printf}
+\EN{global variables' addresses are passed into}\ES{las direcciones de las variables globales se pasan a} \printf}
 \label{fig:pointers_olly_global_4}
 \end{figure}
 
-\section{\RU{Пример с локальными переменными}\EN{Local variables example}}
+\section{\RU{Пример с локальными переменными}\EN{Local variables example}\ES{Ejemplo con variables locales}}
 
-\RU{Немного переделаем пример}\EN{Let's rework our example slightly}:
+\RU{Немного переделаем пример}\EN{Let's rework our example slightly}\ES{Rediseñemos un poco nuestro ejemplo}:
 
 \lstinputlisting[caption=\RU{теперь переменные локальные}
-\EN{now the \TT{sum} and \TT{product} variables are local}]{patterns/061_pointers/local.c.\LANG}
+\EN{now the \TT{sum} and \TT{product} variables are local}\ES{ahora las variables \TT{sum} y \TT{product} son locales}]{patterns/061_pointers/local.c.\LANG}
 
-\RU{Код функции }\ttfone \RU{не изменится}\EN{code will not change}.
-\RU{Изменится только \main}\EN{Only the code of \main will do}:
+\RU{Код функции }\ttfone \RU{не изменится}\EN{code will not change}\ES{El código de la función \ttfone no cambiará}.
+\RU{Изменится только \main}\EN{Only the code of \main will do}\ES{Solo el código de \main lo hará}:
 
 \lstinputlisting[caption=\Optimizing MSVC 2010 (/Ob0)]{patterns/061_pointers/local.asm}
 
 \newcommand{\PtrsAddresses}{\TT{0x2EF854} \AndENRU \TT{0x2EF858}\xspace}
 
 \clearpage
-\RU{Снова посмотрим в}\EN{Let's look again with} \olly.
-\RU{Адреса локальных переменных в стеке это}\EN{The addresses of the local variables in the stack are} \PtrsAddresses.
-\RU{Видно, как они заталкиваются в стек}\EN{We see how these are pushed into the stack}: 
+\RU{Снова посмотрим в}\EN{Let's look again with}\ES{Miremos de nuevo con} \olly.
+\RU{Адреса локальных переменных в стеке это}\EN{The addresses of the local variables in the stack are}\ES{Las direcciones de las variables locales en la pila son} \PtrsAddresses.
+\RU{Видно, как они заталкиваются в стек}\EN{We see how these are pushed into the stack}\ES{Vemos cómo se introducen en la pila}: 
 
 \begin{figure}[H]
 \centering
 \includegraphics[scale=\FigScale]{patterns/061_pointers/olly_stk1.png}
 \caption{\olly: \RU{адреса локальных переменных заталкиваются в стек}\EN{local variables' addresses are
-pushed into the stack}}
+pushed into the stack}\ES{las direcciones de las variables locales se introducen en la pila}}
 \label{fig:pointers_olly_stk_1}
 \end{figure}
 
 \clearpage
-\RU{Начало работы \ttfone}\EN{\ttfone starts}.
-\RU{В стеке по адресам}\EN{So far there is only random garbage in the stack at} \PtrsAddresses \RU{пока находится случайный мусор}:
+\RU{Начало работы \ttfone}\EN{\ttfone starts}\ES{Inicio de \ttfone}.
+\RU{В стеке по адресам}\EN{So far there is only random garbage in the stack at}\ES{Hasta ahora sólo hay basura aleatoria en la pila en} \PtrsAddresses \RU{пока находится случайный мусор}.
 
 \begin{figure}[H]
 \centering
 \includegraphics[scale=\FigScale]{patterns/061_pointers/olly_stk2.png}
-\caption{\olly: \ttfone \RU{начинает работу}\EN{starting}}
+\caption{\olly: \ttfone \RU{начинает работу}\EN{starting}\ES{comenzando}}
 \label{fig:pointers_olly_stk_2}
 \end{figure}
 
 \clearpage
-\RU{Конец работы \ttfone}\EN{\ttfone completes}:
+\RU{Конец работы \ttfone}\EN{\ttfone completes}\ES{Fin del trabajo de \ttfone}:
 
 \begin{figure}[H]
 \centering
 \includegraphics[scale=\FigScale]{patterns/061_pointers/olly_stk3.png}
-\caption{\olly: \ttfone \RU{заканчивает работу}\EN{completes execution}}
+\caption{\olly: \ttfone \RU{заканчивает работу}\EN{completes execution}\ES{ejecución completada}}
 \label{fig:pointers_olly_stk_3}
 \end{figure}
 
@@ -141,13 +146,17 @@ pushed into the stack}}
 это результаты работы \ttfone.}
 \EN{We now find \TT{0xDB18} \AndENRU \TT{0x243} at addresses \PtrsAddresses. These values are
 the \ttfone results.}
+\ES{En la pila, en las direcciones \PtrsAddresses ahora se encuentran los valores \TT{0xDB18} \AndENRU \TT{0x243}, que son los resultados del trabajo de \ttfone.}
 
 \section{\Conclusion{}}
 
 \RU{\ttfone может одинаково хорошо возвращать результаты работы в любые места памяти.} 
 \EN{\ttfone could return pointers to any place in memory, located anywhere.}
+\ES{\ttfone puede devolver resultados de su trabajo por igual a cualquier lugar de la memoria.}
 \RU{В этом суть и удобство указателей.}
 \EN{This is in essence the usefulness of the pointers.}
+\ES{Esta es en esencia la utilidad y conveniencia de los apuntadores.}
 
 \RU{Кстати,}\EN{By the way, \Cpp} \IT{references} \RU{в \Cpp работают точно так же}\EN{work exactly the
-same way}. \RU{Читайте больше об этом}\EN{Read more about them}: (\myref{cpp_references}).
+same way}\ES{Por cierto, las \IT{referencias} de \Cpp funcionan exactamente de la misma manera}. \RU{Читайте больше об этом}\EN{Read more about them}\ES{Lea más sobre ellas}: (\myref{cpp_references}).
+

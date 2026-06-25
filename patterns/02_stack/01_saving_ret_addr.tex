@@ -1,5 +1,5 @@
 \subsection{\RU{Сохранение адреса возврата управления}
-\EN{Save the function's return address}}
+\EN{Save the function's return address}\ES{Guardar la dirección de retorno de la función}}
 
 \subsubsection{x86}
 
@@ -8,22 +8,26 @@
 инструкции \CALL, затем делается безусловный переход (почти как \TT{JMP}) на адрес, указанный в операнде.} 
 \EN{When calling another function with a \CALL instruction the address of the point exactly after the \CALL instruction is saved 
 to the stack and then an unconditional jump to the address in the CALL operand is executed.} 
+\ES{Al llamar a otra función con una instrucción \CALL, la dirección del punto exactamente posterior a la instrucción \CALL se guarda en la pila, y luego se realiza un salto incondicional a la dirección en el operando de \CALL.}
 
 \index{x86!\Instructions!PUSH}
 \index{x86!\Instructions!JMP}
 \RU{\CALL~--- это аналог пары инструкций \TT{PUSH address\_after\_call / JMP}.}
 \EN{The \CALL instruction is equivalent to a \TT{PUSH address\_after\_call / JMP operand} instruction pair.}
+\ES{La instrucción \CALL es equivalente a un par de instrucciones \TT{PUSH address\_after\_call / JMP operand}.}
 
 \index{x86!\Instructions!RET}
 \index{x86!\Instructions!POP}
 \RU{\RET вытаскивает из стека значение и передает управление по этому адресу~--- 
 это аналог пары инструкций \TT{POP tmp / JMP tmp}.}
 \EN{\RET fetches a value from the stack and jumps to it~---that is equivalent to a \TT{POP tmp / JMP tmp} instruction pair.}
+\ES{\RET extrae un valor de la pila y salta a él; esto es equivalente a un par de instrucciones \TT{POP tmp / JMP tmp}.}
 
-\index{\Stack!\RU{Переполнение стека}\EN{Stack overflow}}
+\index{\Stack!\RU{Переполнение стека}\EN{Stack overflow}\ES{Desbordamiento de pila}}
 \index{\Recursion}
 \RU{Крайне легко устроить переполнение стека, запустив бесконечную рекурсию:}
 \EN{Overflowing the stack is straightforward. Just run eternal recursion:}
+\ES{Desbordar la pila es sencillo. Solo ejecute una recursión infinita:}
 
 \begin{lstlisting}
 void f()
@@ -32,7 +36,7 @@ void f()
 };
 \end{lstlisting}
 
-\RU{MSVC 2008 предупреждает о проблеме:}\EN{MSVC 2008 reports the problem:}
+\RU{MSVC 2008 предупреждает о проблеме:}\EN{MSVC 2008 reports the problem:}\ES{MSVC 2008 reporta el problema:}
 
 \begin{lstlisting}
 c:\tmp6>cl ss.cpp /Fass.asm
@@ -43,7 +47,7 @@ ss.cpp
 c:\tmp6\ss.cpp(4) : warning C4717: 'f' : recursive on all control paths, function will cause runtime stack overflow
 \end{lstlisting}
 
-\dots \RU{но, тем не менее, создает нужный код}\EN{but generates the right code anyway}:
+\dots \RU{но, тем не менее, создает нужный код}\EN{but generates the right code anyway}\ES{pero genera el código correcto de todos modos}:
 
 \begin{lstlisting}
 ?f@@YAXXZ PROC						; f
@@ -63,6 +67,7 @@ c:\tmp6\ss.cpp(4) : warning C4717: 'f' : recursive on all control paths, functio
 но работать будет \IT{корректно}\footnote{здесь ирония}:}
 \EN{Also if we turn on the compiler optimization (\Ox option) the optimized code will not overflow the stack 
 and will work \IT{correctly}\footnote{irony here} instead:}
+\ES{Además, si activamos la optimización del compilador (opción \Ox), el código optimizado no desbordará la pila y en su lugar funcionará de manera \IT{correcta}\footnote{aquí hay ironía}:}
 
 \begin{lstlisting}
 ?f@@YAXXZ PROC						; f
@@ -77,6 +82,7 @@ $LL3@f:
 \ifdefined\IncludeGCC
 \RU{GCC 4.4.1 генерирует точно такой же код в обоих случаях, хотя и не предупреждает о проблеме.}
 \EN{GCC 4.4.1 generates similar code in both cases without, however,  issuing any warning about the problem.}
+\ES{GCC 4.4.1 genera un código similar en ambos casos sin emitir, sin embargo, ninguna advertencia sobre el problema.}
 \fi
 
 \ifdefined\IncludeARM
@@ -84,44 +90,44 @@ $LL3@f:
 
 \index{ARM!\Registers!Link Register}
 \RU{Программы для ARM также используют стек для сохранения \ac{RA}, куда нужно вернуться, но несколько иначе}\EN{ARM
-programs also use the stack for saving return addresses, but differently}.
-\RU{Как уже упоминалось в секции}\EN{As mentioned in} \q{\HelloWorldSectionName}~(\myref{sec:hw_ARM}),
-\RU{\ac{RA} записывается в регистр}\EN{the \ac{RA} is saved to the} \ac{LR} (\gls{link register}).
+programs also use the stack for saving return addresses, but differently}\ES{Los programas de ARM también utilizan la pila para guardar las direcciones de retorno, pero de manera diferente}.
+\RU{Как уже упоминалось в секции}\EN{As mentioned in}\ES{Como se mencionó en} \q{\HelloWorldSectionName}~(\myref{sec:hw_ARM}),
+\RU{\ac{RA} записывается в регистр}\EN{the \ac{RA} is saved to the}\ES{la \ac{RA} se guarda en el} \ac{LR} (\gls{link register}).
 \RU{Но если есть необходимость вызывать какую-то другую функцию и использовать регистр \ac{LR} ещё
 раз, его значение желательно сохранить}%
 \EN{If one needs, however, to call another function and use the \ac{LR} register
-one more time its value has to be saved}.
+one more time its value has to be saved}\ES{Sin embargo, si se necesita llamar a otra función y usar el registro \ac{LR} una vez más, su valor debe ser guardado}.
 \index{Function prologue}
 \RU{Обычно это происходит в прологе функции, часто мы видим там инструкцию вроде}
-\EN{Usually it is saved in the function prologue. Often, we see instructions like}
+\EN{Usually it is saved in the function prologue. Often, we see instructions like}\ES{Por lo general, esto ocurre en el prólogo de la función. A menudo, vemos instrucciones como}
 \index{ARM!\Instructions!PUSH}
 \index{ARM!\Instructions!POP}
-\TT{PUSH {R4-R7,LR}} \RU{, а в эпилоге}\EN{along with this instruction in epilogue}
+\TT{PUSH {R4-R7,LR}} \RU{, а в эпилоге}\EN{along with this instruction in epilogue}\ES{, y en el epílogo}
 \TT{POP {R4-R7,PC}}\RU{~--- так сохраняются регистры, которые будут использоваться в текущей функции, в том числе}
 \EN{---thus register values
-to be used in the function are saved in the stack, including} \ac{LR}.
+to be used in the function are saved in the stack, including}\ES{; de este modo se guardan en la pila los valores de los registros que se utilizarán en la función, incluyendo} \ac{LR}.
 
 \index{ARM!Leaf function}
 \RU{Тем не менее, если некая функция не вызывает никаких более функций, в терминологии \ac{RISC} она называется}
-\EN{Nevertheless, if a function never calls any other function, in \ac{RISC} terminology it is called a}
+\EN{Nevertheless, if a function never calls any other function, in \ac{RISC} terminology it is called a}\ES{Sin embargo, si una función nunca llama a ninguna otra función, en la terminología \ac{RISC} se le llama una}
 \IT{\gls{leaf function}}\footnote{\href{http://go.yurichev.com/17064}{infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.faqs/ka13785.html}}. 
 \RU{Как следствие, \q{leaf}-функция не сохраняет регистр \ac{LR} (потому что не изменяет его).}
-\EN{As a consequence, leaf functions do not save the \ac{LR} register (because they don't modify it).}
+\EN{As a consequence, leaf functions do not save the \ac{LR} register (because they don't modify it).}\ES{Como consecuencia, las funciones hoja (\IT{leaf functions}) no guardan el registro \ac{LR} (porque no lo modifican).}
 \RU{А если эта функция небольшая, использует мало регистров, она может не использовать стек вообще}%
-\EN{If such function is small and uses a small number of registers, it may not use the stack at all}.
+\EN{If such function is small and uses a small number of registers, it may not use the stack at all}\ES{Si dicha función es pequeña y utiliza pocos registros, es posible que no utilice la pila en absoluto}.
 \RU{Таким образом, в ARM возможен вызов небольших leaf-функций не используя стек.}
-\EN{Thus, it is possible to call leaf functions without using the stack}
+\EN{Thus, it is possible to call leaf functions without using the stack}\ES{Por lo tanto, es posible llamar a funciones hoja sin utilizar la pila}
 \RU{Это может быть быстрее чем в старых x86, ведь внешняя память для стека не используется}%
-\EN{which can be faster than on older x86 because external RAM is not used for the stack}%
+\EN{which can be faster than on older x86 because external RAM is not used for the stack}\ES{, lo cual puede ser más rápido que en los antiguos x86 debido a que no se utiliza la memoria RAM externa para la pila}%
 \footnote{\RU{Когда-то, очень давно, на PDP-11 и VAX на инструкцию CALL (вызов других функций) могло тратиться
 вплоть до 50\% времени (возможно из-за работы с памятью),
 поэтому считалось, что много небольших функций это \glslink{anti-pattern}{анти-паттерн}}%
 \EN{Some time ago, on PDP-11 and VAX, the CALL instruction (calling other functions) was expensive; up to 50\%
-of execution time might be spent on it, so it was considered that having a big number of small functions is an \gls{anti-pattern}} \cite[Chapter 4, Part II]{Raymond:2003:AUP:829549}.}.
+of execution time might be spent on it, so it was considered that having a big number of small functions is an \gls{anti-pattern}}\ES{Hace algún tiempo, en PDP-11 y VAX, la instrucción CALL (llamar a otras funciones) era costosa; se podía gastar hasta el 50\% del tiempo de ejecución en ella, por lo que se consideraba que tener un gran número de funciones pequeñas era un \gls{anti-pattern}} \cite[Chapter 4, Part II]{Raymond:2003:AUP:829549}.}.
 \RU{Либо это может быть полезным для тех ситуаций, когда память для стека ещё не выделена, либо недоступна}%
-\EN{This can be also useful for situations when memory for the stack is not yet allocated or not available}.
+\EN{This can be also useful for situations when memory for the stack is not yet allocated or not available}\ES{Esto también puede ser útil para situaciones en las que la memoria para la pila aún no ha sido asignada o no está disponible}.
 
-\EN{Some examples of leaf functions:}\RU{Некоторые примеры таких функций:}
+\EN{Some examples of leaf functions:}\RU{Некоторые примеры таких функций:}\ES{Algunos ejemplos de funciones hoja:}
 \myref{ARM_leaf_example1}, \myref{ARM_leaf_example2}, 
 \myref{ARM_leaf_example3}, \myref{ARM_leaf_example4}, \myref{ARM_leaf_example5},
 \myref{ARM_leaf_example6}, \myref{ARM_leaf_example7}, \myref{ARM_leaf_example10}.

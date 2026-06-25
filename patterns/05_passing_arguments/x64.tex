@@ -5,6 +5,7 @@
 а \gls{callee} из читает их из регистров, а не из стека.}
 \EN{The story is a bit different in x86-64. Function arguments (first 4 or first 6 of them) 
 are passed in registers i.e. the \gls{callee} reads them from registers instead of reading them from the stack.}
+\ES{La historia es un poco diferente en x86-64. Los argumentos de la función (los primeros 4 o los primeros 6 de ellos) se pasan en registros, es decir, la función llamada (\gls{callee}) los lee de los registros en lugar de leerlos de la pila.}
 
 \subsection{MSVC}
 
@@ -14,49 +15,61 @@ are passed in registers i.e. the \gls{callee} reads them from registers instead 
 
 \RU{Как видно, очень компактная функция \ttf берет аргументы прямо из регистров.}
 \EN{As we can see, the compact function \ttf takes all its arguments from the registers.}
+\ES{Como se puede ver, la compacta función \ttf toma todos sus argumentos directamente de los registros.}
 \RU{Инструкция \LEA используется здесь для сложения чисел. 
 Должно быть компилятор посчитал, что это будет эффективнее использования \TT{ADD}.}
 \EN{The \LEA instruction here is used for addition,
 apparently the compiler considered it faster than \TT{ADD}.}
+\ES{La instrucción \LEA se utiliza aquí para la suma, aparentemente el compilador la consideró más rápida que \TT{ADD}.}
 \index{x86!\Instructions!LEA}
 \RU{В самой \main{} \LEA{} также используется для подготовки первого и третьего аргумента: должно быть,
 компилятор решил, что \LEA{} будет работать здесь быстрее, чем загрузка значения в регистр при помощи \MOV.}
 \EN{\LEA is also used in the \main function to prepare the first and third \ttf arguments. The compiler
 must have decided that this would work faster than the usual way of loading values into a register using \MOV instruction.}
+\ES{\LEA también se utiliza en la función \main para preparar el primer y tercer argumento de \ttf. El compilador debe haber decidido que esto funcionaría más rápido que la forma habitual de cargar valores en un registro mediante la instrucción \MOV.}
 
 \RU{Попробуем посмотреть вывод неоптимизирующего MSVC}\EN{Let's take a look at the non-optimizing MSVC output}:
+\ES{Echemos un vistazo a la salida de MSVC sin optimización}:
 
 \lstinputlisting[caption=MSVC 2012 x64]{patterns/05_passing_arguments/x64_MSVC_IDA.asm.\LANG}
 
 \RU{Немного путаннее: все 3 аргумента из регистров зачем-то сохраняются в стеке.}
 \EN{It looks somewhat puzzling because all 3 arguments from the registers are saved to the stack for some reason.}
+\ES{Parece un poco desconcertante porque, por alguna razón, los 3 argumentos de los registros se guardan en la pila.}
 \index{Shadow space}
 \label{shadow_space}
 \RU{Это называется}\EN{This is called} \q{shadow space}
 \footnote{\href{http://go.yurichev.com/17256}{MSDN}}: 
 \RU{каждая функция в Win64 может (хотя и не обязана) сохранять значения 4-х регистров там.}
 \EN{every Win64 may (but is not required to) save all 4 register values there.}
+\ES{Esto se llama} \q{shadow space} \footnote{\href{http://go.yurichev.com/17256}{MSDN}}: \ES{cada función en Win64 puede (aunque no está obligada a) guardar los valores de los 4 registros allí.}
 \RU{Это делается по крайней мере из-за двух причин}\EN{This is done for two reasons}: 
+\ES{Esto se hace al menos por dos razones}:
 1) \RU{в большой функции отвести целый регистр (а тем более 4 регистра) для входного аргумента 
 слишком расточительно, так что к нему будет обращение через стек;}
 \EN{it is too lavish to allocate a whole register (or even 4 registers) for an input argument,
 so it will be accessed via stack;}
+\ES{1) en una función grande, asignar un registro entero (o incluso 4 registros) para un argumento de entrada es demasiado costoso, por lo que se accederá a él a través de la pila;}
 2) \RU{отладчик всегда знает, где найти аргументы функции в момент останова}\EN{the debugger is always
 aware where to find the function arguments at a break}%
 \footnote{\href{http://go.yurichev.com/17257}{MSDN}}.
+\ES{2) el depurador siempre sabe dónde encontrar los argumentos de la función en un punto de interrupción}\footnote{\href{http://go.yurichev.com/17257}{MSDN}}.
 
 \RU{Так что, какие-то большие функции могут сохранять входные аргументы в \q{shadows space} 
 для использования в будущем, а небольшие функции, как наша, могут этого и не делать.}
 \EN{So, some large functions can save their input arguments in the \q{shadows space} if they need to use them
 during execution, but some small functions (like ours) may not do this.}
+\ES{Por lo tanto, algunas funciones grandes pueden guardar sus argumentos de entrada en el \q{shadow space} si necesitan usarlos durante la ejecución, pero algunas funciones pequeñas (como la nuestra) pueden no hacerlo.}
 
 \RU{Место в стеке для \q{shadow space} выделяет именно \gls{caller}.}
 \EN{It is a \gls{caller} responsibility to allocate \q{shadow space} in the stack.}
+\ES{Es responsabilidad de la función de llamada (\gls{caller}) asignar el \q{shadow space} en la pila.}
 
 \ifdefined\IncludeGCC
 \subsection{GCC}
 
 \Optimizing GCC \RU{также делает понятный код}\EN{generates more or less understandable code}:
+\ES{también genera un código más o menos comprensible}:
 
 \lstinputlisting[caption=\Optimizing GCC 4.4.6 x64]{patterns/05_passing_arguments/x64_GCC_O3.s.\LANG}
 
@@ -70,14 +83,17 @@ during execution, but some small functions (like ours) may not do this.}
 Что мы здесь и видим.}
 \EN{There are no \q{shadow space} requirements in System V *NIX\cite{SysVABI}, but the \gls{callee} may need to save
 its arguments somewhere in case of registers shortage.}
+\ES{No existen requisitos de \q{shadow space} en System V *NIX\cite{SysVABI}, pero la función llamada (\gls{callee}) puede necesitar guardar sus argumentos en algún lugar en caso de escasez de registros.}
 
-\subsection{GCC: uint64\_t \RU{вместо}\EN{instead of} int}
+\subsection{GCC: uint64\_t \RU{вместо}\EN{instead of}\ES{en lugar de} int}
 
 \RU{Наш пример работал с 32-битным \Tint, поэтому использовались 32-битные части регистров с префиксом \TT{E-}.}
 \EN{Our example works with 32-bit \Tint, that is why 32-bit register parts are used (prefixed by \TT{E-}).}
+\ES{Nuestro ejemplo trabaja con un \Tint de 32 bits, por lo que se utilizan las partes de registro de 32 bits (con el prefijo \TT{E-}).}
 
 \RU{Его можно немного переделать, чтобы он заработал с 64-битными значениями}\EN{It can be altered slightly
 in order to use 64-bit values}:
+\ES{Se puede modificar ligeramente para usar valores de 64 bits}:
 
 \lstinputlisting{patterns/05_passing_arguments/ex64.c}
 
@@ -85,4 +101,5 @@ in order to use 64-bit values}:
 
 \RU{Собствено, всё то же самое, только используются регистры \IT{целиком}, с префиксом \TT{R-}.}
 \EN{The code is the same, but this time the \IT{full size} registers (prefixed by \TT{R-}) are used.}
+\ES{El código es el mismo, pero esta vez se utilizan los registros en su \IT{tamaño completo} (con el prefijo \TT{R-}).}
 \fi

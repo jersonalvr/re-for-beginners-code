@@ -23,23 +23,28 @@
 \index{\CLanguageElements!\Pointers}
 \RU{Чтобы \scanf мог вернуть значение, ему нужно передать указатель на переменную типа \Tint.}
 \EN{In order for \scanf to be able to read item it needs a parameter---pointer to an \Tint.}
+\ES{Para que \scanf pueda leer un elemento, necesita un parámetro: un puntero a un \Tint.}
 \Tint\RU{~--- 32-битное значение, для его хранения нужно только 4 байта, и оно помещается в 
 32-битный регистр.}
 \EN{is 32-bit, so we need 4 bytes to store it somewhere in memory, and it fits exactly 
 in a 32-bit register.}
+\ES{ es de 32 bits, por lo que necesitamos 4 bytes para almacenarlo en algún lugar de la memoria, y cabe exactamente en un registro de 32 bits.}
 \index{IDA!var\_?}
 \RU{Место для локальной переменной \TT{x} выделяется в стеке, \IDA наименовала её \IT{var\_8}. 
 Впрочем, место для неё выделять не обязательно, т.к. \glslink{stack pointer}{указатель стека} \ac{SP} уже указывает на место, 
 свободное для использования.}\EN{A place for the local variable \TT{x} is allocated in the stack and \IDA
 has named it \IT{var\_8}. It is not necessary, however, to allocate a such since \ac{SP} (\gls{stack pointer}) is already pointing to that space and it can be used directly.}
+\ES{Se asigna un lugar para la variable local \TT{x} en la pila y \IDA lo ha nombrado \IT{var\_8}. Sin embargo, no es estrictamente necesario asignarlo, ya que \ac{SP} (el \glslink{stack pointer}{puntero de pila}) ya apunta a ese espacio y se puede utilizar directamente.}
 \RU{Так что значение указателя \ac{SP} копируется в регистр \Reg{1}, и вместе с format-строкой, 
 передается в \scanf.}
 \EN{So, \ac{SP}'s value is copied to the \Reg{1} register and, together with the format-string, passed
 to \scanf.}
+\ES{De esta manera, el valor de \ac{SP} se copia al registro \Reg{1} y, junto con la cadena de formato, se pasa a \scanf.}
 \index{ARM!\Instructions!LDR}
 \RU{Позже, при помощи инструкции \TT{LDR}, это значение перемещается из стека в регистр \Reg{1}, 
 чтобы быть переданным в \printf.}\EN{Later, with the help of the \TT{LDR} instruction, this value is moved
 from the stack to the \Reg{1} register in order to be passed to \printf.}
+\ES{Más tarde, con la ayuda de la instrucción \TT{LDR}, este valor se mueve de la pila al registro \Reg{1} para ser pasado a \printf.}
 
 \subsubsection{ARM64}
 
@@ -47,14 +52,19 @@ from the stack to the \Reg{1} register in order to be passed to \printf.}
 
 \RU{Под стековый фрейм выделяется 32 байта, что больше чем нужно. Вероятно, это связано с выравниваем по границе памяти?}%
 \EN{There is 32 bytes are allocated for stack frame, which is bigger than it needed. Perhaps, some memory aligning issue?}
+\ES{Se asignan 32 bytes para el marco de la pila, que es más de lo necesario. ¿Quizás debido a la alineación de memoria?}
 \RU{Самая интересная часть~--- это поиск места под переменную $x$ в стековом фрейме (строка 22).}
 \EN{The most interesting part is finding space for the $x$ variable in the stack frame (line 22).}
+\ES{La parte más interesante es encontrar espacio para la variable $x$ en el marco de la pila (línea 22).}
 \RU{Почему 28? Почему-то, компилятор решил расположить эту переменную в конце стекового фрейма, а не в начале.}%
 \EN{Why 28? Somehow, compiler decided to place this variable at the end of stack frame instead of beginning.}
+\ES{¿Por qué 28? De alguna manera, el compilador decidió colocar esta variable al final del marco de la pila en lugar de al principio.}
 \RU{Адрес потом передается в \scanf, которая просто сохраняет значение, введенное пользователем, в памяти
 по этому адресу.}
 \EN{The address is passed to \scanf, which just stores the user input value in the memory at that address.}
+\ES{La dirección se pasa a \scanf, que simplemente almacena el valor introducido por el usuario en la memoria en esa dirección.}
 \RU{Это 32-битное значение типа \Tint}\EN{This is 32-bit value of type \Tint}.
+\ES{Este es un valor de 32 bits de tipo \Tint.}
 \RU{Значение загружается в строке 27 и затем передается в \printf.}
 \EN{The value is fetched at line 27 and then passed to \printf.}
-
+\ES{El valor se recupera en la línea 27 y luego se pasa a \printf.}

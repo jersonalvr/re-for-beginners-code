@@ -6,7 +6,7 @@ f:
 	push	ebx
 	sub	esp, 660
 	lea	ebx, [esp+39]
-	and	ebx, -16                            ; _EN(`align pointer by 16-bit border')_RU(`выровнять указатель по 16-байтной границе')
+	and	ebx, -16                            ; _EN(`align pointer by 16-bit border')_RU(`выровнять указатель по 16-байтной границе')_ES(`alinear el puntero a un límite de 16 bytes')
 	mov	DWORD PTR [esp], ebx                ; s
 	mov	DWORD PTR [esp+20], 3
 	mov	DWORD PTR [esp+16], 2

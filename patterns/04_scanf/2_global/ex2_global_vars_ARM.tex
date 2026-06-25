@@ -40,13 +40,17 @@
 \end{lstlisting}
 
 \RU{Итак, переменная \TT{x} теперь глобальная, и она расположена, почему-то, в другом сегменте, а именно сегменте данных}
-\EN{So, the \TT{x} variable is now global and for this reason located in another segment, namely the data segment} (\IT{.data}).
+\EN{So, the \TT{x} variable is now global and for this reason located in another segment, namely the data segment}
+\ES{Así que la variable \TT{x} ahora es global y, por esta razón, se encuentra en otro segmento, a saber, el segmento de datos} (\IT{.data}).
 \RU{Можно спросить, почему текстовые строки расположены в сегменте кода (\IT{.text}), а \TT{x} нельзя было разместить тут же?}
 \EN{One could ask, why are the text strings located in the code segment (\IT{.text}) and \TT{x} is located right here?}
+\ES{Uno podría preguntarse, ¿por qué las cadenas de texto se encuentran en el segmento de código (\IT{.text}) y \TT{x} no se pudo colocar allí mismo?}
 \RU{Потому что эта переменная, и как следует из определения, она может меняться. И может быть, меняться часто.}
 \EN{Because it is a variable and by definition its value could change. Moreover it could possibly change often.}
+\ES{Porque es una variable y, por definición, su valor podría cambiar. Además, posiblemente podría cambiar a menudo.}
 \RU{Ну а текстовые строки имеют тип констант, они не будут меняться, поэтому они располагаются в сегменте \IT{.text}.}
 \EN{While text strings has constant type, they will not be changed, so they are located in the \IT{.text} segment.}
+\ES{Mientras que las cadenas de texto tienen un tipo constante, no cambiarán, por lo que se ubican en el segmento \IT{.text}.}
 \index{\RAM}
 \index{\ROM}
 \RU{Сегмент кода иногда может быть расположен в ПЗУ микроконтроллера (не забывайте, 
@@ -55,33 +59,41 @@
 \EN{The code segment might sometimes be located in a \ac{ROM} chip (remember, we now deal
 with embedded microelectronics, and memory scarcity is common here), and changeable 
 variables~---in \ac{RAM}.}
+\ES{El segmento de código a veces puede estar ubicado en un chip \ac{ROM} (recuerde, ahora estamos tratando con microelectrónica embebida, y la escasez de memoria es común aquí), y las variables modificables~---en la \ac{RAM}.}
 \RU{Хранить в ОЗУ неизменяемые данные, когда в наличии есть ПЗУ, не экономно.}
 \EN{It is not very economical to store constant variables in RAM when you have ROM.}
+\ES{No es muy económico almacenar variables constantes en la RAM cuando se dispone de ROM.}
 \RU{К тому же, сегмент данных в ОЗУ с константами нужно инициализировать перед работой,
 ведь, после включения ОЗУ, очевидно, она содержит в себе случайную информацию.}
 \EN{Furthermore, constant variables in RAM must be initialized, because after powering on, the RAM, obviously, contains random information.}
+\ES{Además, las variables en la RAM deben inicializarse, porque después de encenderse, la RAM, obviamente, contiene información aleatoria.}
 
 \index{\RU{Компоновщик}\EN{Linker}}
 \RU{Далее мы видим в сегменте кода хранится указатель на переменную \TT{x} (\TT{off\_2C}) и 
 все операции с переменной происходят через этот указатель.}
 \EN{Moving forward, we see a pointer to the \TT{x} (\TT{off\_2C}) variable in the code segment, and that all
 operations with the variable occur via this pointer.}
+\ES{Continuando, vemos un puntero a la variable \TT{x} (\TT{off\_2C}) en el segmento de código, y que todas las operaciones con la variable ocurren a través de este puntero.}
 \RU{Это связано с тем, что переменная \TT{x} может быть расположена где-то довольно далеко от 
 данного участка кода, так что её адрес нужно сохранить в непосредственной близости к этому коду.}
 \EN{That is because the \TT{x} variable could be located somewhere far from this particular code fragment, so its address
 must be saved somewhere in close proximity to the code.}
+\ES{Esto se debe a que la variable \TT{x} podría estar ubicada en algún lugar lejano de este fragmento de código en particular, por lo que su dirección debe guardarse en algún lugar muy cercano al código.}
 \index{ARM!\Instructions!LDR}
 \RU{Инструкция \TT{LDR} в Thumb-режиме может адресовать только переменные в пределах вплоть 
 до 1020 байт от своего местоположения.}
 \EN{The \TT{LDR} instruction in Thumb mode can only address variables in a range of 1020 bytes from its location, }
+\ES{La instrucción \TT{LDR} en modo Thumb solo puede direccionar variables en un rango de hasta 1020 bytes desde su ubicación, }
 \RU{Эта же инструкция в ARM-режиме~--- переменные в пределах $\pm{}4095$ байт.}
 \EN{and in in ARM-mode~---variables in range of $\pm{}4095$ bytes.}
+\ES{y en modo ARM~---variables en un rango de $\pm{}4095$ bytes.}
 \RU{Таким образом,
 адрес глобальной переменной \TT{x} нужно расположить в непосредственной близости, ведь нет никакой гарантии, 
 что компоновщик\footnote{linker в англоязычной литературе} сможет разместить саму переменную где-то рядом, 
 она может быть даже в другом чипе памяти!}
 \EN{And so the address of the \TT{x} variable
 must be located somewhere in close proximity, because there is no guarantee that the linker would be able to accommodate the variable somewhere nearby the code, it may well be even in an external memory chip!}
+\ES{Por lo tanto, la dirección de la variable \TT{x} debe ubicarse muy cerca, porque no hay garantía de que el enlazador\footnote{\IT{linker} en la literatura en inglés} pueda ubicar la variable en algún lugar cercano al código, ¡bien podría estar incluso en un chip de memoria externo!}
 
 \index{\CLanguageElements!const}
 \index{\ROM}
@@ -89,9 +101,11 @@ must be located somewhere in close proximity, because there is no guarantee that
 сегменте \TT{.constdata}.}
 \EN{One more thing: if a variable is declared as \IT{const}, the Keil compiler allocates it in 
 the \TT{.constdata} segment.}
+\ES{Una cosa más: si una variable se declara como \IT{const}, el compilador Keil la asigna en el segmento \TT{.constdata}.}
 \RU{Должно быть, впоследствии компоновщик и этот сегмент сможет разместить в ПЗУ вместе
 с сегментом кода.}
 \EN{Perhaps, thereafter, the linker could place this segment in ROM too, along with the code segment.}
+\ES{Tal vez, a partir de entonces, el enlazador también podría colocar este segmento en la ROM, junto con el segmento de código.}
 
 \subsection{ARM64}
 
@@ -102,3 +116,4 @@ the \TT{.constdata} segment.}
 (строки 21 и 25).}
 \EN{In this case the $x$ variable is declared as global and its address is calculated using 
 the ADRP/ADD instruction pair (lines 21 and 25).}
+\ES{En este caso, la variable $x$ se declara como global y su dirección se calcula utilizando el par de instrucciones ADRP/ADD (líneas 21 y 25).}

@@ -14,13 +14,15 @@ Uninitialized global variables take no space in the executable file
 (indeed, why one needs to allocate space for variables initially set to zero?), 
 but when someone accesses their address, 
 the \ac{OS} will allocate a block of zeroes there\footnote{That is how a \ac{VM} behaves}.}
+\ES{En este caso, la variable \TT{x} está definida en el segmento \TT{\_DATA} y no se asigna memoria en la pila local. Se accede a ella directamente, no a través de la pila. Las variables globales no inicializadas no ocupan espacio en el archivo ejecutable (de hecho, ¿por qué se necesitaría asignar espacio para variables establecidas inicialmente a cero?), pero cuando alguien accede a su dirección, el \ac{OS} asignará un bloque de ceros allí\footnote{Así es como se comporta una \ac{VM}}.}
 
 \RU{Попробуем изменить объявление этой переменной:}
 \EN{Now let's explicitly assign a value to the variable:}
+\ES{Ahora asignemos explícitamente un valor a la variable:}
 
 \lstinputlisting{patterns/04_scanf/2_global/default_value.c.\LANG}
 
-\RU{Выйдет в итоге:}\EN{We got:}
+\RU{Выйдет в итоге:}\EN{We got:}\ES{Obtenemos:}
 
 \begin{lstlisting}
 _DATA	SEGMENT
@@ -31,16 +33,19 @@ _x	DD	0aH
 
 \RU{Здесь уже по месту этой переменной записано \TT{0xA} с типом DD (dword = 32 бита).}
 \EN{Here we see a value \TT{0xA} of DWORD type (DD stands for DWORD = 32 bit) for this variable.}
+\ES{Aquí vemos un valor \TT{0xA} de tipo DWORD (DD significa DWORD = 32 bits) para esta variable.}
 
 \RU{Если вы откроете скомпилированный .exe-файл в \IDA, то увидите, что \IT{x} 
 находится в начале сегмента \TT{\_DATA}, после этой переменной будут текстовые строки.}
 \EN{If you open the compiled .exe in \IDA, you can see the \IT{x} variable placed at the beginning of 
 the \TT{\_DATA} segment, and after it you can see text strings.}
+\ES{Si abre el ejecutable compilado en \IDA, podrá ver la variable \IT{x} ubicada al principio del segmento \TT{\_DATA}, y después de ella podrá ver las cadenas de texto.}
 
 \RU{А вот если вы откроете в \IDA .exe скомпилированный в прошлом примере, 
 где значение \IT{x} не определено, то вы увидите:}
 \EN{If you open the compiled .exe from the previous example in \IDA, where the value of \IT{x} was not
 set, you would see something like this:}
+\ES{Si abre en \IDA el ejecutable compilado del ejemplo anterior, donde no se estableció el valor de \IT{x}, verá algo como esto:}
 
 \begin{lstlisting}
 .data:0040FA80 _x              dd ?                    ; DATA XREF: _main+10
@@ -67,6 +72,7 @@ This implies that after loading the .exe to the memory, a space for all these va
 allocated and filled with zeroes \cite[6.7.8p10]{C99TC3}. 
 But in the .exe file these uninitialized variables do not occupy anything.
 This is convenient for large arrays, for example.}
+\ES{\TT{\_x} está marcada con \TT{?}, junto con el resto de las variables que no necesitan ser inicializadas. Esto implica que después de cargar el archivo ejecutable en la memoria, se asignará un espacio para todas estas variables y se llenará con ceros \cite[6.7.8p10]{C99TC3}. Pero en el archivo ejecutable estas variables no inicializadas no ocupan nada. Esto resulta muy conveniente para matrices grandes, por ejemplo.}
 
 \ifdefined\IncludeOlly
 \input{patterns/04_scanf/2_global/olly.tex}
@@ -81,6 +87,7 @@ This is convenient for large arrays, for example.}
 В \ac{ELF} этот сегмент имеет такие атрибуты:}
 \EN{The picture in Linux is near the same, with the difference that the uninitialized variables are located in the \TT{\_bss} segment. 
 In \ac{ELF} file this segment has the following attributes:}
+\ES{El panorama en Linux es casi el mismo, con la diferencia de que las variables no inicializadas se ubican en el segmento \TT{\_bss}. En el archivo \ac{ELF}, este segmento tiene los siguientes atributos:}
 
 \begin{lstlisting}
 ; Segment type: Uninitialized
@@ -93,6 +100,7 @@ In \ac{ELF} file this segment has the following attributes:}
 это сегмент с такими атрибутами:}
 \EN{If you, however, initialise the variable with some value e.g. 10, 
 it is to be placed in the \TT{\_data} segment, which has the following attributes:}
+\ES{Sin embargo, si inicializa la variable con algún valor, por ejemplo, 10, se colocará en el segmento \TT{\_data}, que tiene los siguientes atributos:}
 
 \begin{lstlisting}
 ; Segment type: Pure data
@@ -104,12 +112,14 @@ it is to be placed in the \TT{\_data} segment, which has the following attribute
 
 \lstinputlisting[caption=MSVC 2012 x64]{patterns/04_scanf/2_global/ex2_MSVC_x64.asm.\LANG}
 
-\RU{Почти такой же код как и в}\EN{The code is almost the same as in} x86.
+\RU{Почти такой же код как и в}\EN{The code is almost the same as in}\ES{El código es casi el mismo que en} x86.
 \RU{Обратите внимание что для \TT{scanf()} адрес переменной $x$ передается
 при помощи инструкции \LEA, а во второй \printf передается само значение переменной при помощи \MOV}
 \EN{Please note that the address of the $x$ variable is passed to \TT{scanf()} using a \LEA instruction,
 while the variable's value is passed to the second \printf using a \MOV instruction}.
+\ES{Tenga en cuenta que la dirección de la variable $x$ se pasa a \TT{scanf()} mediante una instrucción \LEA, mientras que el valor de la variable se pasa al segundo \printf mediante una instrucción \MOV.}
 \TT{DWORD PTR}\RU{\EMDASH{}это часть языка ассемблера (не имеющая отношения к машинным кодам) 
 показывающая, что тип переменной в памяти именно 32-битный, 
 и инструкция \MOV должна быть здесь закодирована соответственно}\EN{ is a part of the assembly language (no relation to the machine code), indicating that the variable data size is 32-bit and the \MOV instruction
 has to be encoded accordingly}.
+\ES{ es una parte del lenguaje ensamblador (sin relación con el código de máquina), que indica que el tamaño de los datos de la variable es de 32 bits y la instrucción \MOV debe codificarse en consecuencia.}

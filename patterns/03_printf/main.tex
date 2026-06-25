@@ -4,6 +4,7 @@
 написав в теле функции \main:}
 \EN{Now let's extend the \IT{\HelloWorldSectionName}~(\myref{sec:helloworld}) example, replacing \printf in
 the \main function body with this:}
+\ES{Ahora extendamos el ejemplo \IT{\HelloWorldSectionName}~(\myref{sec:helloworld}), reemplazando el contenido del cuerpo de la función \main con esto:}
 
 \lstinputlisting[label=hw_c]{patterns/03_printf/1.c}
 
@@ -18,7 +19,7 @@ the \main function body with this:}
 
 \section{\Conclusion{}}
 
-\RU{Вот примерный скелет вызова функции}\EN{Here is a rough skeleton of the function call}:
+\RU{Вот примерный скелет вызова функции}\EN{Here is a rough skeleton of the function call}\ES{Aquí hay un esquema aproximado de la llamada a la función}:
 
 \lstinputlisting[caption=x86]{patterns/03_printf/skel1.lst.\LANG}
 
@@ -39,7 +40,7 @@ the \main function body with this:}
 \lstinputlisting[caption=MIPS (\RU{соглашение о вызовах O32}\EN{O32 calling convention})]{patterns/03_printf/skel_MIPS.lst.\LANG}
 \fi
 
-\section{\RU{Кстати}\EN{By the way}}
+\section{\RU{Кстати}\EN{By the way}\ES{Por cierto}}
 
 \index{fastcall}
 \RU{Кстати, разница между способом передачи параметров принятая в x86, x64, fastcall, ARM и MIPS неплохо иллюстрирует тот важный момент, что процессору, в общем, всё равно, как будут 
@@ -49,18 +50,21 @@ the \main function body with this:}
 fastcall, ARM and MIPS is a good illustration of the fact that the CPU is oblivious to how the arguments are passed to functions. 
 It is also possible to create a hypothetical compiler able to pass arguments 
 via a special structure without using stack at all.}
+\ES{Por cierto, esta diferencia en la forma de pasar argumentos en x86, x64, fastcall, ARM y MIPS es una buena ilustración del hecho de que a la CPU no le importa cómo se pasan los argumentos a las funciones. También sería posible crear un compilador hipotético capaz de pasar los argumentos a través de una estructura especial sin usar la pila en absoluto.}
 
 \ifdefined\IncludeMIPS
 \index{MIPS!O32}
 \RU{Регистры \$A0\dots \$A3 в MIPS так названы только для удобства (это соглашение о вызовах O32).}
 \EN{MIPS \$A0 \dots \$A3 registers are labelled this way only for convenience (that is in the O32 calling convention).}
+\ES{Los registros \$A0 \dots \$A3 en MIPS se denominan así solo por conveniencia (es decir, en la convención de llamadas O32).}
 \RU{Программисты могут использовать любые другие регистры (может быть, только кроме \$ZERO) для
 передачи данных или любое другое соглашение о вызовах.}
 \EN{Programmers may use any other register (well, maybe except \$ZERO) 
 to pass data or use any other calling convention.}
+\ES{Los programadores pueden usar cualquier otro registro (bueno, tal vez excepto \$ZERO) para pasar datos o usar cualquier otra convención de llamadas.}
 \fi
 
-\EN{The }\ac{CPU} \RU{не знает о соглашениях о вызовах вообще}\EN{is not aware of calling conventions whatsoever}.
+\EN{The }\ES{La }\ac{CPU} \RU{не знает о соглашениях о вызовах вообще}\EN{is not aware of calling conventions whatsoever}\ES{no tiene conocimiento alguno de las convenciones de llamadas}.
 
 \RU{Можно также вспомнить, что начинающие программисты на ассемблере передают параметры 
 в другие функции обычно через регистры, без всякого явного порядка, или даже через глобальные переменные.
@@ -69,3 +73,4 @@ to pass data or use any other calling convention.}
 other functions:
 usually via registers, without any explicit order, or even via global variables.
 Of course, it works fine.}
+\ES{También podemos recordar cómo los programadores principiantes de lenguaje ensamblador pasan argumentos a otras funciones: generalmente a través de registros, sin ningún orden explícito, o incluso a través de variables globales. Por supuesto, funciona bien.}

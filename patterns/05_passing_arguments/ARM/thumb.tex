@@ -10,9 +10,12 @@
 делающий обе операции по отдельности.}
 \EN{The \TT{MLA} instruction is not available in Thumb mode, so the compiler generates the code doing these two 
 operations (multiplication and addition) separately.}
+\ES{La instrucción \TT{MLA} no está disponible en modo Thumb, por lo que el compilador genera el código realizando estas dos operaciones (multiplicación y adición) por separado.}
 \index{ARM!\Instructions!MULS}
 \index{ARM!\Instructions!ADDS}
 \RU{Первая инструкция \TT{MULS} умножает \Reg{0} на \Reg{1}, оставляя результат в \Reg{1}.}
 \EN{First the \TT{MULS} instruction multiplies \Reg{0} by \Reg{1}, leaving the result in register \Reg{1}.}
+\ES{Primero, la instrucción \TT{MULS} multiplica \Reg{0} por \Reg{1}, dejando el resultado en el registro \Reg{0}.}
 \RU{Вторая (\TT{ADDS}) складывает результат и \Reg{2}, оставляя результат в \Reg{0}.}
 \EN{The second instruction (\TT{ADDS}) adds the result and \Reg{2} leaving the result in register \Reg{0}.}
+\ES{La segunda instrucción (\TT{ADDS}) suma el resultado y \Reg{2}, dejando el resultado en el registro \Reg{0}.}

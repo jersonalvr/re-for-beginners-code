@@ -1,31 +1,37 @@
 \subsection{MSVC + \olly}
 \index{\olly}
-\RU{Проиллюстрируем всё это в}\EN{Let's illustrate this in} \olly.
+\RU{Проиллюстрируем всё это в}\EN{Let's illustrate this in}\ES{Ilustremos todo esto en} \olly.
 \RU{Когда мы протрассируем до первой инструкции в \ttf, которая использует какой-то из аргументов
 (первый), мы увидим, что \EBP указывает на \glslink{stack frame}{фрейм стека}. Он выделен красным прямоугольником.}%
 \EN{When we trace to the first instruction in \ttf that uses one of the arguments 
 (first one), we see that \EBP is pointing to the \gls{stack frame}, 
 which is marked with a red rectangle.}
+\ES{Cuando rastreamos hasta la primera instrucción en \ttf que utiliza uno de los argumentos (el primero), vemos que \EBP apunta al \glslink{stack frame}{marco de pila}, el cual está marcado con un rectángulo rojo.}
 \RU{Самый первый элемент \glslink{stack frame}{фрейма стека}~--- это сохраненное значение \EBP, 
 затем \ac{RA}. Третий элемент это первый аргумент функции, затем второй аргумент и третий.}
 \EN{The first element of the \gls{stack frame} is the saved value of \EBP, 
 the second one is \ac{RA}, the third is the first function argument, then the second and third ones.}
+\ES{El primer elemento del \glslink{stack frame}{marco de pila} es el valor guardado de \EBP, el segundo es \ac{RA}, el tercero es el primer argumento de la función, seguido del segundo y del tercero.}
 \RU{Для доступа к первому аргументу функции нужно прибавить к \EBP 8 (2 32-битных слова).}
 \EN{To access the first function argument, one needs to add exactly 8 (2 32-bit words) to \EBP.}
+\ES{Para acceder al primer argumento de la función, es necesario sumar exactamente 8 (2 palabras de 32 bits) a \EBP.}
 
 \olly \EN{is aware about this, so it has added comments to the stack elements like}
 \RU{в курсе этого, так что он добавил комментарии к элементам стека вроде}
-\q{RETURN from} \AndENRU \q{Arg1 = \dots}, \etc{}.
+\ES{es consciente de esto, por lo que ha añadido comentarios a los elementos de la pila como}
+\q{RETURN from} \AndENRU\ES{y} \q{Arg1 = \dots}, \etc{}.
 
 N.B.: \EN{Function arguments are not members of the function's stack frame, they are rather
 members of the stack frame of the \gls{caller} function.}
 \RU{аргументы функции являются членами фрейма стека вызывающей функции, а не текущей.}
+\ES{Los argumentos de la función no son miembros del marco de pila de la función, sino más bien miembros del marco de pila de la función de llamada (\gls{caller}).}
 \EN{Hence, \olly marked \q{Arg} elements as members of another stack frame.}
 \RU{Поэтому \olly отметил элементы \q{Arg} как члены другого фрейма стека.}
+\ES{Por lo tanto, \olly marcó los elementos \q{Arg} como miembros de otro marco de pila.}
 
 \begin{figure}[H]
 \centering
 \includegraphics[scale=\FigScale]{patterns/05_passing_arguments/olly.png}
-\caption{\olly: \RU{внутри функции}\EN{inside of} \ttf{}\EN{ function}}
+\caption{\olly: \RU{внутри функции}\EN{inside of}\ES{dentro de la función} \ttf{}\EN{ function}}
 \label{fig:passing_arguments_olly}
 \end{figure}

@@ -8,9 +8,11 @@
 \index{ARM!\Instructions!BEQ}
 \RU{Здесь для нас есть новые инструкции: \CMP и \ac{BEQ}.}
 \EN{The new instructions here are \CMP and \ac{BEQ}.}
+\ES{Aquí hay nuevas instrucciones para nosotros: \CMP y \ac{BEQ}.}
 
 \CMP \RU{аналогична той что в x86: она отнимает один аргумент от второго и сохраняет флаги.}
 \EN{is analogous to the x86 instruction with the same name, it subtracts one of the arguments from the other and updates the conditional flags if needed.}
+\ES{es análoga a la instrucción x86 del mismo nombre, resta uno de los argumentos del otro y actualiza los flags condicionales si es necesario.}
 % TODO: в мануале ARM $op1 + NOT(op2) + 1$ вместо вычитания
 
 \index{ARM!\Registers!Z}
@@ -20,13 +22,15 @@
 либо если результат последнего вычисления был 0, либо если флаг Z равен 1.}
 \EN{jumps to another address if the operands were equal to each other, or,
 if the result of the last computation was 0, or if the Z flag is 1.}
-\RU{То же что и \JZ в}\EN{It behaves as \JZ in} x86.
+\ES{salta a otra dirección si los operandos eran iguales entre sí, o si el resultado del último cálculo fue 0, o si el flag Z es 1.}
+\RU{То же что и \JZ в}\EN{It behaves as \JZ in}\ES{Se comporta como \JZ en} x86.
 
 \RU{Всё остальное просто: исполнение разветвляется на две ветки, затем они сходятся там, 
 где в \Reg{0} записывается 0 как возвращаемое из функции значение и происходит выход из функции.}
 \EN{Everything else is simple: the execution flow forks in two branches, then the branches
 converge at the point
 where 0 is written into the \Reg{0} as a function return value, and then the function ends.}
+\ES{Todo lo demás es simple: el flujo de ejecución se bifurca en dos ramas, luego las ramas convergen en el punto donde se escribe 0 en \Reg{0} como valor de retorno de la función, y luego la función termina.}
 
 \subsubsection{ARM64}
 
@@ -36,3 +40,4 @@ where 0 is written into the \Reg{0} as a function return value, and then the fun
 \index{ARM!\Instructions!Bcc}
 \EN{Code flow in this case forks with the use of CMP/BNE (Branch if Not Equal) instructions pair.}
 \RU{Исполнение здесь разветвляется, используя пару инструкций CMP/BNE (Branch if Not Equal: переход если не равно).}
+\ES{El flujo del código en este caso se bifurca mediante el uso del par de instrucciones CMP/BNE (Branch if Not Equal, saltar si no es igual).}

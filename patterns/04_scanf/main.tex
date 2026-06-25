@@ -2,7 +2,7 @@
 \index{\CStandardLibrary!scanf()}
 \label{label_scanf}
 
-\RU{Теперь попробуем использовать scanf().}\EN{Now let's use scanf().}
+\RU{Теперь попробуем использовать scanf().}\EN{Now let's use scanf().}\ES{Ahora intentemos usar scanf().}
 
 % sections
 \input{patterns/04_scanf/1_simple/main}
@@ -20,6 +20,9 @@ Why?}
 \RU{Этот код, когда компилируется при помощи GCC в Linux x86-64, падает во время исполнения (segmentation fault).
 Но он работает в среде Windows, когда скомпилирован при помощи MSVC 2010 x86.
 Почему?}
+\ES{Este código, compilado en Linux x86-64 usando GCC, falla durante la ejecución (fallo de segmentación).
+Sin embargo, funciona en un entorno de Windows compilado por MSVC 2010 x86.
+¿Por qué?}
 
 \begin{lstlisting}
 #include <string.h>

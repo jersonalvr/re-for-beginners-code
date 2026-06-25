@@ -1,16 +1,18 @@
 \section{MIPS}
 
-\subsection{3 \RU{аргумента}\EN{arguments}}
+\subsection{3 \RU{аргумента}\EN{arguments}\ES{argumentos}}
 
 \subsubsection{\Optimizing GCC 4.4.5}
 
 \RU{Главное отличие от примера \q{\HelloWorldSectionName} в том, что здесь на самом деле
 вызывается \printf вместо \puts и ещё три аргумента передаются в регистрах}%
 \EN{The main difference with the \q{\HelloWorldSectionName} example is that in this case \printf is called
-instead of \puts and 3 more arguments are passed through the registers} \$5\dots \$7 (\OrENRU \$A0\dots \$A2).
+instead of \puts and 3 more arguments are passed through the registers}%
+\ES{La principal diferencia con el ejemplo \q{\HelloWorldSectionName} es que en este caso se llama a \printf en lugar de \puts y se pasan 3 argumentos más a través de los registros} \$5\dots \$7 (\OrENRU \$A0\dots \$A2).
 
 \RU{Вот почему эти регистры имеют префикс A-. Это значит, что они используются для передачи аргументов.}
 \EN{That is why these registers are prefixed with A-, which implies they are used for function arguments passing.}
+\ES{Es por eso que estos registros tienen el prefijo A-, lo que implica que se utilizan para pasar argumentos a funciones.}
 
 \lstinputlisting[caption=\Optimizing GCC 4.4.5 (\assemblyOutput)]{patterns/03_printf/MIPS/printf3.O3.s.\LANG}
 
@@ -20,19 +22,20 @@ instead of \puts and 3 more arguments are passed through the registers} \$5\dots
 That's why there are no instruction at address 0x1C: because \INS{LA} \IT{occupies} 8 bytes.}%
 \RU{\IDA объединила пару инструкций \INS{LUI} и \INS{ADDIU} в одну пседовинструкцию \INS{LA}.
 Вот почему здесь нет инструкции по адресу 0x1C: потому что \INS{LA} \IT{занимает} 8 байт.}
+\ES{\IDA ha fusionado el par de instrucciones \INS{LUI} y \INS{ADDIU} en una sola pseudoinstrucción \INS{LA}. Es por eso que no hay ninguna instrucción en la dirección 0x1C: porque \INS{LA} ocupa 8 bytes.}
 
 \subsubsection{\NonOptimizing GCC 4.4.5}
 
-\NonOptimizing GCC \RU{более многословен}\EN{is more verbose}:
+\NonOptimizing GCC \RU{более многословен}\EN{is more verbose}\ES{es más detallado}:
 
 \lstinputlisting[caption=\NonOptimizing GCC 4.4.5 (\assemblyOutput)]{patterns/03_printf/MIPS/printf3.O0.s.\LANG}
 
 \lstinputlisting[caption=\NonOptimizing GCC 4.4.5 (IDA)]{patterns/03_printf/MIPS/printf3.O0.IDA.lst.\LANG}
 
-\subsection{8 \RU{аргументов}\EN{arguments}}
+\subsection{8 \RU{аргументов}\EN{arguments}\ES{argumentos}}
 
 \RU{Снова воспользуемся примером с 9-ю аргументами из предыдущей секции}\EN{Let's use again the example
-with 9 arguments from the previous section}: \myref{example_printf8_x64}.
+with 9 arguments from the previous section}\ES{Usemos de nuevo el ejemplo con 9 argumentos de la sección anterior}: \myref{example_printf8_x64}.
 
 \lstinputlisting{patterns/03_printf/2.c}
 
@@ -41,17 +44,21 @@ with 9 arguments from the previous section}: \myref{example_printf8_x64}.
 \RU{Только 4 первых аргумента передаются в регистрах \$A0 \dots \$A3, так что остальные передаются 
 через стек.}
 \EN{Only the first 4 arguments are passed in the \$A0 \dots \$A3 registers, the rest are passed via the stack.}
+\ES{Solo los primeros 4 argumentos se pasan en los registros \$A0 \dots \$A3, el resto se pasa a través de la pila.}
 \index{MIPS!O32}
 \RU{Это соглашение о вызовах O32 (самое популярное в мире MIPS).
 Другие соглашения о вызовах (например N32) могут наделять регистры другими функциями.}
 \EN{This is the O32 calling convention (which is the most common one in the MIPS world).
 Other calling conventions (like N32) may use the registers for different purposes.}
+\ES{Esta es la convención de llamadas O32 (que es la más común en el mundo MIPS). Otras convenciones de llamadas (como N32) pueden usar los registros para diferentes propósitos.}
 
 \index{MIPS!\Instructions!SW}
 \RU{SW означает \q{Store Word} (записать слово из регистра в память).}
 \EN{SW abbreviates \q{Store Word} (from register to memory).}
+\ES{SW abrevia \q{Store Word} (guardar palabra desde registro a memoria).}
 \RU{В MIPS нет инструкции для записи значения в память, так что для этого используется пара инструкций (LI/SW).}
 \EN{MIPS lacks instructions for storing a value into memory, so an instruction pair has to be used instead (LI/SW).}
+\ES{MIPS carece de instrucciones para almacenar un valor en memoria, por lo que se debe usar un par de instrucciones en su lugar (LI/SW).}
 
 \lstinputlisting[caption=\Optimizing GCC 4.4.5 (\assemblyOutput)]{patterns/03_printf/MIPS/printf8.O3.s.\LANG}
 
@@ -59,7 +66,7 @@ Other calling conventions (like N32) may use the registers for different purpose
 
 \subsubsection{\NonOptimizing GCC 4.4.5}
 
-\NonOptimizing GCC \RU{более многословен}\EN{is more verbose}:
+\NonOptimizing GCC \RU{более многословен}\EN{is more verbose}\ES{es más detallado}:
 
 \lstinputlisting[caption=\NonOptimizing GCC 4.4.5 (\assemblyOutput)]{patterns/03_printf/MIPS/printf8.O0.s.\LANG}
 

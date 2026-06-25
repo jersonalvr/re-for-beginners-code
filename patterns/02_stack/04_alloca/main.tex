@@ -1,10 +1,11 @@
-\subsection{x86: \RU{Функция alloca()}\EN{alloca() function}}
+\subsection{x86: \RU{Функция alloca()}\EN{alloca() function}\ES{Función alloca()}}
 \label{alloca}
 \index{\CStandardLibrary!alloca()}
 \RU{Интересен случай с функцией \TT{alloca()}}%
-\EN{It is worth noting the \TT{alloca()} function}\footnote{
+\EN{It is worth noting the \TT{alloca()} function}\ES{Vale la pena notar la función \TT{alloca()}}\footnote{
 \RU{В MSVC, реализацию функции можно посмотреть в файлах}%
 \EN{In MSVC, the function implementation can be found in} 
+\ES{En MSVC, la implementación de la función se puede encontrar en} 
   \TT{alloca16.asm} 
   \AndENRU 
   \TT{chkstk.asm} 
@@ -13,20 +14,24 @@
 
 \RU{Эта функция работает как \TT{malloc()}, но выделяет память прямо в стеке.} 
 \EN{This function works like \TT{malloc()}, but allocates memory directly on the stack.}
+\ES{Esta función funciona como \TT{malloc()}, pero asigna memoria directamente en la pila.}
 
 \RU{Память освобождать через \TT{free()} не нужно, так как эпилог функции~(\myref{sec:prologepilog})
 вернет \ESP в изначальное состояние и выделенная память просто \IT{выкидывается}.}
 \EN{The allocated memory chunk does not need to be freed via a \TT{free()} function call, since the 
 function epilogue~(\myref{sec:prologepilog}) returns \ESP back to its initial state and 
 the allocated memory is just \IT{dropped}.}
+\ES{El bloque de memoria asignado no necesita ser liberado a través de una llamada a la función \TT{free()}, ya que el epílogo de la función~(\myref{sec:prologepilog}) devuelve \ESP a su estado inicial y la memoria asignada simplemente se \IT{desecha}.}
 
 \RU{Интересна реализация функции \TT{alloca()}.}
 \EN{It is worth noting how \TT{alloca()} is implemented.}
+\ES{Vale la pena señalar cómo está implementada \TT{alloca()}.}
 
 \RU{Эта функция, если упрощенно, просто сдвигает \ESP вглубь стека 
 на столько байт, сколько вам нужно и возвращает \ESP в качестве указателя на выделенный блок.}
 \EN{In simple terms, this function just shifts \ESP downwards toward the stack bottom by the number of bytes you need and sets \ESP as a pointer to the \IT{allocated} block.}
-\RU{Попробуем:}\EN{Let's try:}
+\ES{En términos sencillos, esta función solo desplaza \ESP hacia abajo, hacia el fondo de la pila, por la cantidad de bytes que necesite, y devuelve \ESP como un puntero al bloque \IT{asignado}.}
+\RU{Попробуем:}\EN{Let's try:}\ES{Probemos:}
 
 \lstinputlisting{patterns/02_stack/04_alloca/2_1.c}
 
@@ -36,16 +41,18 @@ the allocated memory is just \IT{dropped}.}
 \EN{\TT{\_snprintf()} function works just like \printf, but instead of dumping the result into \gls{stdout} (e.g., to terminal or 
 console), it writes it to the \TT{buf} buffer. Function \puts copies \TT{buf} contents to \gls{stdout}. Of course, these two
 function calls might be replaced by one \printf call, but we have to illustrate small buffer usage.}
+\ES{La función \TT{\_snprintf()} funciona igual que \printf, pero en lugar de enviar el resultado a \gls{stdout} (por ejemplo, al terminal o consola), lo escribe en el búfer \TT{buf}. La función \puts copia el contenido de \TT{buf} a \gls{stdout}. Por supuesto, estas dos llamadas a funciones podrían reemplazarse por una sola llamada a \printf, pero aquí tenemos que ilustrar el uso de un búfer pequeño.}%
 
 \subsubsection{MSVC}
 
-\RU{Компилируем}\EN{Let's compile} (MSVC 2010):
+\RU{Компилируем}\EN{Let's compile}\ES{Compilemos} (MSVC 2010):
 
 \lstinputlisting[caption=MSVC 2010]{patterns/02_stack/04_alloca/2_2_msvc.asm}
 
 \index{Compiler intrinsic}
 \RU {Единственный параметр в \TT{alloca()} передается через \EAX, а не как обычно через стек}%
 \EN{The sole \TT{alloca()} argument is passed via \EAX (instead of pushing it into the stack)}%
+\ES{El único argumento de \TT{alloca()} se pasa a través de \EAX (en lugar de empujarlo a la pila)}%
 \footnote{
 \RU{Это потому, что alloca()~--- это не сколько функция, сколько т.н. \IT{compiler intrinsic}%
 \ifx\LITE\undefined
@@ -57,6 +64,7 @@ function calls might be replaced by one \printf call, but we have to illustrate 
 (\myref{sec:compiler_intrinsic}) 
 \fi
 than a normal function}.
+\ES{Esto se debe a que alloca() es más bien una función intrínseca del compilador (\IT{compiler intrinsic})\ifx\LITE\undefined (\myref{sec:compiler_intrinsic})\fi en lugar de una función normal}.
 
 \RU{Одна из причин, почему здесь нужна именно функция, а не несколько инструкций прямо в коде в том, что в реализации 
 функции alloca() от \ac{MSVC}
@@ -64,32 +72,36 @@ than a normal function}.
 \EN{One of the reasons we need a separate function instead of just a couple of instructions in the code,
 is because the \ac{MSVC} alloca() implementation also has code which reads from the memory just allocated, in order to let the \ac{OS} map
 physical memory to this \ac{VM} region.}
+\ES{Una de las razones por las que necesitamos una función separada, en lugar de solo un par de instrucciones en el código, es porque la implementación de alloca() de \ac{MSVC} también contiene código que lee de la memoria recién asignada, con el fin de permitir que el \ac{OS} asigne memoria física a esta región de la \ac{VM}.}
 }.
 \RU{После вызова \TT{alloca()} \ESP указывает на блок в 600 байт, который 
 мы можем использовать под \TT{buf}.}
 \EN{After the \TT{alloca()} call, \ESP points to the block of 600 bytes and we can 
 use it as memory for the \TT{buf} array.}
+\ES{Después de la llamada a \TT{alloca()}, \ESP apunta a un bloque de 600 bytes y podemos usarlo como memoria para el búfer \TT{buf}.}
 
 \ifdefined\IncludeGCC
 \subsubsection{GCC + \IntelSyntax}
 
 \RU{А GCC 4.4.1 обходится без вызова других функций:}
 \EN{GCC 4.4.1 does the same without calling external functions:}
+\ES{Y GCC 4.4.1 hace lo mismo sin llamar a funciones externas:}
 
 \lstinputlisting[caption=GCC 4.7.3]{patterns/02_stack/04_alloca/2_1_gcc_intel_O3.asm.\LANG}
 
 \subsubsection{GCC + \ATTSyntax}
 
-\RU{Посмотрим на тот же код, только в синтаксисе AT\&T}\EN{Let's see the same code, but in AT\&T syntax}:
+\RU{Посмотрим на тот же код, только в синтаксисе AT\&T}\EN{Let's see the same code, but in AT\&T syntax}\ES{Veamos el mismo código, pero en sintaxis AT\&T}:
 
 \lstinputlisting[caption=GCC 4.7.3]{patterns/02_stack/04_alloca/2_1_gcc_ATT_O3.s}
 
 \index{\ATTSyntax}
-\RU{Всё то же самое, что и в прошлом листинге.}\EN{The code is the same as in the previous listing.}
+\RU{Всё то же самое, что и в прошлом листинге.}\EN{The code is the same as in the previous listing.}\ES{El código es el mismo que en el listado anterior.}
 
-\RU{Кстати}\EN{By the way}, \TT{movl \$3, 20(\%esp)}%
-\RU{~--- это аналог}\EN{corresponds to} \TT{mov DWORD PTR [esp+20], 3}
-\RU{в синтаксисе Intel.}\EN{ in Intel-syntax.}
+\RU{Кстати}\EN{By the way}\ES{Por cierto}, \TT{movl \$3, 20(\%esp)}%
+\RU{~--- это аналог}\EN{corresponds to}\ES{corresponde a} \TT{mov DWORD PTR [esp+20], 3}
+\RU{в синтаксисе Intel.}\EN{ in Intel-syntax.}\ES{ en sintaxis Intel.}
 \RU{Адресация памяти в виде \IT{регистр+смещение} записывается в синтаксисе AT\&T как \TT{смещение(\%{регистр})}.}
 \EN{In AT\&T syntax register+offset format of addressing memory looks like \TT{offset(\%{register})}.}
+\ES{En la sintaxis AT\&T, el formato de direccionamiento de memoria de \IT{registro+desplazamiento} se escribe como \TT{desplazamiento(\%{registro})}.}
 \fi

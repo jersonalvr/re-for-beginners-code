@@ -4,21 +4,26 @@
 
 \index{Fused multiply–add}
 \index{ARM!\Instructions!MADD}
-\RU{Тут всё просто}\EN{Everything here is simple}.
+\RU{Тут всё просто}\EN{Everything here is simple}\ES{Todo aquí es simple}.
 \EN{\TT{MADD} is just an instruction doing fused multiply/add (similar to the \TT{MLA} we already saw).}
 \RU{\TT{MADD} это просто инструкция, производящая умножение и сложение одновременно (как \TT{MLA}, 
 которую мы уже видели).}
+\ES{\TT{MADD} es simplemente una instrucción que realiza una multiplicación/adición fusionada (similar a \TT{MLA} que ya vimos).}
 \EN{All 3 arguments are passed in the 32-bit parts of X-registers.}
 \RU{Все 3 аргумента передаются в 32-битных частях X-регистров.}
+\ES{Los 3 argumentos se pasan en las partes de 32 bits de los registros X.}
 \EN{Indeed, the argument types are 32-bit \IT{int}'s.}
 \RU{Действительно, типы аргументов это 32-битные \IT{int}'ы.}
+\ES{De hecho, los tipos de argumentos son \IT{int} de 32 bits.}
 \EN{The result is returned in \TT{W0}.}
 \RU{Результат возвращается в \TT{W0}.}
+\ES{El resultado se devuelve en \TT{W0}.}
 
 \lstinputlisting[caption=\Optimizing GCC (Linaro) 4.9]{patterns/05_passing_arguments/ARM/ARM64_O3.s.\LANG}
 
 \EN{Let's also extend all data types to 64-bit \TT{uint64\_t} and test:}%
 \RU{Также расширим все типы данных до 64-битных \TT{uint64\_t} и попробуем:}
+\ES{También extendamos todos los tipos de datos a \TT{uint64\_t} de 64 bits y probemos:}
 
 \lstinputlisting{patterns/05_passing_arguments/ex64.c}
 
@@ -46,13 +51,16 @@ main:
 
 \EN{The \ttf{} function is the same, only the whole 64-bit X-registers are now used.}%
 \RU{Функция \ttf{} точно такая же, только теперь используются полные части 64-битных X-регистров.}
+\ES{La función \ttf{} es la misma, solo que ahora se utilizan los registros X de 64 bits completos.}
 \RU{Длинные 64-битные значения загружаются в регистры по частям, это описано здесь}%
 \EN{Long 64-bit values are loaded into the registers by parts, this is also described here}: \myref{ARM_big_constants_loading}.
+\ES{Los valores largos de 64 bits se cargan en los registros por partes, esto también se describe aquí: \myref{ARM_big_constants_loading}.}
 
 \subsubsection{\NonOptimizing GCC (Linaro) 4.9}
 
 \EN{The non-optimizing compiler is more redundant:}
 \RU{Неоптимизирующий компилятор выдает немного лишнего кода:}
+\ES{El compilador sin optimización es más redundante:}
 
 \begin{lstlisting}
 f:
@@ -76,19 +84,24 @@ function arguments, which may be needed again in the future.}
 \RU{Код сохраняет входные аргументы в локальном стеке на случай если кому-то (или чему-то) в этой функции
 понадобится использовать регистры \TT{W0...W2}, перезаписывая оригинальные аргументы функции, которые
 могут понадобится в будущем.}
-\RU{Это называется}\EN{This is called} \IT{Register Save Area.} \cite{ARM64_PCS}
+\ES{El código guarda sus argumentos de entrada en la pila local, en caso de que alguien (o algo) en esta función necesite utilizar los registros \TT{W0...W2}. Esto evita la sobreescritura de los argumentos originales de la función, que podrían ser necesarios nuevamente en el futuro.}
+\RU{Это называется}\EN{This is called}\ES{Esto se llama} \IT{Register Save Area.} \cite{ARM64_PCS}
 \RU{Вызываемая функция не обязана сохранять их.}\EN{ The callee, however, is not obliged to save them.}
-\RU{Это то же что и}\EN{This is somewhat similar to} \q{Shadow Space}: \myref{shadow_space}.
+\ES{Sin embargo, la función llamada (\gls{callee}) no está obligada a guardarlos.}
+\RU{Это то же что и}\EN{This is somewhat similar to}\ES{Esto es algo similar a} \q{Shadow Space}: \myref{shadow_space}.
 
 \RU{Почему оптимизирующий GCC 4.9 убрал этот, сохраняющий аргументы, код?}
 \EN{Why did the optimizing GCC 4.9 drop this argument saving code?}
+\ES{¿Por qué el GCC 4.9 optimizado descartó este código de guardado de argumentos?}
 \EN{Because it did some additional optimizing work and concluded
 that the function arguments will not be needed in the future 
 and also that the registers \TT{W0...W2} will not be used.}
 \RU{Потому что он провел дополнительную работу по оптимизации и сделал вывод, 
 что аргументы функции не понадобятся в будущем и регистры \TT{W0...W2} также не будут использоваться.}
+\ES{Porque realizó un trabajo de optimización adicional y concluyó que los argumentos de la función no serán necesarios en el futuro y también que los registros \TT{W0...W2} no serán utilizados.}
 
 \index{ARM!\Instructions!MUL}
 \index{ARM!\Instructions!ADD}
 \RU{Также мы видим пару инструкций \TT{MUL}/\TT{ADD} вместо одной \TT{MADD}.}
 \EN{We also see a \TT{MUL}/\TT{ADD} instruction pair instead of single a \TT{MADD}.}
+\ES{También vemos un par de instrucciones \TT{MUL}/\TT{ADD} en lugar de una sola \TT{MADD}.}

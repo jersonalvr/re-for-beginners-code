@@ -1,20 +1,24 @@
 \subsection{MIPS}
 
-\subsubsection{\EN{Uninitialized global variable}\RU{Неинициализированная глобальная переменная}}
+\subsubsection{\EN{Uninitialized global variable}\RU{Неинициализированная глобальная переменная}\ES{Variable global no inicializada}}
 
 \RU{Так что теперь переменная $x$ глобальная.}
 \EN{So now the $x$ variable is global.}
+\ES{Así que ahora la variable $x$ es global.}
 \RU{Сделаем исполняемый файл вместо объектного и загрузим его в \IDA.}
 \EN{Let's compile to executable file rather than object file and load it into \IDA.}
+\ES{Compilemos a un archivo ejecutable en lugar de un archivo objeto y carguémoslo en \IDA.}
 \RU{IDA показывает присутствие переменной $x$ в ELF-секции .sbss (помните о \q{Global Pointer}? \myref{MIPS_GP}),
 так как переменная не инициализируется в самом начале.}
 \EN{IDA displays the $x$ variable in the .sbss ELF section (remember the \q{Global Pointer}? \myref{MIPS_GP}),
 since the variable is not initialized at the start.}
+\ES{IDA muestra la variable $x$ en la sección ELF .sbss (¿recuerda el \q{Global Pointer}? \myref{MIPS_GP}), ya que la variable no se inicializa al principio.}
 
 \lstinputlisting[caption=\Optimizing GCC 4.4.5 (IDA)]{patterns/04_scanf/2_global/MIPS/O3_IDA.lst.\LANG}
 
 \RU{IDA уменьшает количество информации, так что сделаем также листинг используя objdump и добавим туда свои комментарии:}%
 \EN{IDA reduces the amount of information, so we'll also do a listing using objdump and comment it:}
+\ES{IDA reduce la cantidad de información, por lo que también haremos un listado usando objdump y lo comentaremos:}
 
 \lstinputlisting[caption=\Optimizing GCC 4.4.5 (objdump),numbers=left]{patterns/04_scanf/2_global/MIPS/O3_objdump.txt.\LANG}
 
@@ -22,14 +26,18 @@ since the variable is not initialized at the start.}
 к нему отрицательного смещения (строка 18).}
 \EN{Now we see the $x$ variable address is read from a 64KiB data buffer using GP and adding
 negative offset to it (line 18).}
+\ES{Ahora vemos que la dirección de la variable $x$ se lee de un búfer de datos de 64KiB usando GP y sumándole un desplazamiento negativo (línea 18).}
 \RU{И даже более того: адреса трех внешних функций, используемых в нашем примере (\puts, \scanf, \printf)
 также берутся из буфера 64KiB используя GP (строки 9, 16 и 26).}
 \EN{More than that, the addresses of the three external functions  which are used in our example (\puts, \scanf, \printf), are also read from the 64KiB global data buffer using GP (lines 9, 16 and 26).}
+\ES{Más que eso, las direcciones de las tres funciones externas que se utilizan en nuestro ejemplo (\puts, \scanf, \printf) también se leen del búfer de datos global de 64KiB usando GP (líneas 9, 16 y 26).}
 \RU{GP указывает на середину буфера, так что такие смещения могут нам подсказать, что адреса всех трех функций,
 а также адрес переменной $x$ расположены где-то в самом начале буфера.}
 \EN{GP points to the middle of the buffer, and such offset suggests that all three function's addresses,
 and also the address of the $x$ variable, are all stored somewhere at the beginning of that buffer.}
+\ES{GP apunta al medio del búfer, y dicho desplazamiento sugiere que las direcciones de las tres funciones, y también la dirección de la variable $x$, están almacenadas en algún lugar al principio de ese búfer.}
 \RU{Действительно, ведь наш пример крохотный}\EN{That make sense, because our example is tiny}.
+\ES{Esto tiene sentido, porque nuestro ejemplo es pequeño.}
 
 \index{MIPS!\Pseudoinstructions!MOVE}
 \index{MIPS!\Pseudoinstructions!NOP}
@@ -37,36 +45,44 @@ and also the address of the $x$ variable, are all stored somewhere at the beginn
 это холостая инструкция), чтобы выровнять начало следующей функции по 16-байтной границе.}
 \EN{Another thing worth mentioning is that the function ends with two \ac{NOP}s (\TT{MOVE \$AT,\$AT} --- 
 an idle instruction), in order to align next function's start on 16-byte boundary.}
+\ES{Otra cosa que vale la pena mencionar es que la función termina con dos \ac{NOP}s (\TT{MOVE \$AT,\$AT} --- una instrucción inactiva), para alinear el inicio de la siguiente función en un límite de 16 bytes.}
 
-\subsubsection{\RU{Инициализированная глобальная переменная}\EN{Initialized global variable}}
+\subsubsection{\RU{Инициализированная глобальная переменная}\EN{Initialized global variable}\ES{Variable global inicializada}}
 
 \RU{Немного изменим наш пример и сделаем, чтобы у $x$ было значение по умолчанию:}
 \EN{Let's alter our example by giving the $x$ variable a default value:}
+\ES{Modifiquemos nuestro ejemplo dándole a la variable $x$ un valor por defecto:}
 
 \lstinputlisting{patterns/04_scanf/2_global/default_value.c.\LANG}
 
 \RU{Теперь IDA показывает что переменная $x$ располагается в секции .data:}
 \EN{Now IDA shows that the $x$ variable is residing in the .data section:}
+\ES{Ahora IDA muestra que la variable $x$ reside en la sección .data:}
 
 \lstinputlisting[caption=\Optimizing GCC 4.4.5 (IDA)]{patterns/04_scanf/2_global/MIPS/O3_IDA_init.lst.\LANG}
 
 \RU{Почему не .sdata? Может быть, нужно было указать какую-то опцию в GCC?}
 \EN{Why not .sdata? Perhaps that this depends on some GCC option?}
+\ES{¿Por qué no en .sdata? ¿Tal vez esto dependa de alguna opción de GCC?}
 \RU{Тем не менее, $x$ теперь в .data, а это уже общая память и мы можем посмотреть как происходит
 работа с переменными там.}
 \EN{Nevertheless, now $x$ is in .data, which is a general memory area, and we can take a look
 how to work with variables there.}
+\ES{Sin embargo, ahora $x$ está en .data, que es un área de memoria general, y podemos echar un vistazo a cómo se trabaja con las variables allí.}
 
 \index{MIPS!\Instructions!LUI}
 \index{MIPS!\Instructions!ADDIU}
 \RU{Адрес переменной должен быть сформирован парой инструкций.}
 \EN{The variable's address must be formed using a pair of instructions.}
+\ES{La dirección de la variable debe formarse mediante un par de instrucciones.}
 \RU{В нашем случае это LUI (\q{Load Upper Immediate}~--- загрузить старшие 16 бит) и 
 ADDIU (\q{Add Immediate Unsigned Word}~--- прибавить значение).}
 \EN{In our case those are LUI (\q{Load Upper Immediate}) and ADDIU (\q{Add Immediate Unsigned Word}).}
+\ES{En nuestro caso son LUI (\q{Load Upper Immediate}) y ADDIU (\q{Add Immediate Unsigned Word}).}
 
 \RU{Вот так же листинг сгенерированный objdump-ом для лучшего рассмотрения:}
 \EN{Here is also the objdump listing for close inspection:}
+\ES{Aquí está también el listado de objdump para una inspección detallada:}
 
 \lstinputlisting[caption=\Optimizing GCC 4.4.5 (objdump)]{patterns/04_scanf/2_global/MIPS/O3_objdump_init.txt.\LANG}
 
@@ -79,17 +95,21 @@ LW достаточно для загрузки значения из перем
 \EN{We see that the address is formed using LUI and ADDIU, but the high part of address is still in
 the \$S0 register, and it is possible to encode the offset in a LW (\q{Load Word}) instruction, so one single LW is enough 
 to load a value from the variable and pass it to \printf.}
+\ES{Vemos que la dirección se forma usando LUI y ADDIU, pero la parte alta de la dirección todavía está en el registro \$S0, y es posible codificar el desplazamiento en una instrucción LW (\q{Load Word}), de modo que una sola LW es suficiente para cargar un valor de la variable y pasarlo a \printf.}
 
 \RU{Регистры хранящие временные данные имеют префикс T-, но здесь есть также регистры с префиксом S-,
 содержимое которых должно быть сохранено в других функциях (т.е. \q{saved}).}
 \EN{Registers holding temporary data are prefixed with T-, but here we also see some prefixed with S-, 
 the contents of which is need to be preserved before use in other functions (i.e., \q{saved}).}
+\ES{Los registros que contienen datos temporales tienen el prefijo T-, pero aquí también vemos algunos con el prefijo S-, cuyos contenidos deben preservarse antes de su uso en otras funciones (es decir, \q{saved}).}
 % FIXME:
 % This needs to be clarified a bit, e.g. "the registers need to be preserved if a function is called and it wants to use them
 \RU{Вот почему \$S0 был установлен по адресу 0x4006cc и затем был использован по адресу 0x4006e8
 после вызова \scanf.}
 \EN{That is why the value of \$S0 was set at address 0x4006cc and was used again
 at address 0x4006e8, after the \scanf call. }
+\ES{Es por eso que el valor de \$S0 se estableció en la dirección 0x4006cc y se usó nuevamente en la dirección 0x4006e8, después de la llamada a \scanf.}
 \RU{Функция \scanf не изменяет это значение.}\EN{The \scanf function does not change its value.}
+\ES{La función \scanf no cambia su valor.}
 
 % TODO non-optimized example?

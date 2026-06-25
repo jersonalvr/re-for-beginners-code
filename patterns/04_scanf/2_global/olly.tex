@@ -2,49 +2,56 @@
 \subsection{MSVC: x86 + \olly}
 \index{\olly}
 
-\RU{Тут даже проще}\EN{Things are even simpler here}:
+\RU{Тут даже проще}\EN{Things are even simpler here}\ES{Las cosas son aún más sencillas aquí}:
 
 \begin{figure}[H]
 \centering
 \includegraphics[scale=\FigScale]{patterns/04_scanf/2_global/ex2_olly_1.png}
-\caption{\olly: \RU{после исполнения \scanf}\EN{after \scanf execution}}
+\caption{\olly: \RU{после исполнения \scanf}\EN{after \scanf execution}\ES{después de la ejecución de \scanf}}
 \label{fig:scanf_ex2_olly_1}
 \end{figure}
 
 \RU{Переменная хранится в сегменте данных.}
 \EN{The variable is located in the data segment.}
+\ES{La variable se encuentra en el segmento de datos.}
 \RU{Кстати, после исполнения инструкции \PUSH (заталкивающей адрес $x$) адрес появится в стеке, 
 и на этом элементе можно нажать правой кнопкой, выбрать \q{Follow in dump}.}
 \EN{After the \PUSH instruction (pushing the address of $x$) gets executed, 
 the address appears in the stack window. Right-click on that row and select \q{Follow in dump}.}
+\ES{Por cierto, después de que se ejecute la instrucción \PUSH (que introduce la dirección de $x$), la dirección aparece en la ventana de la pila. Haga clic derecho en esa fila y seleccione \q{Follow in dump}.}
 \RU{И в окне памяти слева появится эта переменная.}
 \EN{The variable will appear in the memory window on the left.}
+\ES{La variable aparecerá en la ventana de memoria a la izquierda.}
 
 \RU{После того как в консоли введем 123, здесь появится}\EN{After we have entered 123 in the console,} 
-\TT{0x7B}\EN{ appears in the memory window (see the highlighted screenshot regions)}.
+\TT{0x7B}\EN{ appears in the memory window (see the highlighted screenshot regions)}\ES{ aparece en la ventana de memoria (vea las regiones resaltadas de la captura de pantalla)}.
 
 \RU{Почему самый первый байт это}\EN{But why is the first byte} \TT{7B}?
 \RU{По логике вещей, здесь должно было бы быть}\EN{Thinking logically,} \TT{00 00 00 7B}\EN{ should be
-there}.
+there}\ES{ debería estar allí}.
 \RU{Это называется}\EN{The cause for this is referred as } \gls{endianness}, \RU{и в x86 принят формат }\EN{and x86 uses }\IT{little-endian}.
+\ES{La causa de esto se conoce como} \gls{endianness}, \ES{y x86 utiliza} \IT{little-endian}.
 \RU{Это означает, что в начале записывается самый младший байт, а заканчивается самым старшим байтом}%
 \EN{This implies that the lowest byte is written first, and the highest written last}.
-\RU{Больше об этом}\EN{Read more about it at}: \myref{sec:endianness}.
+\ES{Esto implica que el byte más bajo se escribe primero y el más alto al final.}
+\RU{Больше об этом}\EN{Read more about it at}\ES{Lea más sobre esto en}: \myref{sec:endianness}.
 
 \RU{Позже из этого места в памяти 32-битное значение загружается в \EAX и передается в}
 \EN{Back to the example, the 32-bit value is loaded from this memory address into \EAX and passed to} \printf.
+\ES{Volviendo al ejemplo, el valor de 32 bits se carga desde esta dirección de memoria en \EAX y se pasa a} \printf.
 
-\RU{Адрес переменной $x$ в памяти}\EN{The memory address of $x$ is} \TT{0x00C53394}.
+\RU{Адрес переменной $x$ в памяти}\EN{The memory address of $x$ is}\ES{La dirección de memoria de $x$ es} \TT{0x00C53394}.
 
 \clearpage
 \RU{В \olly{} мы можем посмотреть карту памяти процесса (Alt-M) и увидим, что этот адрес
 внутри PE-сегмента \TT{.data} нашей программы}%
 \EN{In \olly we can review the process memory map (Alt-M)
 and we can see that this address is inside the \TT{.data} PE-segment of our program}:
+\ES{En \olly podemos revisar el mapa de memoria del proceso (Alt-M) y podemos ver que esta dirección está dentro del segmento PE \TT{.data} de nuestro programa}:
 
 \begin{figure}[H]
 \centering
 \includegraphics[scale=\FigScale]{patterns/04_scanf/2_global/ex2_olly_2.png}
-\caption{\olly: \RU{карта памяти процесса}\EN{process memory map}}
+\caption{\olly: \RU{карта памяти процесса}\EN{process memory map}\ES{mapa de memoria del proceso}}
 \label{fig:scanf_ex2_olly_2}
 \end{figure}

@@ -4,51 +4,63 @@
 
 \RU{Первые 4 аргумента функции передаются в четырех регистрах с префиксами A-.}
 \EN{The first four function arguments are passed in four registers prefixed by A-.}
+\ES{Los primeros cuatro argumentos de la función se pasan en cuatro registros con el prefijo A-.}
 
 \index{MIPS!\Instructions!MULT}
 \RU{В MIPS есть два специальных регистра: HI и LO, которые выставляются в 64-битный результат умножения
 во время исполнения инструкции \TT{MULT}.}
 \EN{There are two special registers in MIPS: HI and LO which are filled with the 64-bit result of the multiplication during the execution of the \TT{MULT} instruction.}
+\ES{Hay dos registros especiales en MIPS: HI y LO, que se llenan con el resultado de 64 bits de la multiplicación durante la ejecución de la instrucción \TT{MULT}.}
 \index{MIPS!\Instructions!MFLO}
 \index{MIPS!\Instructions!MFHI}
 \RU{К регистрам можно обращаться только используя инструкции \TT{MFLO} и \TT{MFHI}.}
 \EN{These registers are accessible only by using the \TT{MFLO} and \TT{MFHI} instructions.}
+\ES{A estos registros solo se puede acceder utilizando las instrucciones \TT{MFLO} y \TT{MFHI}.}
 \RU{Здесь \TT{MFLO} берет младшую часть результата умножения и записывает в \$V0.}
 \EN{\TT{MFLO} here takes the low-part of the multiplication result and stores it into \$V0.}
+\ES{\TT{MFLO} aquí toma la parte baja del resultado de la multiplicación y la almacena en \$V0.}
 \RU{Так что старшая 32-битная часть результата игнорируется (содержимое регистра HI не используется).}
 \EN{So the high 32-bit part of the multiplication result is dropped (the HI register content is not used).}
-\RU{Действительно, мы ведь работаем с 32-битным типом \Tint.}
+\ES{Por lo tanto, la parte alta de 32 bits del resultado de la multiplicación se descarta (no se utiliza el contenido del registro HI).}
+\RU{Действительно, ведь мы работаем с 32-битным типом \Tint.}
 \EN{Indeed: we work with 32-bit \Tint data types here.}
+\ES{De hecho, aquí trabajamos con tipos de datos \Tint de 32 bits.}
 
 \index{MIPS!\Instructions!ADDU}
 \RU{И наконец, \TT{ADDU} (\q{Add Unsigned}~--- добавить беззнаковое) прибавляет значение третьего аргумента к результату.}
 \EN{Finally, \TT{ADDU} (\q{Add Unsigned}) adds the value of the third argument to the result.}
+\ES{Finalmente, \TT{ADDU} (\q{Add Unsigned}, sumar sin signo) añade el valor del tercer argumento al resultado.}
 
 \index{MIPS!\Instructions!ADD}
 \index{MIPS!\Instructions!ADDU}
 \index{Ada}
 \index{Integer overflow}
 \RU{В MIPS есть две разных инструкции сложения:}
-\EN{There are two different addition instructions in MIPS:} \TT{ADD} \AndENRU \TT{ADDU}.
+\EN{There are two different addition instructions in MIPS:} \TT{ADD} \AndENRU\ES{y} \TT{ADDU}.
 \RU{На самом деле, дело не в знаковых числах, а в исключениях: \TT{ADD} может вызвать исключение
 во время переполнения. Это иногда полезно\footnote{\url{http://go.yurichev.com/17326}} и поддерживается,
 например, в \ac{PL} Ada.}
 \EN{The difference between them is not related to signedness, but to exceptions. \TT{ADD} can raise an exception on overflow, which is sometimes useful\footnote{\url{http://go.yurichev.com/17326}} and supported in Ada \ac{PL}, for instance.}
-\TT{ADDU} \RU{не вызывает исключения во время переполнения}\EN{does not raise exceptions on overflow}.
+\ES{La diferencia entre ellas no está relacionada con el signo, sino con las excepciones. \TT{ADD} puede generar una excepción en caso de desbordamiento, lo cual a veces es útil\footnote{\url{http://go.yurichev.com/17326}} y está soportado en el lenguaje de programación Ada, por ejemplo.}
+\TT{ADDU} \RU{не вызывает исключения во время переполнения}\EN{does not raise exceptions on overflow}\ES{no genera excepciones en caso de desbordamiento}.
 \RU{А так как \CCpp не поддерживает всё это, мы видим здесь \TT{ADDU} вместо \TT{ADD}.}
 \EN{Since \CCpp does not support this, in our example we see \TT{ADDU} instead of \TT{ADD}.}
+\ES{Dado que \CCpp no soporta esto, en nuestro ejemplo vemos \TT{ADDU} en lugar de \TT{ADD}.}
 
-\RU{32-битный результат оставляется в}\EN{The 32-bit result is left in} \$V0.
+\RU{32-битный результат оставляется в}\EN{The 32-bit result is left in}\ES{El resultado de 32 bits se deja en} \$V0.
 
 \index{MIPS!\Instructions!JAL}
 \index{MIPS!\Instructions!JALR}
 \RU{В \main есть новая для нас инструкция:}
 \EN{There is a new instruction for us in \main:} \TT{JAL} (\q{Jump and Link}). 
+\ES{Hay una nueva instrucción para nosotros en \main:} \TT{JAL} (\q{Jump and Link}, saltar y enlazar).
 \RU{Разница между JAL и JALR в том, что относительное смещение кодируется в первой инструкции,
 а JALR переходит по абсолютному адресу, записанному в регистр (\q{Jump and Link Register}).}
 \EN{The difference between JAL and JALR is that a relative offset is encoded in the first instruction, 
 while JALR jumps to the absolute address stored in a register (\q{Jump and Link Register}).}
+\ES{La diferencia entre JAL y JALR es que en la primera instrucción se codifica un desplazamiento relativo, mientras que JALR salta a la dirección absoluta almacenada en un registro (\q{Jump and Link Register}, saltar y enlazar registro).}
 \RU{Обе функции \ttf и \main расположены в одном объектном файле, так что относительный адрес
 \ttf известен и фиксирован.}
 \EN{Both \ttf and \main functions are located in the same object file, so the relative address of \ttf 
 is known and fixed.}
+\ES{Ambas funciones \ttf y \main están ubicadas en el mismo archivo objeto, por lo que la dirección relativa de \ttf es conocida y fija.}

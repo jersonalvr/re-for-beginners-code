@@ -1,13 +1,14 @@
-\subsection{ARM: \RU{3 аргумента}\EN{3 arguments}}
+\subsection{ARM: \RU{3 аргумента}\EN{3 arguments}\ES{3 argumentos}}
 
 \RU{В ARM традиционно принята такая схема передачи аргументов в функцию: 
 4 первых аргумента через регистры \Reg{0}-\Reg{3}; а остальные~--- через стек}
 \EN{ARM's traditional scheme for passing arguments (calling convention) behaves as follows:
 the first 4 arguments are passed through the \Reg{0}-\Reg{3} registers; the remaining arguments via the stack}.
-\RU{Это немного похоже на то, как аргументы передаются в}\EN{This resembles the arguments passing scheme in} 
+\ES{El esquema tradicional de ARM para pasar argumentos (convención de llamadas) funciona de la siguiente manera: los primeros 4 argumentos se pasan a través de los registros \Reg{0}-\Reg{3}; los argumentos restantes a través de la pila.}
+\RU{Это немного похоже на то, как аргументы передаются в}\EN{This resembles the arguments passing scheme in}\ES{Esto se asemeja al esquema de paso de argumentos en} 
 fastcall~(\myref{fastcall}) \OrENRU win64~(\myref{sec:callingconventions_win64}).
 
-\subsubsection{32-\RU{битный}\EN{bit} ARM}
+\subsubsection{32-\RU{битный}\EN{bit}\ES{bits} ARM}
 
 \myparagraph{\NonOptimizingKeilVI (\ARMMode)}
 
@@ -29,13 +30,14 @@ fastcall~(\myref{fastcall}) \OrENRU win64~(\myref{sec:callingconventions_win64})
 \EN{So, the first 4 arguments are passed via the \Reg{0}-\Reg{3} registers in this order:
 a pointer to the \printf format string in 
 \Reg{0}, then 1 in \Reg{1}, 2 in \Reg{2} and 3 in \Reg{3}.}
+\ES{Entonces, los primeros 4 argumentos se pasan a través de los registros \Reg{0}-\Reg{3} en este orden: un puntero a la cadena de formato de \printf en \Reg{0}, luego 1 en \Reg{1}, 2 en \Reg{2} y 3 en \Reg{3}.}
 
-\RU{Инструкция на}\EN{The instruction at} \TT{0x18} \RU{записывает}\EN{writes} 0 \RU{в}\EN{to} \Reg{0}%
-\EMDASH{}\RU{это выражение в Си}\EN{this is} \IT{return 0}\EN{ C-statement}.
+\RU{Инструкция на}\EN{The instruction at}\ES{La instrucción en} \TT{0x18} \RU{записывает}\EN{writes}\ES{escribe} 0 \RU{в}\EN{to}\ES{en} \Reg{0}%
+\EMDASH{}\RU{это выражение в Си}\EN{this is} \IT{return 0}\EN{ C-statement}\ES{esto es la sentencia \IT{return 0} de C}.
 
-\RU{Пока что здесь нет ничего необычного}\EN{There is nothing unusual so far}.
+\RU{Пока что здесь нет ничего необычного}\EN{There is nothing unusual so far}\ES{No hay nada inusual hasta ahora}.
 
-\OptimizingKeilVI \RU{генерирует точно такой же код}\EN{generates the same code}.
+\OptimizingKeilVI \RU{генерирует точно такой же код}\EN{generates the same code}\ES{genera exactamente el mismo código}.
 
 \myparagraph{\OptimizingKeilVI (\ThumbMode)}
 
@@ -53,11 +55,12 @@ a pointer to the \printf format string in
 
 \RU{Здесь нет особых отличий от неоптимизированного варианта для режима ARM.}
 \EN{There is no significant difference from the non-optimized code for ARM mode.}
+\ES{No hay una diferencia significativa con el código no optimizado para el modo ARM.}
 
-\myparagraph{\OptimizingKeilVI (\ARMMode) + \RU{убираем}\EN{let's remove} return}
+\myparagraph{\OptimizingKeilVI (\ARMMode) + \RU{убираем}\EN{let's remove}\ES{eliminemos} return}
 \label{ARM_B_to_printf}
 
-\RU{Немного переделаем пример, убрав}\EN{Let's rework example slightly by removing} \IT{return 0}:
+\RU{Немного переделаем пример, убрав}\EN{Let's rework example slightly by removing}\ES{Modifiquemos ligeramente el ejemplo eliminando} \IT{return 0}:
 
 \begin{lstlisting}
 #include <stdio.h>
@@ -70,6 +73,7 @@ void main()
 
 \RU{Результат получится необычным:}
 \EN{The result is somewhat unusual:}
+\ES{El resultado es algo inusual:}
 
 \begin{lstlisting}[caption=\OptimizingKeilVI (\ARMMode)]
 .text:00000014 main
@@ -85,40 +89,52 @@ void main()
 \index{Function epilogue}
 \RU{Это оптимизированная версия (\Othree) для режима ARM, и здесь мы видим последнюю инструкцию 
 \TT{B} вместо привычной нам \TT{BL}}\EN{This is the optimized (\Othree) version for ARM mode and this time we see \TT{B} as the last instruction instead of the familiar \TT{BL}}.
+\ES{Esta es la versión optimizada (\Othree) para el modo ARM, y esta vez vemos \TT{B} como la última instrucción en lugar de la familiar \TT{BL}.}
 \RU{Отличия между этой оптимизированной версией и предыдущей, скомпилированной без оптимизации, 
 ещё и в том, 
 что здесь нет пролога и эпилога функции (инструкций, сохраняющих состояние регистров \TT{\Reg{0}} и \ac{LR})}%
 \EN{Another difference between this optimized version and the previous one (compiled without optimization)
 is the lack of function prologue and epilogue (instructions preserving the \TT{\Reg{0}} and \ac{LR} registers values)}.
+\ES{Otra diferencia entre esta versión optimizada y la anterior (compilada sin optimización) es la falta de prólogo y epílogo de la función (instrucciones que preservan los valores de los registros \TT{\Reg{0}} y \ac{LR}).}
 \index{x86!\Instructions!JMP}
 \RU{Инструкция \TT{B} просто переходит на другой адрес, без манипуляций с регистром \ac{LR}, то есть
 это аналог \JMP в x86}%
 \EN{The \TT{B} instruction just jumps to another address, without any manipulation of the \ac{LR} register,
 similar to \JMP in x86}.
+\ES{La instrucción \TT{B} simplemente salta a otra dirección, sin ninguna manipulación del registro \ac{LR}, similar a \JMP en x86.}
 \RU{Почему это работает нормально? Потому что этот код эквивалентен предыдущему.}
 \EN{Why does it work? Because this code is, in fact, effectively equivalent to the previous.}
+\ES{¿Por qué funciona esto? Porque este código es, de hecho, efectivamente equivalente al anterior.}
 \RU{Основных причин две: 1) стек не модифицируется, как и \glslink{stack pointer}{указатель стека} \ac{SP}; 2) вызов функции \printf последний, 
 после него ничего не происходит}\EN{There are two main reasons: 1) neither the stack nor \ac{SP} (the \gls{stack pointer}) is modified;
 2) the call to \printf is the last instruction, so there is nothing going on afterwards}.
+\ES{Hay dos razones principales: 1) ni la pila ni \ac{SP} (el \glslink{stack pointer}{puntero de pila}) se modifican; 2) la llamada a \printf es la última instrucción, por lo que no ocurre nada más después.}
 \RU{Функция \printf, отработав, просто возвращает управление по адресу, записанному в \ac{LR}.}
 \EN{On completion, the \printf function simply returns the control to the address 
 stored in \ac{LR}.}
+\ES{Al finalizar, la función \printf simplemente devuelve el control a la dirección almacenada en \ac{LR}.}
 \RU{Но в \ac{LR} находится адрес места, откуда была вызвана наша функция!
 А следовательно, управление из \printf вернется сразу туда.}
 \EN{Since the \ac{LR} currently stores the address of the point from where our function
 was called then the control from \printf will be returned to that point.}
+\ES{Dado que \ac{LR} actualmente almacena la dirección del punto desde donde se llamó a nuestra función, el control de \printf se devolverá a ese punto.}
 \RU{Значит нет нужды сохранять \ac{LR}, потому что нет нужны модифицировать \ac{LR}}%
 \EN{Therefore we do not need to save \ac{LR} because we do not need to modify \ac{LR}}.
+\ES{Por lo tanto, no necesitamos guardar \ac{LR} porque no necesitamos modificar \ac{LR}.}
 \RU{А нет нужды модифицировать \ac{LR}, потому что нет иных вызовов функций, кроме \printf, к тому же, после этого вызова не нужно ничего здесь больше делать}%
 \EN{And we do not need to modify \ac{LR} because there are no other function calls except \printf. Furthermore,
 after this call we do not to do anything else}!
+\ES{Y no necesitamos modificar \ac{LR} porque no hay otras llamadas a funciones excepto \printf. Además, ¡después de esta llamada no necesitamos hacer nada más!}
 \RU{Поэтому такая оптимизация возможна}\EN{That is the reason such optimization is possible}.
+\ES{Esa es la razón por la que tal optimización es posible.}
 
 \RU{Эта оптимизация часто используется в функциях, где последнее выражение~--- это вызов другой функции.}
 \EN{This optimization is often used in functions where the last statement is a call to another function.}
+\ES{Esta optimización se utiliza a menudo en funciones donde la última sentencia es una llamada a otra función.}
 
 \RU{Ещё один похожий пример описан здесь}\EN{A similar example is presented here}:
 \myref{jump_to_last_printf}.
+\ES{Se presenta un ejemplo similar aquí: \myref{jump_to_last_printf}.}
 
 \subsubsection{ARM64}
 
@@ -127,21 +143,27 @@ after this call we do not to do anything else}!
 \lstinputlisting[caption=\NonOptimizing GCC (Linaro) 4.9]{patterns/03_printf/ARM/ARM3_O0.lst.\LANG}
 
 \index{ARM!\Instructions!STP}
-\RU{Итак, первая инструкция STP (Store Pair) сохраняет \ac{FP} (X29) и \ac{LR} (X30) в стеке.}
+\RU{Итак, первая инструкция STP (Store Pair) сохраняет \ac{FP} (X29) and \ac{LR} (X30) в стеке.}
 \EN{The first instruction STP (Store Pair) saves \ac{FP} (X29) and \ac{LR} (X30) in the stack.}
+\ES{La primera instrucción STP (Store Pair) guarda \ac{FP} (X29) y \ac{LR} (X30) en la pila.}
 \RU{Вторая инструкция \TT{ADD X29, SP, 0} формирует стековый фрейм.}
 \EN{The second \TT{ADD X29, SP, 0} instruction forms the stack frame.}
+\ES{La segunda instrucción \TT{ADD X29, SP, 0} forma el marco de pila (stack frame).}
 \RU{Это просто запись значения \ac{SP} в X29.}
 \EN{It is just writing the value of \ac{SP} into X29.}
+\ES{Es simplemente escribir el valor de \ac{SP} en X29.}
 
 \index{ARM!\Instructions!ADRP/ADD pair}
 \RU{Далее уже знакомая пара инструкций \TT{ADRP}/\ADD формирует указатель на строку.}%
 \EN{Next, we see the familiar \TT{ADRP}/\ADD instruction pair, which forms a pointer to the string.}
+\ES{A continuación, vemos el familiar par de instrucciones \TT{ADRP}/\ADD, que forma un puntero a la cadena.}
 \index{ARM64!lo12}
 \RU{\IT{lo12} означает младшие 12 бит, т.е., линкер запишет младшие 12 бит адреса метки LC1 в опкод инструкции \ADD.}%
 \EN{\IT{lo12} meaning low 12 bits, i.e., linker will write low 12 bits of LC1 address into the opcode of \ADD instruction.}
+\ES{\IT{lo12} significa los 12 bits inferiores, es decir, el enlazador escribirá los 12 bits inferiores de la dirección LC1 en el código de operación de la instrucción \ADD.}
 
 \RU{\TT{\%d} в формате \printf это 32-битный \Tint, так что 1, 2 и 3 заносятся в 32-битные части регистров.}
 \EN{\TT{\%d} in \printf string format is a 32-bit \Tint, so the 1, 2 and 3 are loaded into 32-bit register parts.}
+\ES{\TT{\%d} en el formato de cadena de \printf es un \Tint de 32 bits, por lo que 1, 2 y 3 se cargan en las partes de registro de 32 bits.}
 
-\Optimizing GCC (Linaro) 4.9 \RU{генерирует почти такой же код}\EN{generates the same code}.
+\Optimizing GCC (Linaro) 4.9 \RU{генерирует почти такой же код}\EN{generates the same code}\ES{genera casi el mismo código}.

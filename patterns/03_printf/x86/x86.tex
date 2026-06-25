@@ -1,9 +1,10 @@
-\subsection{x86: \RU{3 аргумента}\EN{3 arguments}}
+\subsection{x86: \RU{3 аргумента}\EN{3 arguments}\ES{3 argumentos}}
 
 \subsubsection{MSVC}
 
 \RU{Компилируем при помощи MSVC 2010 Express, и в итоге получим:}
 \EN{When we compile it with MSVC 2010 Express we get:}
+\ES{Cuando lo compilamos con MSVC 2010 Express obtenemos:}
 
 \begin{lstlisting}
 $SG3830	DB	'a=%d; b=%d; c=%d', 00H
@@ -20,12 +21,15 @@ $SG3830	DB	'a=%d; b=%d; c=%d', 00H
 
 \RU{Всё почти то же, за исключением того, что теперь видно, что аргументы для \printf заталкиваются в стек в обратном порядке: самый первый аргумент заталкивается последним.}
 \EN{Almost the same, but now we can see the \printf arguments are pushed onto the stack in reverse order. The first argument is pushed last.}
+\ES{Casi lo mismo, pero ahora podemos ver que los argumentos de \printf se introducen en la pila en orden inverso. El primer argumento se introduce al final.}
 
 \RU{Кстати, вспомним, что переменные типа \Tint в 32-битной системе, как известно, имеет ширину 32 бита, это 4 байта}
 \EN{By the way, variables of \Tint type in 32-bit environment have 32-bit width, that is 4 bytes}.
+\ES{Por cierto, recordemos que las variables de tipo \Tint en un entorno de 32 bits tienen un ancho de 32 bits, es decir, 4 bytes}.
 
 \RU{Итак, у нас всего 4 аргумента. $4*4 = 16$~--- именно 16 байт занимают в стеке указатель на строку плюс ещё 3 числа типа \Tint.}
 \EN{So, we have 4 arguments here. $4*4 = 16$~---they occupy exactly 16 bytes in the stack: a 32-bit pointer to a string and 3 numbers of type \Tint.}
+\ES{Entonces, tenemos 4 argumentos aquí. $4*4 = 16$; ocupan exactamente 16 bytes en la pila: un puntero de 32 bits a una cadena y 3 números de tipo \Tint.}
 
 \index{x86!\Instructions!ADD}
 \index{x86!\Registers!ESP}
@@ -36,20 +40,24 @@ $SG3830	DB	'a=%d; b=%d; c=%d', 00H
 \EN{When the \gls{stack pointer} (\ESP register) has changed back by the \TT{ADD ESP, X}
 instruction after a function 
 call, often, the number of function arguments could be deduced by simply dividing X by 4.}
+\ES{Cuando el \glslink{stack pointer}{puntero de pila} (registro \ESP) se restaura mediante la instrucción \TT{ADD ESP, X} después de una llamada a una función, a menudo se puede deducir el número de argumentos de la función simplemente dividiendo X entre 4.}
 
 \RU{Конечно, это относится только к cdecl-методу передачи аргументов через стек, 
 и только для 32-битной среды.}
 \EN{Of course, this is specific to the \IT{cdecl} calling convention, 
 and only for 32-bit environment.}
+\ES{Por supuesto, esto es específico de la convención de llamadas \IT{cdecl}, y solo para un entorno de 32 bits.}
 
 \ifx\LITE\undefined
 \RU{См. также в соответствующем разделе о способах передачи аргументов через стек}
 \EN{See also the calling conventions section}~(\myref{sec:callingconventions}).
+\ES{Consulte también la sección sobre convenciones de llamada}~(\myref{sec:callingconventions}).
 \fi
 
 \RU{Иногда бывает так, что подряд идут несколько вызовов разных функций, 
 но стек корректируется только один раз, после последнего вызова:}
 \EN{In certain cases where several functions return right after one another, the compiler could merge multiple \TT{\q{ADD ESP, X}} instructions into one, after the last call:}
+\ES{En ciertos casos donde se llaman varias funciones una tras otra, el compilador podría fusionar múltiples instrucciones \TT{\q{ADD ESP, X}} en una sola, después de la última llamada:}
 
 \begin{lstlisting}
 push a1
@@ -68,6 +76,7 @@ add esp, 24
 
 \RU{Вот пример из реальной жизни:}
 \EN{Here is a real-world example:}
+\ES{Aquí hay un ejemplo del mundo real:}
 
 \lstinputlisting[caption=x86]{patterns/03_printf/x86/add_example.lst.\LANG}
 
@@ -76,143 +85,161 @@ add esp, 24
 \subsubsection{MSVC \AndENRU \olly}
 \index{\olly}
 
-\RU{Попробуем этот же пример в}\EN{Now let's try to load this example in} \olly.
+\RU{Попробуем этот же пример в}\EN{Now let's try to load this example in}\ES{Ahora intentemos cargar este mismo ejemplo en} \olly.
 \RU{Это один из наиболее популярных win32-отладчиков пользовательского режима}\EN{It is one of the most 
 popular user-land win32 debuggers}.
-\RU{Мы можем компилировать наш пример в}\EN{We can compile our example in} MSVC 2012 
-\RU{с опцией}\EN{with} \TT{/MD} \RU{что означает линковать с библиотекой}\EN{option, which means to link 
-with} \TT{MSVCR*.DLL},
+\ES{Es uno de los depuradores win32 de modo de usuario más populares}.
+\RU{Мы можем компилировать наш пример в}\EN{We can compile our example in}\ES{Podemos compilar nuestro ejemplo en} MSVC 2012 
+\RU{с опцией}\EN{with}\ES{con la opción} \TT{/MD} \RU{что означает линковать с библиотекой}\EN{option, which means to link 
+with}\ES{, lo que significa enlazar con la biblioteca} \TT{MSVCR*.DLL},
 \RU{чтобы импортируемые функции были хорошо видны в отладчике.}
 \EN{so we can see the imported functions clearly in the debugger.}
+\ES{para que podamos ver las funciones importadas claramente en el depurador.}
 
-\RU{Затем загружаем исполняемый файл в}\EN{Then load the executable in} \olly.
-\RU{Самая первая точка останова в}\EN{The very first breakpoint is in} \TT{ntdll.dll}, \RU{нажмите}\EN{press} 
-F9 (\RU{запустить}\EN{run}).
-\RU{Вторая точка останова в}\EN{The second breakpoint is in} \ac{CRT}-\RU{коде}\EN{code}.
-\RU{Теперь мы должны найти функцию}\EN{Now we have to find the} \main\EN{ function}.
+\RU{Затем загружаем исполняемый файл в}\EN{Then load the executable in}\ES{Luego cargamos el ejecutable en} \olly.
+\RU{Самая первая точка останова в}\EN{The very first breakpoint is in}\ES{El primer punto de interrupción está en} \TT{ntdll.dll}, \RU{нажмите}\EN{press}\ES{presione} 
+F9 (\RU{запустить}\EN{run}\ES{ejecutar}).
+\RU{Вторая точка останова в}\EN{The second breakpoint is in}\ES{El segundo punto de interrupción está en} \ac{CRT}-\RU{коде}\EN{code}\ES{el código de \ac{CRT}}.
+\RU{Теперь мы должны найти функцию}\EN{Now we have to find the}\ES{Ahora tenemos que encontrar la función} \main\EN{ function}\ES{}.
 
 \RU{Найдите этот код, прокрутив окно кода до самого верха (MSVC располагает функцию \main в самом начале секции кода)}%
 \EN{Find this code by scrolling the code to the very top (MSVC allocates the \main function at the very beginning of the code section)}: 
+\ES{Encuentre este código desplazándose hasta la parte superior de la ventana de código (MSVC coloca la función \main al principio de la sección de código)}:
 
 \begin{figure}[H]
 \centering
 \includegraphics[scale=\FigScale]{patterns/03_printf/x86/olly3_1.png}
-\caption{\olly: \RU{самое начало функции}\EN{the very start of the} \main\EN{ function}}
+\caption{\olly: \RU{самое начало функции}\EN{the very start of the}\ES{el comienzo de la función} \main\EN{ function}\ES{}}
 \label{fig:printf3_olly_1}
 \end{figure}
 
-\RU{Кликните на инструкции}\EN{Click on the} \TT{PUSH EBP}\RU{, нажмите}\EN{ instruction, press} F2 
-(\RU{установка точки останова}\EN{set breakpoint}) \RU{и нажмите}\EN{and press} F9 (\RU{запустить}\EN{run}).
+\RU{Кликните на инструкции}\EN{Click on the}\ES{Haga clic en la instrucción} \TT{PUSH EBP}\RU{, нажмите}\EN{ instruction, press}\ES{, presione} F2 
+(\RU{установка точки останова}\EN{set breakpoint}\ES{establecer punto de interrupción}) \RU{и нажмите}\EN{and press}\ES{y presione} F9 (\RU{запустить}\EN{run}\ES{ejecutar}).
 \RU{Нам нужно произвести все эти манипуляции, чтобы пропустить \ac{CRT}-код, потому что нам он пока
 не интересен}\EN{We need to perform these actions in order to skip \ac{CRT}-code, because we aren't really
 interested in it yet}.
+\ES{Necesitamos realizar todas estas acciones para omitir el código de \ac{CRT}, ya que por ahora no nos interesa.}
 
 \clearpage
-\RU{Нажмите}\EN{Press} F8 (\stepover) 6 \RU{раз, т.е. пропустить
+\RU{Нажмите}\EN{Press}\ES{Presione} F8 (\stepover) 6 \RU{раз, т.е. пропустить
 6 инструкций}\EN{times, i.e. skip 6 instructions}:
 
 \begin{figure}[H]
 \centering
 \includegraphics[scale=\FigScale]{patterns/03_printf/x86/olly3_2.png}
-\caption{\olly: \RU{перед исполнением}\EN{before} \printf\EN{ execution}}
+\caption{\olly: \RU{перед исполнением}\EN{before}\ES{antes de la ejecución de} \printf\EN{ execution}\ES{}}
 \label{fig:printf3_olly_2}
 \end{figure}
 
-\RU{Теперь}\EN{Now the} \ac{PC} \RU{указывает на инструкцию}\EN{points to the}
+\RU{Теперь}\EN{Now the}\ES{Ahora el} \ac{PC} \RU{указывает на инструкцию}\EN{points to the}\ES{apunta a la instrucción}
 \TT{CALL printf}\EN{ instruction}.
 \olly, \RU{как и другие отладчики, подсвечивает регистры со значениями, которые изменились.}
 \EN{like other debuggers, highlights the value of the registers which were changed.}
-\RU{Поэтому каждый раз когда мы нажимаем}\EN{So each time you press} F8, \EIP 
-\RU{изменяется и его значение подсвечивается красным}\EN{ changes and its value is displayed in red}.
+\ES{\olly, al igual que otros depuradores, resalta el valor de los registros que cambiaron.}
+\RU{Поэтому каждый раз когда мы нажимаем}\EN{So each time you press}\ES{Así que cada vez que presionamos} F8, \EIP 
+\RU{изменяется и его значение подсвечивается красным}\EN{ changes and its value is displayed in red}\ES{ cambia y su valor se muestra en rojo}.
 \ESP \RU{также меняется, потому что значения заталкиваются в стек}\EN{changes as well, 
-because the arguments values are pushed into the stack}.\\
+because the arguments values are pushed into the stack}\ES{también cambia, porque los valores de los argumentos se introducen en la pila}.\\
 \\
-\RU{Где находятся эти значения в стеке}\EN{Where are the values in the stack}?
-\RU{Посмотрите на правое нижнее окно в отладчике}\EN{Take a look at the right bottom debugger window}:
+\RU{Где находятся эти значения в стеке}\EN{Where are the values in the stack}\ES{¿Dónde están estos valores en la pila}?
+\RU{Посмотрите на правое нижнее окно в отладчике}\EN{Take a look at the right bottom debugger window}\ES{Eche un vistazo a la ventana inferior derecha del depurador}:
 
 \begin{figure}[H]
 \centering
 \includegraphics[scale=\NormalScale]{patterns/03_printf/x86/olly3_stack.png}
-\caption{\olly: \RU{стек с сохраненными значениями}\EN{stack after the argument values have been pushed}
-(\RU{красная рамка добавлена в графическом редакторе}\EN{The red rectangular border was added by me in a graphics editor})}
+\caption{\olly: \RU{стек с сохраненными значениями}\EN{stack after the argument values have been pushed}\ES{la pila después de introducir los valores de los argumentos}
+(\RU{красная рамка добавлена в графическом редакторе}\EN{The red rectangular border was added by me in a graphics editor}\ES{el borde rectangular rojo fue añadido por mí en un editor de gráficos})}
 \end{figure}
 
 \RU{Здесь видно 3 столбца: адрес в стеке, значение в стеке и ещё дополнительный комментарий
 от \olly}\EN{We can see 3 columns there: address in the stack, 
 value in the stack and some additional \olly comments}. 
-\olly \RU{понимает}\EN{understands} \printf\RU{-строки}\EN{-like strings}, 
+\ES{Podemos ver 3 columnas allí: la dirección en la pila, el valor en la pila y algunos comentarios adicionales de \olly}.
+\olly \RU{понимает}\EN{understands}\ES{entiende las cadenas de tipo} \printf\RU{-строки}\EN{-like strings}\ES{}, 
 \RU{так что он показывает здесь и строку и 3 значения \IT{привязанных} к ней}\EN{so it reports the 
 string here and the 3 values \IT{attached} to it}.
+\ES{por lo que muestra la cadena aquí y los 3 valores \IT{asociados} a ella}.
 
 \RU{Можно кликнуть правой кнопкой мыши на строке формата, кликнуть на \q{Follow in dump}
 и строка формата появится в окне слева внизу, где всегда виден какой-либо участок памяти}%
 \EN{It is possible to right-click on the format string, click on \q{Follow in dump},
 and the format string will appear in the debugger left-bottom window, which always displays some part of the memory}.
-\RU{Эти значения в памяти можно редактировать}\EN{These memory values can be edited}.
+\ES{Es posible hacer clic derecho en la cadena de formato, seleccionar \q{Follow in dump}, y la cadena de formato aparecerá en la ventana inferior izquierda del depurador, que siempre muestra alguna parte de la memoria}.
+\RU{Эти значения в памяти можно редактировать}\EN{These memory values can be edited}\ES{Estos valores en la memoria se pueden editar}.
 \RU{Можно изменить саму строку формата, и тогда результат работы нашего примера будет другой}%
 \EN{It is possible to change the format string, in which case the result of our example would be different}.
+\ES{Es posible cambiar la propia cadena de formato, en cuyo caso el resultado de nuestro ejemplo sería diferente}.
 \RU{В данном случае пользы от этого немного, но для упражнения это полезно,
 чтобы начать чувствовать как тут всё работает}\EN{It is not very useful in this particular case, but it could be good as an exercise so you start building a feel of how everything works here}.
+\ES{No es muy útil en este caso particular, pero podría ser bueno como ejercicio para comenzar a familiarizarse con cómo funciona todo aquí}.
 
 \clearpage
-\RU{Нажмите}\EN{Press} F8 (\stepover).
+\RU{Нажмите}\EN{Press}\ES{Presione} F8 (\stepover).
 
-\RU{В консоли мы видим вывод}\EN{We see the following output in the console}:
+\RU{В консоли мы видим вывод}\EN{We see the following output in the console}\ES{Vemos la siguiente salida en la consola}:
 
 \begin{figure}[H]
 \centering
 \includegraphics[scale=\NormalScale]{patterns/03_printf/x86/olly3_console.png}
-\caption{\RU{Функция }\printf \RU{исполнилась}\EN{function executed}}
+\caption{\RU{Функция }\printf \RU{исполнилась}\EN{function executed}\ES{ejecutada}}
 \end{figure}
 
 \RU{Посмотрим как изменились регистры и состояние стека}\EN{Let's see how the registers and stack state 
-have changed}: 
+have changed}\ES{Veamos cómo han cambiado los registros y el estado de la pila}: 
 
 \begin{figure}[H]
 \centering
 \includegraphics[scale=\FigScale]{patterns/03_printf/x86/olly3_3.png}
-\caption{\olly \RU{после исполнения}\EN{after} \printf\EN{ execution}}
+\caption{\olly \RU{после исполнения}\EN{after}\ES{después de la ejecución de} \printf\EN{ execution}\ES{}}
 \label{fig:printf3_olly_3}
 \end{figure}
 
-\RU{Регистр }\EN{Register }\EAX \RU{теперь содержит}\EN{now contains} \TT{0xD} (13).
+\RU{Регистр }\EN{Register }\ES{El registro }\EAX \RU{теперь содержит}\EN{now contains}\ES{ahora contiene} \TT{0xD} (13).
 \RU{Всё верно: \printf возвращает количество выведенных символов.
 Значение \EIP изменилось. Действительно, теперь здесь адрес инструкции после 
 \TT{CALL printf}.}
 \EN{That is correct, since \printf returns the number of characters printed. 
 The value of \EIP has changed: indeed, now it contains the address of the instruction coming after 
 \TT{CALL printf}.}
-\RU{Значения регистров }\ECX \AndENRU \EDX \RU{также изменились}\EN{values have changed as well}.
+\ES{Eso es correcto, ya que \printf devuelve el número de caracteres impresos. El valor de \EIP ha cambiado: en efecto, ahora contiene la dirección de la instrucción que viene después de \TT{CALL printf}.}
+\RU{Значения регистров }\ECX \AndENRU \EDX \RU{также изменились}\EN{values have changed as well}\ES{también han cambiado sus valores}.
 \RU{Очевидно, внутренности функции \printf используют их для каких-то своих нужд}\EN{Apparently, the 
 \printf function's hidden machinery used them for its own needs}.
+\ES{Aparentemente, la maquinaria interna de la función \printf los utilizó para sus propias necesidades}.
 
 \RU{Очень важно то, что значение \ESP не изменилось. И аргументы-значения в стеке также!}
 \EN{A very important fact is that neither the \ESP value, nor the stack state have been changed!}
+\ES{¡Un hecho muy importante es que ni el valor de \ESP ni el estado de la pila han cambiado!}
 \RU{Мы ясно видим здесь и строку формата и соответствующие ей 3 значения, они всё ещё здесь.}
 \EN{We clearly see that the format string and corresponding 3 values are still there.}
+\ES{Vemos claramente que la cadena de formato y los 3 valores correspondientes siguen allí.}
 \RU{Действительно, по соглашению вызовов \IT{cdecl}, вызываемая функция не возвращает \ESP назад.}
 \EN{This is indeed the \IT{cdecl} calling convention behaviour: \gls{callee} does not return \ESP back to its previous value.}
-\RU{Это должна делать вызывающая функция}\EN{The \gls{caller} is responsible to do so}.
+\ES{Este es de hecho el comportamiento de la convención de llamadas \IT{cdecl}: la función llamada (\gls{callee}) no restaura el valor de \ESP a su estado anterior.}
+\RU{Это должна делать вызывающая функция}\EN{The \gls{caller} is responsible to do so}\ES{La función llamadora (\gls{caller}) es responsable de hacerlo}.
 
 \clearpage
-\RU{Нажмите}\EN{Press} F8 \RU{снова, чтобы исполнилась инструкция}\EN{again to execute} 
+\RU{Нажмите}\EN{Press}\ES{Presione} F8 \RU{снова, чтобы исполнилась инструкция}\EN{again to execute}\ES{de nuevo para ejecutar la instrucción} 
 \TT{ADD ESP, 10}\EN{ instruction}:
 
 \begin{figure}[H]
 \centering
 \includegraphics[scale=\FigScale]{patterns/03_printf/x86/olly3_4.png}
-\caption{\olly: \RU{после исполнения инструкции}\EN{after} \TT{ADD ESP, 10}\EN{ instruction execution}}
+\caption{\olly: \RU{после исполнения инструкции}\EN{after}\ES{después de la ejecución de la instrucción} \TT{ADD ESP, 10}\EN{ instruction execution}\ES{}}
 \label{fig:printf3_olly_4}
 \end{figure}
 
-\ESP \RU{изменился, но значения всё ещё в стеке}\EN{has changed, but the values are still in the stack}!
+\ESP \RU{изменился, но значения всё ещё в стеке}\EN{has changed, but the values are still in the stack}\ES{ha cambiado, ¡pero los valores siguen en la pila}!
 \RU{Конечно, никому не нужно заполнять эти значения нулями или что-то в этом роде.}\EN{Yes, 
 of course; no one needs to set these values to zeroes or something like that.}
+\ES{Sí, por supuesto; nadie necesita establecer estos valores a cero ni nada parecido.}
 \RU{Всё что выше указателя стека}\EN{Everything above the stack pointer} (\ac{SP}) 
-\RU{это}\EN{is} \IT{\RU{шум}\EN{noise}} \OrENRU \IT{\garbage{}} \RU{и не имеет
+\RU{это}\EN{is} \IT{\RU{шум}\EN{noise}\ES{ruido}} \OrENRU \IT{\garbage{}} \RU{и не имеет
 особой ценности}\EN{and has no meaning at all}.
+\ES{y no tiene ningún significado}.
 \RU{Было бы очень затратно по времени очищать ненужные элементы стека, к тому же, никому это и не 
 нужно}\EN{It would be time consuming to clear the unused stack entries anyway, and no one really needs to}.
+\ES{Sería costoso en tiempo limpiar las entradas de pila no utilizadas de todos modos, y nadie lo necesita realmente}.
 
 \fi
 
@@ -221,6 +248,7 @@ of course; no one needs to set these values to zeroes or something like that.}
 
 \RU{Скомпилируем то же самое в Linux при помощи GCC 4.4.1 и посмотрим на результат в \IDA:}
 \EN{Now let's compile the same program in Linux using GCC 4.4.1 and take a look at what we have got in \IDA:}
+\ES{Ahora compilemos el mismo programa en Linux usando GCC 4.4.1 y echemos un vistazo a lo que obtenemos en \IDA:}
 
 \begin{lstlisting}
 main            proc near
@@ -251,14 +279,16 @@ main            endp
 Здесь GCC снова работает со стеком напрямую без \PUSH/\POP.}
 \EN{Its noticeable that the difference between the MSVC code and the GCC code is only in the way the arguments are stored on the stack.
 Here the GCC is working directly with the stack without the use of \PUSH/\POP.}
+\ES{Es notable que la diferencia entre el código de MSVC y el código de GCC es solo en la forma en que los argumentos se almacenan en la pila. Aquí GCC está trabajando directamente con la pila sin el uso de \PUSH/\POP.}
 
 \ifdefined\IncludeGDB
 \subsubsection{GCC \AndENRU GDB}
 \index{GDB}
 
-\RU{Попробуем также этот пример и в \ac{GDB} в Linux}\EN{Let's try this example also in \ac{GDB} in Linux}.
+\RU{Попробуем также этот пример и в \ac{GDB} в Linux}\EN{Let's try this example also in \ac{GDB} in Linux}\ES{Probemos también este ejemplo en \ac{GDB} en Linux}.
 
 \TT{-g} \RU{означает генерировать отладочную информацию в выходном исполняемом файле}\EN{option instructs the compiler to include debug information in the executable file}.
+\ES{le indica al compilador que incluya información de depuración en el archivo ejecutable}.
 
 \begin{lstlisting}
 $ gcc 1.c -g -o 1
@@ -278,15 +308,16 @@ For bug reporting instructions, please see:
 Reading symbols from /home/dennis/polygon/1...done.
 \end{lstlisting}
 
-\begin{lstlisting}[caption=\RU{установим точку останова на}\EN{let's set breakpoint on} \printf]
+\begin{lstlisting}[caption=\RU{установим точку останова на}\EN{let's set breakpoint on}\ES{establezcamos un punto de interrupción en} \printf]
 (gdb) b printf
 Breakpoint 1 at 0x80482f0
 \end{lstlisting}
 
-\RU{Запукаем}\EN{Run}.
-\RU{У нас нет исходного кода функции}\EN{We don't have the} \printf%
+\RU{Запукаем}\EN{Run}\ES{Ejecutar}.
+\RU{У нас нет исходного кода функции}\EN{We don't have the}\ES{No tenemos el código fuente de la función} \printf%
 \RU{, поэтому \ac{GDB} не может его показать}\EN{function source code here, 
 so \ac{GDB} can't show it, but may do so}.
+\ES{ aquí, por lo que \ac{GDB} no puede mostrarlo, aunque puede continuar}.
 
 \begin{lstlisting}
 (gdb) run
@@ -298,6 +329,7 @@ Breakpoint 1, __printf (format=0x80484f0 "a=%d; b=%d; c=%d") at printf.c:29
 
 \RU{Выдать 10 элементов стека. Левый столбец~--- это адрес в стеке.}
 \EN{Print 10 stack elements. The most left column contains addresses on the stack.}
+\ES{Imprimir 10 elementos de la pila. La columna de la izquierda contiene las direcciones en la pila.}
 
 \begin{lstlisting}
 (gdb) x/10w $esp
@@ -306,8 +338,9 @@ Breakpoint 1, __printf (format=0x80484f0 "a=%d; b=%d; c=%d") at printf.c:29
 0xbffff13c:	0xb7e29905	0x00000001
 \end{lstlisting}
 
-\RU{Самый первый элемент это}\EN{The very first element is the} \ac{RA} (\TT{0x0804844a}).
+\RU{Самый первый элемент это}\EN{The very first element is the}\ES{El primer elemento es la} \ac{RA} (\TT{0x0804844a}).
 \RU{Мы можем удостовериться в этом, дизассемблируя память по этому адресу}\EN{We can verify this by disassembling the memory at this address}:
+\ES{Podemos verificar esto desensamblando la memoria en esta dirección}:
 
 \begin{lstlisting}[label=NOP_as_XCHG_example]
 (gdb) x/5i 0x0804844a
@@ -320,26 +353,30 @@ Breakpoint 1, __printf (format=0x80484f0 "a=%d; b=%d; c=%d") at printf.c:29
 
 \RU{Две инструкции \TT{XCHG} это холостые инструкции, аналогичные \ac{NOP}.}%
 \EN{The two \TT{XCHG} instructions are idle instructions, analogous to \ac{NOP}s.}
+\ES{Las dos instrucciones \TT{XCHG} son instrucciones inactivas, análogas a las \ac{NOP}.}%
 
 \RU{Второй элемент (\TT{0x080484f0}) это адрес строки формата:}%
 \EN{The second element (\TT{0x080484f0}) is the format string address:}
+\ES{El segundo elemento (\TT{0x080484f0}) es la dirección de la cadena de formato:}%
 
 \begin{lstlisting}
 (gdb) x/s 0x080484f0
 0x80484f0:	"a=%d; b=%d; c=%d"
 \end{lstlisting}
 
-\RU{Остальные 3 элемента}\EN{Next 3 elements} (1, 2, 3) \RU{это аргументы функции}\EN{are the} 
-\printf\EN{ arguments}.
+\RU{Остельные 3 элемента}\EN{Next 3 elements}\ES{Los siguientes 3 elementos} (1, 2, 3) \RU{это аргументы функции}\EN{are the}\ES{son los argumentos de} 
+\printf\EN{ arguments}\ES{}.
 \RU{Остальные элементы это может быть и мусор в стеке, но могут быть и значения
 от других функций, их локальные переменные, \etc{}.}
 \EN{The rest of the elements could be just \q{garbage} on the stack,
 but could also be values from other functions, their local variables, \etc{}.}
-\RU{Пока что мы можем игнорировать их}\EN{We can ignore them for now}.
+\ES{El resto de los elementos podría ser solo \q{basura} en la pila, pero también podrían ser valores de otras funciones, sus variables locales, \etc{}.}
+\RU{Пока что мы можем игнорировать их}\EN{We can ignore them for now}\ES{Podemos ignorarlos por ahora}.
 
-\RU{Исполняем}\EN{Run} \q{finish}. 
+\RU{Исполняем}\EN{Run}\ES{Ejecutamos} \q{finish}. 
 \RU{Это значит исполнять все инструкции до самого конца функции}\EN{The command instructs GDB to \q{execute all instructions until the end of the function}}. 
-\RU{В данном случае это означает исполнять до завершения}\EN{In this case: execute till the end of} \printf.
+\ES{Esta orden le indica a GDB que \q{ejecute todas las instrucciones hasta el final de la función}}.
+\RU{В данном случае это означает исполнять до завершения}\EN{In this case: execute till the end of}\ES{En este caso, ejecutar hasta el final de} \printf.
 
 \begin{lstlisting}
 (gdb) finish
@@ -349,24 +386,29 @@ main () at 1.c:6
 Value returned is $2 = 13
 \end{lstlisting}
 
-\ac{GDB} \RU{показывает, что вернула}\EN{shows what} \printf \RU{в}\EN{returned in} \EAX (13).
+\ac{GDB} \RU{показывает, что вернула}\EN{shows what}\ES{muestra lo que} \printf \RU{в}\EN{returned in}\ES{devolvió en} \EAX (13).
 \RU{Это, так же как и в примере с \olly, количество напечатанных символов}%
 \EN{This is the number of characters printed out, just like in the \olly example}.
+\ES{Este es el número de caracteres impresos, al igual que en el ejemplo de \olly}.
 
-\RU{А ещё мы видим}\EN{We also see} \q{return 0;} \RU{и что это выражение находится в файле 
+\RU{А ещё мы видим}\EN{We also see}\ES{También vemos} \q{return 0;} \RU{и что это выражение находится в файле 
 \TT{1.c} в строке 6}\EN{and the information that this expression is in the \TT{1.c} file at the line 6}.
+\ES{y la información de que esta expresión está en el archivo \TT{1.c} en la línea 6}.
 \RU{Действительно, файл \TT{1.c} лежит в текущем директории и \ac{GDB} находит там эту строку}
 \EN{Indeed, the \TT{1.c} file is located in the current directory, and \ac{GDB} finds the string there}.
+\ES{De hecho, el archivo \TT{1.c} está en el directorio actual, y \ac{GDB} encuentra la cadena allí}.
 \RU{Как \ac{GDB} знает, какая строка Си-кода сейчас исполняется}\EN{How does \ac{GDB} know which C-code line
 is being currently executed}?
+\ES{¿Cómo sabe \ac{GDB} qué línea de código C se está ejecutando actualmente}?
 \RU{Компилятор, генерируя отладочную информацию,
 также сохраняет информацию о 
 соответствии строк в исходном коде и адресов инструкций}\EN{This is due to the fact that the compiler,
 while generating debugging information, also saves a table of relations between source code line
 numbers and instruction addresses}.
-GDB \RU{это всё-таки отладчик уровня исходных текстов}\EN{is a source-level debugger, after all}.
+\ES{Esto se debe a que el compilador, al generar información de depuración, también guarda una tabla de relaciones entre los números de línea del código fuente y las direcciones de instrucción}.
+GDB \RU{это всё-таки отладчик уровня исходных текстов}\EN{is a source-level debugger, after all}\ES{es, después de todo, un depurador a nivel de código fuente}.
 
-\RU{Посмотрим регистры}\EN{Let's examine the registers}.
+\RU{Посмотрим регистры}\EN{Let's examine the registers}\ES{Examinemos los registros}.
 13 \InENRU \EAX:
 
 \begin{lstlisting}
@@ -383,9 +425,10 @@ eip            0x804844a	0x804844a <main+45>
 ...
 \end{lstlisting}
 
-\RU{Попробуем дизассемблировать текущие инструкции}\EN{Let's disassemble the current instructions}.
+\RU{Попробуем дизассемблировать текущие инструкции}\EN{Let's disassemble the current instructions}\ES{Desensamblemos las instrucciones actuales}.
 \RU{Стрелка указывает на инструкцию, которая будет исполнена следующей}\EN{The arrow points to the 
 instruction to be executed next}.
+\ES{La flecha apunta a la instrucción que se ejecutará a continuación}.
 
 \begin{lstlisting}
 (gdb) disas
@@ -405,9 +448,8 @@ Dump of assembler code for function main:
 End of assembler dump.
 \end{lstlisting}
 
-\RU{По умолчанию} \ac{GDB} \RU{показывает дизассемблированный листинг в формате}\EN{uses} AT\&T%
-\EN{syntax by default}.
-\RU{Но можно также переключиться в формат Intel}\EN{It is possible to switch to Intel syntax}:
+\RU{По умолчанию} \ac{GDB} \RU{показывает дизассемблированный листинг в формате}\EN{uses}\ES{usa por defecto la sintaxis} AT\&T\EN{syntax by default}\ES{}.
+\RU{Но можно также переключиться в формат Intel}\EN{It is possible to switch to Intel syntax}\ES{Pero también es posible cambiar a la sintaxis de Intel}:
 
 \begin{lstlisting}
 (gdb) set disassembly-flavor intel
@@ -428,18 +470,18 @@ Dump of assembler code for function main:
 End of assembler dump.
 \end{lstlisting}
 
-\RU{Исполняем следующую инструкцию}\EN{Execute next instruction}.
+\RU{Исполняем следующую инструкцию}\EN{Execute next instruction}\ES{Ejecute la siguiente instrucción}.
 \ac{GDB} \RU{покажет закрывающуюся скобку, означая, что это конец блока в функции.}
 \EN{shows ending bracket, meaning, it ends the block.}
+\ES{muestra el corchete de cierre, lo que significa que finaliza el bloque.}
 
 \begin{lstlisting}
 (gdb) step
 7	};
 \end{lstlisting}
 
-\RU{Посмотрим регистры после исполнения инструкции}\EN{Let's examine the registers after the} 
-\TT{MOV EAX, 0}\EN{ instruction execution}. \EN{Indeed}
-\EAX \RU{здесь уже действительно ноль}\EN{is zero at that point}.
+\RU{Посмотрим регистры после исполнения инструкции}\EN{Let's examine the registers after the}\ES{Examinemos los registros después de la ejecución de la instrucción} \TT{MOV EAX, 0}\EN{ instruction execution}\ES{}. \EN{Indeed}\ES{De hecho,} 
+\EAX \RU{здесь уже действительно ноль}\EN{is zero at that point}\ES{ es cero en este punto}.
 
 \begin{lstlisting}
 (gdb) info registers

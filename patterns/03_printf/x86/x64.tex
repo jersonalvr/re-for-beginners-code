@@ -1,4 +1,4 @@
-\subsection{x64: \RU{8 аргументов}\EN{8 arguments}}
+\subsection{x64: \RU{8 аргументов}\EN{8 arguments}\ES{8 argumentos}}
 
 \index{x86-64}
 \label{example_printf8_x64}
@@ -8,6 +8,7 @@
 (строка формата \printf и 8 переменных типа \Tint)}%
 \EN{To see how other arguments are passed via the stack, let's change our example again 
 by increasing the number of arguments to 9 (\printf format string + 8 \Tint variables)}:
+\ES{Para ver cómo se pasan otros argumentos a través de la pila, cambiemos nuestro ejemplo una vez más aumentando el número de argumentos a 9 (la cadena de formato de \printf + 8 variables de tipo \Tint)}:
 
 \lstinputlisting{patterns/03_printf/2.c}
 
@@ -16,25 +17,33 @@ by increasing the number of arguments to 9 (\printf format string + 8 \Tint vari
 \RU{Как уже было сказано ранее, первые 4 аргумента в Win64 передаются в регистрах}
 \EN{As it was mentioned earlier, the first 4 arguments has to be passed through the} \RCX, \RDX, \Reg{8}, \Reg{9}
 \RU{, а остальные~--- через стек}\EN{ registers in Win64, while all the rest---via the stack}.
+\ES{ en Win64, mientras que el resto se pasa a través de la pila}.
 \RU{Здесь мы это и видим}\EN{That is exactly what we see here}.
+\ES{Esto es exactamente lo que vemos aquí}.
 \RU{Впрочем, инструкция \PUSH не используется, вместо неё при помощи \MOV значения сразу записываются в стек}%
 \EN{However, the \MOV instruction, instead of \PUSH, is used for preparing the stack, so the values are stored
 to the stack in a straightforward manner}.
+\ES{Sin embargo, se utiliza la instrucción \MOV en lugar de \PUSH para preparar la pila, de modo que los valores se almacenan en la pila de manera directa}.
 
 \lstinputlisting[caption=MSVC 2012 x64]{patterns/03_printf/x86/2_MSVC_x64.asm.\LANG}
 
 \RU{Наблюдательный читатель может спросить, почему для значений типа \Tint отводится 8 байт,
 ведь нужно только 4?}
 \EN{The observant reader may ask why are 8 bytes allocated for \Tint values, when 4 is enough?}
+\ES{El lector observador puede preguntar por qué se asignan 8 bytes para valores de tipo \Tint, ¿cuando 4 es suficiente?}
 \RU{Да, это нужно запомнить: для значений всех типов более коротких чем 64-бита, отводится 8 байт.}
 \EN{Yes, one has to remember: 8 bytes are allocated for any data type shorter than 64 bits.}
+\ES{Sí, hay que recordar: se asignan 8 bytes para cualquier tipo de datos más corto que 64 bits.}
 \RU{Это сделано для удобства: так всегда легко рассчитать адрес того или иного аргумента.}
 \EN{This is established for the convenience's sake: it makes it easy to calculate the address of arbitrary argument.}
+\ES{Esto se establece por razones de conveniencia: facilita el cálculo de la dirección de un argumento arbitrario.}
 \RU{К тому же, все они расположены по выровненным адресам в памяти.}
 \EN{Besides, they are all located at aligned memory addresses.}
+\ES{Además, todos ellos están ubicados en direcciones de memoria alineadas.}
 % also for local variables?
 \RU{В 32-битных средах точно также: для всех типов резервируется 4 байта в стеке.}
 \EN{It is the same in the 32-bit environments: 4 bytes are reserved for all data types.}
+\ES{Es lo mismo en los entornos de 32 bits: se reservan 4 bytes para todos los tipos de datos.}
 
 \ifdefined\IncludeGCC
 \subsubsection{GCC}
@@ -42,12 +51,16 @@ to the stack in a straightforward manner}.
 \RU{В *NIX-системах для x86-64 ситуация похожая, вот только первые 6 аргументов передаются через}
 \EN{The picture is similar for x86-64 *NIX OS-es, except that the first 6 arguments are passed through the} \RDI, \RSI,
 \RDX, \RCX, \Reg{8}, \Reg{9}\EN{ registers}.
+\ES{El panorama es similar para los sistemas operativos *NIX para x86-64, excepto que los primeros 6 argumentos se pasan a través de los registros} \RDI, \RSI, \RDX, \RCX, \Reg{8}, \Reg{9}.
 \RU{Остальные~--- через стек}\EN{All the rest---via the stack}.
+\ES{Todo el resto se pasa a través de la pila}.
 \RU{GCC генерирует код, записывающий указатель на строку в \EDI вместо \RDI~--- 
 это мы уже рассмотрели чуть раньше}\EN{GCC generates the code storing the string pointer into \EDI instead of \RDI{}---we noted that previously}: \myref{hw_EDI_instead_of_RDI}.
+\ES{GCC genera el código que almacena el puntero de cadena en \EDI en lugar de \RDI; esto ya lo notamos anteriormente}: \myref{hw_EDI_instead_of_RDI}.
 
 \RU{Почему перед вызовом \printf очищается регистр \EAX мы уже рассмотрели ранее}%
 \EN{We also noted earlier that the \EAX register has been cleared before a \printf call}: \myref{SysVABI_input_EAX}.
+\ES{También notamos anteriormente que el registro \EAX se limpia antes de una llamada a \printf}: \myref{SysVABI_input_EAX}.
 
 \lstinputlisting[caption=\Optimizing GCC 4.4.6 x64]{patterns/03_printf/x86/2_GCC_x64.s.\LANG}
 
@@ -56,6 +69,7 @@ to the stack in a straightforward manner}.
 \index{GDB}
 
 \RU{Попробуем этот пример в}\EN{Let's try this example in} \ac{GDB}.
+\ES{Probemos este ejemplo en \ac{GDB}.}
 
 \begin{lstlisting}
 $ gcc -g 2.c -o 2
@@ -75,7 +89,7 @@ For bug reporting instructions, please see:
 Reading symbols from /home/dennis/polygon/2...done.
 \end{lstlisting}
 
-\begin{lstlisting}[caption=\RU{ставим точку останова на \printf{,} запускаем}\EN{let's set the breakpoint to \printf{,} and run}]
+\begin{lstlisting}[caption=\RU{ставим точку останова на \printf{,} запускаем}\EN{let's set the breakpoint to \printf{,} and run}\ES{establezcamos el punto de interrupción en \printf{} y ejecutemos}]
 (gdb) b printf
 Breakpoint 1 at 0x400410
 (gdb) run
@@ -87,8 +101,10 @@ Breakpoint 1, __printf (format=0x400628 "a=%d; b=%d; c=%d; d=%d; e=%d; f=%d; g=%
 
 \RU{В регистрах}\EN{Registers} \RSI/\RDX/\RCX/\Reg{8}/\Reg{9} 
 \RU{всё предсказуемо}\EN{have the expected values}.
+\ES{Los registros} \RSI/\RDX/\RCX/\Reg{8}/\Reg{9} \RU{всё предсказуемо}\EN{have the expected values}\ES{tienen los valores esperados}.
 \RU{А }\RIP \RU{содержит адрес самой первой инструкции функции}\EN{has the address of the very first instruction
 of the} \printf\EN{ function}.
+\ES{Y \RIP tiene la dirección de la primera instrucción de la función} \printf.
 
 \begin{lstlisting}
 (gdb) info registers
@@ -112,13 +128,14 @@ rip            0x7ffff7a65f60	0x7ffff7a65f60 <__printf>
 ...
 \end{lstlisting}
 
-\begin{lstlisting}[caption=\RU{смотрим на строку формата}\EN{let's inspect the format string}]
+\begin{lstlisting}[caption=\RU{смотрим на строку формата}\EN{let's inspect the format string}\ES{inspeccionemos la cadena de formato}]
 (gdb) x/s $rdi
 0x400628:	"a=%d; b=%d; c=%d; d=%d; e=%d; f=%d; g=%d; h=%d\n"
 \end{lstlisting}
 
 \RU{Дампим стек на этот раз с командой x/g}\EN{Let's dump the stack with the x/g command this time}\EMDASH{}g 
 \RU{означает}\EN{stands for} \IT{giant words}, \RU{т.е. 64-битные слова}\EN{i.e., 64-bit words}.
+\ES{Volquemos la pila con la orden x/g esta vez}\EMDASH{}g \RU{означает}\EN{stands for}\ES{significa} \IT{giant words}\RU{, т.е. 64-битные слова}\EN{, i.e., 64-bit words}\ES{ (palabras gigantes), es decir, palabras de 64 bits}.
 
 \begin{lstlisting}
 (gdb) x/10g $rsp
@@ -131,17 +148,23 @@ rip            0x7ffff7a65f60	0x7ffff7a65f60 <__printf>
 
 \RU{Самый первый элемент стека, как и в прошлый раз, это}\EN{The very first stack element, 
 just like in the previous case, is the} \ac{RA}.
+\ES{El primer elemento de la pila, al igual que en el caso anterior, es la} \ac{RA}.
 \RU{Через стек также передаются 3 значения}\EN{3 values are also passed through the stack}: 6, 7, 8.
+\ES{También se pasan 3 valores a través de la pila}: 6, 7, 8.
 \RU{Видно, что 8 передается с неочищенной старшей 32-битной частью}\EN{We also see that 8 is passed
 with the high 32-bits not cleared}: \TT{0x00007fff00000008}.
+\ES{También vemos que 8 se pasa con los 32 bits superiores sin limpiar}: \TT{0x00007fff00000008}.
 \RU{Это нормально, ведь передаются числа типа \Tint, а они 32-битные}\EN{That's OK, because the values have
 \Tint type, which is 32-bit}.
+\ES{Eso está bien, porque los valores tienen tipo \Tint, que es de 32 bits}.
 \RU{Так что в старшей части регистра или памяти стека остался \q{случайный мусор}}\EN{So, the high register
 or stack element part may contain \q{random garbage}}.
+\ES{Por lo tanto, la parte superior del registro o del elemento de la pila puede contener \q{basura aleatoria}}.
 
 \RU{\ac{GDB} показывает всю функцию \main, если попытаться посмотреть, куда вернется управление после исполнения \printf}%
 \EN{If you take a look at where the control will return after the \printf execution,
 \ac{GDB} will show the entire \main function}:
+\ES{Si echa un vistazo a dónde regresará el control después de la ejecución de \printf, \ac{GDB} mostrará toda la función \main}:
 
 \begin{lstlisting}
 (gdb) set disassembly-flavor intel
@@ -170,8 +193,10 @@ End of assembler dump.
 \RU{Заканчиваем исполнение \printf, исполняем инструкцию обнуляющую \EAX, 
 удостоверяемся что в регистре \EAX именно ноль}\EN{Let's finish executing \printf, execute the instruction
 zeroing \EAX, and note that the \EAX register has a value of exactly zero}.
+\ES{Terminemos de ejecutar \printf, ejecutemos la instrucción que pone a cero \EAX y observemos que el registro \EAX tiene un valor de exactamente cero}.
 \RIP \RU{указывает сейчас на инструкцию}\EN{now points to the} \TT{LEAVE}\RU{, т.е. предпоследнюю в функции \main}
 \EN{ instruction, i.e., the penultimate one in the \main function}.
+\ES{\RIP apunta ahora a la instrucción} \TT{LEAVE}\RU{, т.е. предпоследнюю в функции \main}\EN{ instruction, i.e., the penultimate one in the \main function}\ES{, es decir, la penúltima en la función \main}.
 
 \begin{lstlisting}
 (gdb) finish

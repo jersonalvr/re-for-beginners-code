@@ -1,19 +1,21 @@
-\section{\RU{Мусор в стеке}\EN{Noise in stack}}
+\section{\RU{Мусор в стеке}\EN{Noise in stack}\ES{Ruido en la pila}}
 
 \RU{Часто в этой книге говорится о \q{шуме} или \q{мусоре} в стеке или памяти.}
 \EN{Often in this book \q{noise} or \q{garbage} values in stack or memory are mentioned.}
-\RU{Откуда он берется}\EN{Where do they come from}?
+\ES{A menudo en este libro se mencionan valores de \q{ruido} o \q{basura} en la pila o en la memoria.}
+\RU{Откуда он берется}\EN{Where do they come from}\ES{¿De dónde vienen}?
 \RU{Это то, что осталось там после исполнения предыдущих функций.}
 \EN{These are what was left in there after other functions' executions.}
-\RU{Короткий пример}\EN{Short example}:
+\ES{Esto es lo que quedó allí después de las ejecuciones de otras funciones.}
+\RU{Короткий пример}\EN{Short example}\ES{Ejemplo corto}:
 
 \lstinputlisting{patterns/02_stack/08_noise/st.c}
 
-\RU{Компилируем}\EN{Compiling}\dots
+\RU{Компилируем}\EN{Compiling}\ES{Compilando}\dots
 
 \lstinputlisting[caption=\NonOptimizing MSVC 2010]{patterns/02_stack/08_noise/st.asm}
 
-\RU{Компилятор поворчит немного}\EN{The compiler will grumble a little bit}\dots
+\RU{Компилятор поворчит немного}\EN{The compiler will grumble a little bit}\ES{El compilador se quejará un poco}\dots
 
 \begin{lstlisting}
 c:\Polygon\c>cl st.c /Fast.asm /MD
@@ -31,7 +33,7 @@ Copyright (C) Microsoft Corporation.  All rights reserved.
 st.obj
 \end{lstlisting}
 
-\RU{Но когда мы запускаем}\EN{But when we run the compiled program}\dots
+\RU{Но когда мы запускаем}\EN{But when we run the compiled program}\ES{Pero cuando ejecutamos el programa compilado}\dots
 
 \begin{lstlisting}
 c:\Polygon\c>st
@@ -39,12 +41,13 @@ c:\Polygon\c>st
 \end{lstlisting}
 
 \RU{Ох. Вот это странно. Мы ведь не устанавливали значения никаких переменных в}\EN{Oh, 
-what a weird thing! We did not set any variables in} \TT{f2()}. 
+what a weird thing! We did not set any variables in}\ES{¡Oh, qué cosa tan extraña! No establecimos ninguna variable en} \TT{f2()}. 
 \RU{Эти значения --- это \q{привидения}, которые всё ещё в стеке.}
 \EN{These are \q{ghosts} values, which are still in the stack.}
+\ES{Estos son valores \q{fantasma} que todavía están en la pila.}
 
 \clearpage
-\RU{Загрузим пример в}\EN{Let's load the example into} \olly:
+\RU{Загрузим пример в}\EN{Let's load the example into}\ES{Carguemos el ejemplo en} \olly:
 
 \begin{figure}[H]
 \centering
@@ -53,12 +56,12 @@ what a weird thing! We did not set any variables in} \TT{f2()}.
 \label{fig:stack_noise_olly1}
 \end{figure}
 
-\RU{Когда}\EN{When} \TT{f1()} \RU{заполняет переменные}\EN{assigns the variables} $a$, $b$ \AndENRU $c$ 
-\RU{они сохраняются по адресу}\EN{, their values are stored at the address} \TT{0x14F860} 
-\RU{\etc{}.}\EN{and so on.}
+\RU{Когда}\EN{When}\ES{Cuando} \TT{f1()} \RU{заполняет переменные}\EN{assigns the variables}\ES{asigna las variables} $a$, $b$ \AndENRU $c$ 
+\RU{они сохраняются по адресу}\EN{, their values are stored at the address}\ES{sus valores se almacenan en la dirección} \TT{0x14F860} 
+\RU{\etc{}.}\EN{and so on.}\ES{ y así sucesivamente.}
 
 \clearpage
-\RU{А когда исполняется}\EN{And when} \TT{f2()}\EN{ executes}:
+\RU{А когда исполняется}\EN{And when}\ES{Y cuando} \TT{f2()}\EN{ executes}\ES{ se ejecuta}:
 
 \begin{figure}[H]
 \centering
@@ -67,10 +70,12 @@ what a weird thing! We did not set any variables in} \TT{f2()}.
 \label{fig:stack_noise_olly2}
 \end{figure}
 
-... $a$, $b$ \AndENRU $c$ \RU{в функции}\EN{of} \TT{f2()} \RU{находятся по тем же адресам!}
+... $a$, $b$ \AndENRU $c$ \RU{в функции}\EN{of}\ES{de} \TT{f2()} \RU{находятся по тем же адресам!}
 \EN{are located at the same addresses!}
+\ES{¡se encuentran en las mismas direcciones!}
 \RU{Пока никто не перезаписал их, так что они здесь в нетронутом виде.}
 \EN{No one has overwritten the values yet, so at that point they are still untouched.}
+\ES{Nadie ha sobrescrito los valores todavía, por lo que en ese momento aún están intactos.}
 
 \RU{Для создания такой странной ситуации несколько функций должны исполняться друг за другом
 и \ac{SP} должен быть одинаковым при входе в функции, т.е. у функций должно быть равное количество
@@ -78,16 +83,20 @@ what a weird thing! We did not set any variables in} \TT{f2()}.
 \EN{So, for this weird situation, several functions has to be called one after another and
 \ac{SP} has to be the same at each function entry (i.e., they  has same number
 of arguments). Then the local variables will be located at the same positions in the stack.}
+\ES{Por lo tanto, para esta situación extraña, se tienen que llamar varias funciones una tras otra y el \ac{SP} tiene que ser el mismo en cada entrada de la función (es decir, deben tener la misma cantidad de argumentos). Entonces las variables locales se ubicarán en las mismas posiciones en la pila.}
 
 \RU{Подводя итоги, все значения в стеке (да и памяти вообще) это значения оставшиеся от 
 исполнения предыдущих функций.}
 \EN{Summarizing, all values in the stack (and memory cells in general) 
 have values left there from previous function executions.}
+\ES{Resumiendo, todos los valores en la pila (y las celdas de memoria en general) tienen valores que quedaron allí de ejecuciones de funciones anteriores.}
 \RU{Строго говоря, они не случайны, они скорее непредсказуемы.}
 \EN{They are not random in the strict sense, but rather have unpredictable values.}
+\ES{No son aleatorios en el sentido estricto, sino que tienen valores impredecibles.}
 
-\RU{А как иначе}\EN{Is there other option}?
+\RU{А как иначе}\EN{Is there other option}\ES{¿Hay otra opción}?
 \RU{Можно было бы очищать части стека перед исполнением каждой функции,
 но это слишком много лишней (и ненужной) работы.}
 \EN{It probably would be possible to clear portions of the stack before each function execution,
 but that's too much extra (and unnecessary) work.}
+\ES{Probablemente sería posible limpiar porciones de la pila antes de cada ejecución de función, pero eso es demasiado trabajo adicional (e innecesario).}

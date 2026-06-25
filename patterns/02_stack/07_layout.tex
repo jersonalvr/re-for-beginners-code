@@ -1,22 +1,23 @@
-\section{\RU{Разметка типичного стека}\EN{Typical stack layout}}
+\section{\RU{Разметка типичного стека}\EN{Typical stack layout}\ES{Diseño típico de la pila}}
 
 \RU{Разметка типичного стека в 32-битной среде
 перед исполнением самой первой инструкции функции выглядит так:}
 \EN{A typical stack layout in a 32-bit environment at the start of a function, 
 before the first instruction execution looks like this:}
+\ES{Un diseño típico de la pila en un entorno de 32 bits al inicio de una función, antes de la ejecución de la primera instrucción, se ve así:}
 
 \begin{center}
 \begin{tabular}{ | l | l | }
 \hline
 \dots & \dots \\
 \hline
-ESP-0xC & \RU{локальная переменная}\EN{local variable} \#2, \MarkedInIDAAs{} \TT{var\_8} \\
+ESP-0xC & \RU{локальная переменная}\EN{local variable}\ES{variable local} \#2, \MarkedInIDAAs{} \TT{var\_8} \\
 \hline
-ESP-8 & \RU{локальная переменная}\EN{local variable} \#1, \MarkedInIDAAs{} \TT{var\_4} \\
+ESP-8 & \RU{локальная переменная}\EN{local variable}\ES{variable local} \#1, \MarkedInIDAAs{} \TT{var\_4} \\
 \hline
-ESP-4 & \RU{сохраненное значение}\EN{saved value of} \EBP \\
+ESP-4 & \RU{сохраненное значение}\EN{saved value of}\ES{valor guardado de} \EBP \\
 \hline
-ESP & \RU{адрес возврата}\EN{return address} \\
+ESP & \RU{адрес возврата}\EN{return address}\ES{dirección de retorno} \\
 \hline
 ESP+4 & \argument \#1, \MarkedInIDAAs{} \TT{arg\_0} \\
 \hline

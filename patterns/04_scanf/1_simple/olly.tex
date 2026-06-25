@@ -2,68 +2,77 @@
 \subsection{MSVC + \olly}
 \index{\olly}
 
-\RU{Попробуем этот же пример в}\EN{Let's try this example in} \olly.
+\RU{Попробуем этот же пример в}\EN{Let's try this example in}\ES{Probemos este mismo ejemplo en} \olly.
 \RU{Загружаем, нажимаем F8 (\stepover) до тех пор, пока не окажемся в своем исполняемом файле,
 а не в}\EN{Let's load it and keep pressing F8 (\stepover) until we reach our executable file
-instead of} \TT{ntdll.dll}.
-\RU{Прокручиваем вверх до тех пор, пока не найдем \main}\EN{Scroll up until \main appears}.
+instead of}\ES{Carguemos el archivo y sigamos presionando F8 (\stepover) hasta llegar a nuestro archivo ejecutable en lugar de} \TT{ntdll.dll}.
+\RU{Прокручиваем вверх до тех пор, пока не найдем \main}\EN{Scroll up until \main appears}\ES{Nos desplazamos hacia arriba hasta que aparezca \main}.
 \RU{Щелкаем на первой инструкции (\TT{PUSH EBP}), нажимаем F2 (\IT{set a breakpoint}), 
 затем F9 (\IT{Run}) и точка останова срабатывает на начале \main.}
 \EN{Click on the first instruction (\TT{PUSH EBP}), press F2 (\IT{set a breakpoint}), 
 then F9 (\IT{Run}).
 The breakpoint will be triggered when \main begins.}
+\ES{Hacemos clic en la primera instrucción (\TT{PUSH EBP}), presionamos F2 (\IT{set a breakpoint}), luego F9 (\IT{Run}). El punto de interrupción se activará al comenzar \main.}
 
 \RU{Трассируем до того места, где готовится адрес переменной $x$}%
 \EN{Let's trace to the point where the address of the variable $x$ is calculated}:
+\ES{Hagamos el seguimiento (trace) hasta el punto donde se calcula la dirección de la variable $x$}:
 
 \begin{figure}[H]
 \centering
 \includegraphics[scale=\FigScale]{patterns/04_scanf/1_simple/ex1_olly_1.png}
-\caption{\olly: \RU{вычисляется адрес локальной переменной}\EN{The address of the local variable is calculated}}
+\caption{\olly: \RU{вычисляется адрес локальной переменной}\EN{The address of the local variable is calculated}\ES{Se calcula la dirección de la variable local}}
 \label{fig:scanf_ex1_olly_1}
 \end{figure}
 
 \RU{На \EAX в окне регистров можно нажать правой кнопкой и далее выбрать}
 \EN{Right-click the \EAX in the registers window and then select} \q{Follow in stack}.
+\ES{Hacemos clic derecho en \EAX en la ventana de registros y luego seleccionamos} \q{Follow in stack}.
 \RU{Этот адрес покажется в окне стека.}
 \EN{This address will appear in the stack window.}
+\ES{Esta dirección aparecerá en la ventana de la pila.}
 \RU{Смотрите, это переменная в локальном стеке. Там дорисована красная стрелка}%
 \EN{The red arrow has been added, pointing to the variable in the local stack}.
-\RU{И там сейчас какой-то мусор}\EN{At that moment this location contains some garbage} (\TT{0x6E494714}).
+\ES{Observe que es una variable en la pila local. Se ha añadido la flecha roja que apunta a la variable en la pila local.}
+\RU{И там сейчас какой-то мусор}\EN{At that moment this location contains some garbage}\ES{En este momento, esta ubicación contiene algo de basura} (\TT{0x6E494714}).
 \RU{Адрес этого элемента стека сейчас, при помощи \PUSH запишется в этот же стек рядом}%
 \EN{Now with the help of \PUSH instruction the address of this stack element is going to be stored to the same stack on the next position}.
+\ES{Ahora, con la ayuda de la instrucción \PUSH, la dirección de este elemento de la pila se guardará en la misma pila en la siguiente posición.}
 \RU{Трассируем при помощи F8 вплоть до конца исполнения \scanf}\EN{Let's trace with F8 until the \scanf execution completes}.
+\ES{Hacemos el seguimiento con F8 hasta que finalice la ejecución de \scanf.}
 \RU{А пока \scanf исполняется, в консольном окне, вводим, например, 123}%
 \EN{During the \scanf execution, we input, for example, 123, in the console window}:
+\ES{Durante la ejecución de \scanf, ingresamos, por ejemplo, 123, en la ventana de la consola}:
 
 \begin{figure}[H]
 \centering
 \includegraphics[scale=\NormalScale]{patterns/04_scanf/1_simple/ex1_olly_2.png}
-\caption{\RU{Ввод пользователя в консольном окне}\EN{User input in the console window}}
+\caption{\RU{Ввод пользователя в консольном окне}\EN{User input in the console window}\ES{Entrada del usuario en la ventana de la consola}}
 \label{fig:scanf_ex1_olly_2}
 \end{figure}
 
 \clearpage
-\RU{Вот тут }\scanf \RU{отработал}\EN{completed its execution already}:
+\RU{Вот тут }\scanf \RU{отработал}\EN{completed its execution already}\ES{Aquí \scanf ya ha completado su ejecución}:
 
 \begin{figure}[H]
 \centering
 \includegraphics[scale=\FigScale]{patterns/04_scanf/1_simple/ex1_olly_3.png}
-\caption{\olly: \scanf \RU{исполнилась}\EN{executed}}
+\caption{\olly: \scanf \RU{исполнилась}\EN{executed}\ES{se ha ejecutado}}
 \label{fig:scanf_ex1_olly_3}
 \end{figure}
 
-\scanf \RU{вернул}\EN{returns} 1 \InENRU \EAX, \RU{что означает, что он успешно прочитал одно 
-значение}\EN{which implies that it has read successfully one value}.
-\RU{В наблюдаемом нами элементе стека теперь}\EN{If we look again at the stack element corresponding to the local variable it now contains} \TT{0x7B} (123).
+\scanf \RU{вернул}\EN{returns}\ES{devuelve} 1 \InENRU \EAX, \RU{что означает, что он успешно прочитал одно 
+значение}\EN{which implies that it has read successfully one value}\ES{lo que implica que ha leído con éxito un valor}.
+\RU{В наблюдаемом нами элементе стека теперь}\EN{If we look again at the stack element corresponding to the local variable it now contains}\ES{Si volvemos a mirar el elemento de la pila correspondiente a la variable local, ahora contiene} \TT{0x7B} (123).
 
 \clearpage
 \RU{Чуть позже это значение копируется из стека в регистр \ECX и передается в \printf}
 \EN{Later this value is copied from the stack to the \ECX register and passed to \printf}:
+\ES{Más tarde, este valor se copia de la pila al registro \ECX y se pasa a \printf:}:
 
 \begin{figure}[H]
 \centering
 \includegraphics[scale=\FigScale]{patterns/04_scanf/1_simple/ex1_olly_4.png}
-\caption{\olly: \RU{готовим значение для передачи в}\EN{preparing the value for passing to} \printf}
+\caption{\olly: \RU{готовим значение для передачи в}\EN{preparing the value for passing to}\ES{preparando el valor para pasarlo a} \printf}
 \label{fig:scanf_ex1_olly_4}
 \end{figure}

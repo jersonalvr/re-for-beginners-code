@@ -10,20 +10,20 @@ include(`commons.m4')004006a0 <main>:
   4006c0:       0320f809        jalr    t9
   4006c4:       248408d0        addiu   a0,a0,2256
   4006c8:       8fbc0010        lw      gp,16(sp)
-; _EN(`prepare high part of x address')_RU(`подготовить старшую часть адреса x'):
+; _EN(`prepare high part of x address')_RU(`подготовить старшую часть адреса x')_ES(`preparar la parte alta de la dirección de x'):
   4006cc:       3c100041        lui     s0,0x41
   4006d0:       8f998038        lw      t9,-32712(gp)
   4006d4:       3c040040        lui     a0,0x40
-; _EN(`add low part of x address')_RU(`прибавить младшую часть адреса x'):
+; _EN(`add low part of x address')_RU(`прибавить младшую часть адреса x')_ES(`añadir la parte baja de la dirección de x'):
   4006d8:       26050920        addiu   a1,s0,2336
-; _EN(`now address of x is in')_RU(`теперь адрес x в') $a1.
+; _EN(`now address of x is in')_RU(`теперь адрес x в')_ES(`ahora la dirección de x está en') $a1.
   4006dc:       0320f809        jalr    t9
   4006e0:       248408dc        addiu   a0,a0,2268
   4006e4:       8fbc0010        lw      gp,16(sp)
-; _EN(`high part of x address is still in')_RU(`старшая часть адреса x всё еще в') $s0. 
-; _EN(`add low part to it and load a word from memory')_RU(`прибавить младшую часть к ней и загрузить слово из памяти'):
+; _EN(`high part of x address is still in')_RU(`старшая часть адреса x всё еще в')_ES(`la parte alta de la dirección de x todavía está en') $s0. 
+; _EN(`add low part to it and load a word from memory')_RU(`прибавить младшую часть к ней и загрузить слово из памяти')_ES(`añadirle la parte baja y cargar una palabra de la memoria'):
   4006e8:       8e050920        lw      a1,2336(s0)
-; _EN(`value of x is now in')_RU(`значение x теперь в') $a1.
+; _EN(`value of x is now in')_RU(`значение x теперь в')_ES(`el valor de x ahora está en') $a1.
   4006ec:       8f99803c        lw      t9,-32708(gp)
   4006f0:       3c040040        lui     a0,0x40
   4006f4:       0320f809        jalr    t9
